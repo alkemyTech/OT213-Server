@@ -7,10 +7,10 @@ namespace OngProject.Repositories.Interfaces
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {
-        Task<List<TEntity>> GetAll();
+        Task<IEnumerable<TEntity>> GetAll();
         Task<TEntity> GetById(int id);
         Task<TEntity> Insert(TEntity entity);
-        Task<TEntity> Update(TEntity entity);
+        Task<TEntity> Update(TEntity entity);               
         Task Delete(int id);
     }
 }
