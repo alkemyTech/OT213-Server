@@ -8,7 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OngProject.Core.Business;
+using OngProject.Core.Interfaces;
 using OngProject.DataAccess;
+using OngProject.Repositories;
+using OngProject.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +42,12 @@ namespace OngProject
             // Create Database SQL SERVER
             var ONGConn = Configuration.GetConnectionString("OngProjectConnection");
             services.AddDbContext<OngProjectDbContext>(x => x.UseSqlServer(ONGConn));
+
+            //Repositories DI
+            services.AddScoped<IMemberRepository, MemberRepository>();
+
+            //Services DI
+            services.AddScoped<IMemberBusiness, MemberBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
