@@ -19,7 +19,7 @@ namespace OngProject.Core.Business
             await _genericRepository.Delete(id);
         }
 
-        public async Task<List<TEntity>> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAll()
         {
             return await _genericRepository.GetAll();
         }
