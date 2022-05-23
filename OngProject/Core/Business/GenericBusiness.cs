@@ -7,6 +7,7 @@ namespace OngProject.Core.Business
 {
     public class GenericBusiness<TEntity> : IGenericBusiness<TEntity> where TEntity : class
     {
+
         private IGenericRepository<TEntity> _genericRepository;
 
         public GenericBusiness(IGenericRepository<TEntity> genericRepository)
@@ -14,6 +15,7 @@ namespace OngProject.Core.Business
             this._genericRepository = genericRepository;
         }
 
+        // Hard Delete
         public async Task Delete(int id)
         {
             await _genericRepository.Delete(id);
