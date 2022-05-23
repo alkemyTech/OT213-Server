@@ -7,10 +7,11 @@ namespace OngProject.DataAccess.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly OngProjectDbContext _context;
-        //private readonly GenericRepository<Member> _memberRepository;
-
+        private readonly OngProjectDbContext _context;        
         public IMemberRepository Members {get; private set;}
+        // Categories... 
+        // News...
+        // etc.  
 
         public UnitOfWork(OngProjectDbContext context)
         {
@@ -26,7 +27,7 @@ namespace OngProject.DataAccess.UnitOfWork
         public void Dispose()
         {
             _context.Dispose();
-        }
+        }    
 
     }
 

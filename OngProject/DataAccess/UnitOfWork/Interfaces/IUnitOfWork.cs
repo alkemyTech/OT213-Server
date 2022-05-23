@@ -12,9 +12,8 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         // News...
         // etc.        
         
+        // Methods
         Task SaveAsync();
-
-
         // Task BeginTransaction();
         // Task<bool> Commit();
         // Task Rollback();
