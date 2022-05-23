@@ -1,10 +1,7 @@
-﻿using System.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using OngProject.DataAccess;
 using OngProject.Repositories.Interfaces;
 
 namespace OngProject.Repositories
@@ -22,6 +19,8 @@ namespace OngProject.Repositories
         {
             this.genericContext = context;
         }
+
+        // Hard Delete
         public async Task Delete(int id)
         {
             var entity = await GetById(id);
@@ -29,7 +28,7 @@ namespace OngProject.Repositories
             if(entity == null)
                 throw new Exception("The entity is null");
 
-            genericContext.Set<TEntity>();//.Remove(entity);
+            genericContext.Set<TEntity>().Remove(entity);
             await genericContext.SaveChangesAsync();
         }
         

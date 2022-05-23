@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OngProject.Repositories.Interfaces
@@ -11,6 +9,8 @@ namespace OngProject.Repositories.Interfaces
         Task<TEntity> GetById(int id);
         Task<TEntity> Insert(TEntity entity);
         Task<TEntity> Update(TEntity entity);               
+        
+        // Hard Delete
         Task Delete(int id);
     }
 }
