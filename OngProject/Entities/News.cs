@@ -16,7 +16,6 @@ namespace OngProject.Entities
         [Required]
         public string Image { get; set; }
         
-
         public bool softDelete { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ExpirationDate { get; set; }
