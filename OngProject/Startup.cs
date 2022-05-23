@@ -1,22 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OngProject.Core.Business;
 using OngProject.Core.Interfaces;
 using OngProject.DataAccess;
+using OngProject.DataAccess.UnitOfWork;
+using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Repositories;
 using OngProject.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OngProject
 {
@@ -48,6 +43,9 @@ namespace OngProject
 
             //Services DI
             services.AddScoped<IMemberBusiness, MemberBusiness>();
+
+            //Unit of Work DI
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
