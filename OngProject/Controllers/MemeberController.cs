@@ -71,7 +71,7 @@ namespace OngProject.Controllers
                 if(id == null)
                     return NotFound("Member not found");
 
-                await _uow.Members.SoftDelete(member, id);
+                await _memberBusiness.SoftDelete(member, id);
                 await _uow.SaveAsync();
 
                 return Ok("Member deleted successfully.");
