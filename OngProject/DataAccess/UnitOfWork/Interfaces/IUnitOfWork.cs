@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using OngProject.Core.Interfaces;
 using OngProject.Repositories.Interfaces;
 
 namespace OngProject.DataAccess.UnitOfWork.Interfaces
@@ -8,9 +9,7 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
     {
         // Write all the entities that point to the same DbContext
         IMemberRepository Members {get;}
-        // Categories... 
-        // News...
-        // etc.        
+        //IMemberBusiness Members2 {get;} // Fail at implementation the business layer        
         
         // Methods
         Task SaveAsync();
