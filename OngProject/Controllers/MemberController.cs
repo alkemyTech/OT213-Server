@@ -110,39 +110,39 @@ namespace OngProject.Controllers
         [Route("Update/Member/{id}")]
         public async Task<IActionResult> Edit(MemberUpdateModelDTO model)
         {
-            var mem = _uow.Members.Find(c => c.MembersID == model.membersID);
+            // var mem = _uow.Members.Find(c => c.MembersID == model.membersID);
 
-            var member = new Member
-            {
-                Name = model.name,
-                FacebookUrl = model.facebookUrl,
-                InstagramUrl = model.imageUrl,
-                LinkedInUrl = model.linkedInUrl,
-                ImageUrl = model.imageUrl,
-                Description = model.description,
-                CreatedAt = model.createdAt,
-                UpdatedAt = model.updatedAt,
-                isDeleted = model.isDeleted
-            };
+            // var member = new Member
+            // {
+            //     Name = model.name,
+            //     FacebookUrl = model.facebookUrl,
+            //     InstagramUrl = model.imageUrl,
+            //     LinkedInUrl = model.linkedInUrl,
+            //     ImageUrl = model.imageUrl,
+            //     Description = model.description,
+            //     CreatedAt = model.createdAt,
+            //     UpdatedAt = model.updatedAt,
+            //     isDeleted = model.isDeleted
+            // };
 
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    // validations
+            // if(ModelState.IsValid)
+            // {
+            //     try
+            //     {
+            //         // validations
 
-                    // request
-                    if(mem != null)
-                    {
-                        member = await _uow.Members.Update(member);
-                        await _uow.SaveAsync();                  
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
+            //         // request
+            //         if(mem != null)
+            //         {
+            //             member = await _uow.Members.Update(member);
+            //             await _uow.SaveAsync();                  
+            //         }
+            //     }
+            //     catch (System.Exception ex)
+            //     {
+            //         throw new Exception(ex.Message);
+            //     }
+            // }
             return Ok(new 
             {
                 Status = "Success",
@@ -168,9 +168,9 @@ namespace OngProject.Controllers
 
                 return Ok("Member deleted successfully.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return NotFound("Member doesn't exists");
+                throw new Exception(ex.Message);
             }
         }
     }
