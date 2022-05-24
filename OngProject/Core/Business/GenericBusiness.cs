@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using OngProject.Core.Interfaces;
 using OngProject.Repositories.Interfaces;
@@ -19,6 +21,11 @@ namespace OngProject.Core.Business
         public async Task Delete(int id)
         {
             await _genericRepository.Delete(id);
+        }
+
+        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _genericRepository.Find(predicate);
         }
 
         public async Task<IEnumerable<TEntity>> GetAll()
