@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OngProject.Repositories.Interfaces;
@@ -31,7 +33,12 @@ namespace OngProject.Repositories
             genericContext.Set<TEntity>().Remove(entity);
             await genericContext.SaveChangesAsync();
         }
-        
+
+        IEnumerable<TEntity> IGenericRepository<TEntity>.Find(Expression<Func<TEntity, bool>> predicate)
+        {
+            return genericContext.Set<TEntity>().Where(predicate);
+        }
+
         public async Task<IEnumerable<TEntity>> GetAll()
         {
             return await genericContext.Set<TEntity>().ToListAsync();
@@ -48,7 +55,6 @@ namespace OngProject.Repositories
                 throw new ArgumentNullException(nameof(entity));
 
             await genericContext.Set<TEntity>().AddAsync(entity);
-            //await genericContext.SaveChangesAsync();
             return entity;
         }
 
@@ -58,8 +64,8 @@ namespace OngProject.Repositories
                 throw new ArgumentNullException(nameof(entity));
 
             genericContext.Set<TEntity>().Update(entity);
-            //await genericContext.SaveChangesAsync();
             return entity;
         }
+    
     }
 }
