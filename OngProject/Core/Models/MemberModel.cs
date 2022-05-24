@@ -1,11 +1,12 @@
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace OngProject.Entities
+namespace OngProject.Core.Models
 {
-    public class Member
+    public class MemberModel
     {
-        [Key]
         public int MembersID {set;get;}
         public string Name {set;get;}
         public string FacebookUrl {set;get;}
@@ -15,8 +16,6 @@ namespace OngProject.Entities
         public string Description {set;get;}
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
-        public bool isDeleted {set;get;} = false;       
+        public bool isDeleted {set;get;} = false;    
     }
-
 }
-
