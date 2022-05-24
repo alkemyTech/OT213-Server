@@ -25,7 +25,11 @@ namespace OngProject.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {           
             // Fluent Api
-            // Property Configurations          
+            // Property Configurations    
+            modelBuilder.Entity<Member>()
+                        .Property(c => c.MembersID)
+                        .IsRequired();   
+
             modelBuilder.Entity<Member>()
                         .Property(c => c.Name)
                         .HasMaxLength(50)
