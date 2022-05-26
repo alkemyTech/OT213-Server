@@ -49,6 +49,8 @@ namespace OngProject
 
             //Automapper configure service
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddTransient<IRoleRepository, RoleRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
