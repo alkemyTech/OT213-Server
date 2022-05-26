@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.Core.Models.DTOs;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Entities;
 using System;
 using System.Threading.Tasks;
+using AutoMapper;
+using OngProject.Core.Models.DTOs.Members;
 
 namespace OngProject.Controllers
 {
@@ -13,10 +16,12 @@ namespace OngProject.Controllers
     {
         private readonly IUnitOfWork _uow;
         private readonly IMemberBusiness _memberBusiness;
-        public MemberController(IUnitOfWork uow, IMemberBusiness memberBusiness)
+        private readonly IMapper _mapper;
+        public MemberController(IUnitOfWork uow, IMemberBusiness memberBusiness, IMapper mapper)
         {
             this._uow = uow;
             this._memberBusiness = memberBusiness;
+            this._mapper = mapper;
         }
 
         // GET List/Members
@@ -26,12 +31,9 @@ namespace OngProject.Controllers
         {
             try
             {
-                var members = _uow.Members.Find(m => m.isDeleted != true);
-                if(members != null)
-                {
-                    return Ok(members);
-                }
-                return NotFound("The list of members has not been found");                
+                var members = _memberBusiness.FindMemberAsync(m => m.isDeleted != true);
+                return members != null ? Ok(_mapper.Map<IEnumerable<MemberGetModelDTO>>(members)) 
+                                       : NotFound("The list of members has not been found");                
             }
             catch (System.Exception ex)
             {
@@ -41,7 +43,7 @@ namespace OngProject.Controllers
 
         // GET List/MemberById
         [HttpGet]        
-        [Route("List/MemberById")]
+        [Route("List/MemberById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -49,8 +51,9 @@ namespace OngProject.Controllers
                 if(id == 0)
                     return NotFound("Please, set an ID.");
 
-                var member = await _uow.Members.GetById(id);
-                return member != null ? Ok(member) : NotFound("Member doesn't exists");            
+                var member = await _memberBusiness.GetMemberByIdAsync(id);
+                return member != null ? Ok(_mapper.Map<MemberGetModelDTO>(member)) 
+                                      : NotFound("Member doesn't exists");            
             }
             catch (System.Exception ex)
             {
@@ -61,20 +64,8 @@ namespace OngProject.Controllers
         // POST Create/Member
         [HttpPost]       
         [Route("Create/Member")]
-        public async Task<IActionResult> Create(MemberCreateModelDTO model)
-        {            
-            var member = new Member
-            {
-                Name = model.name,
-                FacebookUrl = model.facebookUrl,
-                InstagramUrl = model.instagramUrl,
-                LinkedInUrl = model.linkedInUrl,
-                ImageUrl = model.imageUrl,
-                Description = model.description,
-                CreatedAt = model.createdAt,
-                UpdatedAt = model.updatedAt
-            };
-
+        public async Task<IActionResult> Create([FromBody] MemberCreateModelDTO model)
+        {          
             if(ModelState.IsValid)
             {
                 try
@@ -89,8 +80,8 @@ namespace OngProject.Controllers
                         return Ok("Image required");
                     }
 
-                    // request
-                    await _uow.Members.Insert(member);
+                    // request                    
+                    await _memberBusiness.InsertMemberAsync(_mapper.Map<Member>(model));
                     await _uow.SaveAsync();                        
                 }
                 catch (System.Exception ex)
@@ -108,41 +99,46 @@ namespace OngProject.Controllers
         // PUT Update/Member/{id}
         [HttpPut]       
         [Route("Update/Member/{id}")]
-        public async Task<IActionResult> Edit(MemberUpdateModelDTO model)
-        {
-            // var mem = _uow.Members.Find(c => c.MembersID == model.membersID);
+        public async Task<IActionResult> Edit(int id, [FromBody] MemberUpdateModelDTO model)
+        { 
+            if (id != model.memberID)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new
+                {
+                    Status = "Error",
+                    Message = "Id number not found!"
+                });
+            }  
 
-            // var member = new Member
-            // {
-            //     Name = model.name,
-            //     FacebookUrl = model.facebookUrl,
-            //     InstagramUrl = model.imageUrl,
-            //     LinkedInUrl = model.linkedInUrl,
-            //     ImageUrl = model.imageUrl,
-            //     Description = model.description,
-            //     CreatedAt = model.createdAt,
-            //     UpdatedAt = model.updatedAt,
-            //     isDeleted = model.isDeleted
-            // };
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    // validations                    
+                    if(string.IsNullOrEmpty(model.name))
+                    {
+                        return Ok("Name required");                    
+                    }
+                    if(string.IsNullOrEmpty(model.imageUrl))
+                    {
+                        return Ok("Image required");
+                    }
 
-            // if(ModelState.IsValid)
-            // {
-            //     try
-            //     {
-            //         // validations
+                    var member = await _memberBusiness.GetMemberByIdAsync(id);
+                    var updated = await _memberBusiness.UpdateMemberAsync(member);
 
-            //         // request
-            //         if(mem != null)
-            //         {
-            //             member = await _uow.Members.Update(member);
-            //             await _uow.SaveAsync();                  
-            //         }
-            //     }
-            //     catch (System.Exception ex)
-            //     {
-            //         throw new Exception(ex.Message);
-            //     }
-            // }
+                    if(updated != null)
+                    {
+                        // request    
+                        _mapper.Map(model,member);               
+                        await _uow.SaveAsync();           
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
             return Ok(new 
             {
                 Status = "Success",
@@ -155,15 +151,19 @@ namespace OngProject.Controllers
         [Route("Delete/Member/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
+            // validation
+            if(id == 0)
+                return NotFound("Please, set a valid ID.");
+
             try
             {
-                var member = await _uow.Members.GetById(id.Value);
+                var member = await _memberBusiness.GetMemberByIdAsync(id.Value);
 
-                if(id == null)
-                    return NotFound("Member not found");
+                if(member == null)
+                    return NotFound("Member not found or doesn't exist.");
 
                 await _memberBusiness.SoftDelete(member, id);
-                await _uow.Members.Update(member);
+                await _memberBusiness.UpdateMemberAsync(member);
                 await _uow.SaveAsync();
 
                 return Ok("Member deleted successfully.");

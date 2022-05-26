@@ -47,6 +47,8 @@ namespace OngProject
             //Unit of Work DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            //Automapper configure service
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddTransient<IRoleRepository, RoleRepository>();
         }
