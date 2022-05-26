@@ -9,8 +9,9 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
     {
         // Write all the entities that point to the same DbContext
         IMemberRepository Members {get;}
+        IRoleRepository Roles { get; }
         //IMemberBusiness Members2 {get;} // Fail at implementation the business layer        
-        
+
         // Methods
         Task SaveAsync();
         // Task BeginTransaction();
