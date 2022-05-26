@@ -28,7 +28,7 @@ namespace OngProject.Entities
         [Column("id")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage ="Nombre requerido")]
+        [Required(ErrorMessage = "Nombre requerido")]
         [Column("name")]
         [DisplayName("Nombre")]
         public string Name { get; set; }
@@ -59,6 +59,6 @@ namespace OngProject.Entities
 
         [Column("AboutUsText", TypeName = "TEXT")]
         [DisplayName("Acerca de nosotros")]
-        public string AboutUs { get; set;}
+        public string AboutUs { get; set; }
     }
 }

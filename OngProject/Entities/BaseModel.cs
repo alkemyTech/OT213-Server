@@ -11,7 +11,7 @@ namespace OngProject.Entities
     public class BaseModel
     {
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime ?UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { set; get; }
     }
 }
