@@ -5,9 +5,9 @@ using OngProject.Repositories.Interfaces;
 
 namespace OngProject.Core.Business
 {
-    public class RoleBusiness : GenericBusiness<Roles>, IRoleBusiness
+    public class RoleBusiness : GenericBusiness<Role>, IRoleBusiness
     {
-        public RoleBusiness(IUnitOfWork uow, IRoleRepository roleRepository) : base(roleRepository)
+        public RoleBusiness(IUnitOfWork uow, IRoleRepository roleRepository) : base(roleRepository, uow)
         {
         }
     }
