@@ -38,19 +38,19 @@ namespace OngProject
             var ONGConn = Configuration.GetConnectionString("OngProjectConnection");
             services.AddDbContext<OngProjectDbContext>(x => x.UseSqlServer(ONGConn));
 
+            //Automapper configure service
+            services.AddAutoMapper(typeof(Startup));
+
+            //Unit of Work DI (Dependency Injection)
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             //Repositories DI
             services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
 
             //Services DI
             services.AddScoped<IMemberBusiness, MemberBusiness>();
 
-            //Unit of Work DI
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            //Automapper configure service
-            services.AddAutoMapper(typeof(Startup));
-
-            services.AddTransient<IRoleRepository, RoleRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
