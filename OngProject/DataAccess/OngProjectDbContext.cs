@@ -24,10 +24,21 @@ namespace OngProject.DataAccess
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {           
-            // Fluent Api
-            // Property Configurations    
+            // Fluent Api                
+            // configure one-to-many relationship
+             modelBuilder.Entity<New>()
+                .HasOne<Category>(u => u.Category)
+                .WithMany(c => c.News)
+                .HasForeignKey(u => u.CategoryId);
+
+            modelBuilder.Entity<User>()
+                .HasOne<Role>(u => u.Role)
+                .WithMany(c => c.Users)
+                .HasForeignKey(u => u.RoleId);
+
+            // Property Configurations 
             modelBuilder.Entity<Member>()
-                        .Property(c => c.MembersID)
+                        .Property(c => c.Id)
                         .IsRequired();   
 
             modelBuilder.Entity<Member>()
@@ -42,11 +53,15 @@ namespace OngProject.DataAccess
             modelBuilder.Entity<Member>()
                         .Property(c => c.Description)
                         .HasMaxLength(50);
+
         }
 
-        public DbSet<Member> Members {set;get;}
         public DbSet<Organization> Organizations { set; get; }
-        public DbSet<Roles> Roles { set; get;}
+        public DbSet<Category> Categories { set; get; }
+        public DbSet<New> News { set; get; }
+        public DbSet<Member> Members {set;get;}
+        public DbSet<User> Users { set; get;}
+        public DbSet<Role> Roles { set; get;}
     }
 }
 
