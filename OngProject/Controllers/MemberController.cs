@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Entities;
 using System;
 using System.Threading.Tasks;
@@ -14,12 +13,10 @@ namespace OngProject.Controllers
     [ApiController]
     public class MemberController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
         private readonly IMemberBusiness _memberBusiness;
         private readonly IMapper _mapper;
-        public MemberController(IUnitOfWork uow, IMemberBusiness memberBusiness, IMapper mapper)
+        public MemberController(IMemberBusiness memberBusiness, IMapper mapper)
         {
-            this._uow = uow;
             this._memberBusiness = memberBusiness;
             this._mapper = mapper;
         }
@@ -31,7 +28,7 @@ namespace OngProject.Controllers
         {
             try
             {
-                var members = _memberBusiness.FindMemberAsync(m => m.isDeleted != true);
+                var members = _memberBusiness.Find(m => m.IsDeleted == false);
                 return members != null ? Ok(_mapper.Map<IEnumerable<MemberGetModelDTO>>(members)) 
                                        : NotFound("The list of members has not been found");                
             }
@@ -48,10 +45,16 @@ namespace OngProject.Controllers
         {
             try
             {
-                if(id == 0)
-                    return NotFound("Please, set an ID.");
+                if(string.IsNullOrEmpty(id.ToString()) || id == 0)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new
+                    {
+                        Status = "Error",
+                        Message = "Please, set an ID."
+                    }); 
+                }
 
-                var member = await _memberBusiness.GetMemberByIdAsync(id);
+                var member = await _memberBusiness.GetById(id);
                 return member != null ? Ok(_mapper.Map<MemberGetModelDTO>(member)) 
                                       : NotFound("Member doesn't exists");            
             }
@@ -73,16 +76,23 @@ namespace OngProject.Controllers
                     // validations                    
                     if(string.IsNullOrEmpty(model.name))
                     {
-                        return Ok("Name required");                    
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Name required"
+                        });                    
                     }
                     if(string.IsNullOrEmpty(model.imageUrl))
                     {
-                        return Ok("Image required");
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Image required"
+                        });
                     }
 
                     // request                    
-                    await _memberBusiness.InsertMemberAsync(_mapper.Map<Member>(model));
-                    await _uow.SaveAsync();                        
+                    await _memberBusiness.Insert(_mapper.Map<Member>(model));
                 }
                 catch (System.Exception ex)
                 {
@@ -101,15 +111,15 @@ namespace OngProject.Controllers
         [Route("Update/Member/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] MemberUpdateModelDTO model)
         { 
-            if (id != model.memberID)
+            // validation
+            if (id != model.Id)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     Status = "Error",
                     Message = "Id number not found!"
                 });
             }  
-
             if(ModelState.IsValid)
             {
                 try
@@ -117,21 +127,41 @@ namespace OngProject.Controllers
                     // validations                    
                     if(string.IsNullOrEmpty(model.name))
                     {
-                        return Ok("Name required");                    
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Name required"
+                        });                   
                     }
                     if(string.IsNullOrEmpty(model.imageUrl))
                     {
-                        return Ok("Image required");
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Image required"
+                        });
                     }
 
-                    var member = await _memberBusiness.GetMemberByIdAsync(id);
-                    var updated = await _memberBusiness.UpdateMemberAsync(member);
-
-                    if(updated != null)
+                    var member = await _memberBusiness.GetById(id);
+                    if(member == null)
                     {
-                        // request    
-                        _mapper.Map(model,member);               
-                        await _uow.SaveAsync();           
+                        return StatusCode(StatusCodes.Status500InternalServerError, new
+                        {
+                            Status = "Error",
+                            Message = "Member cannot be null."
+                        });    
+                    }
+
+                    // Mapping and request
+                    _mapper.Map(model,member);               
+                    var updated = await _memberBusiness.Update(member);
+                    if(updated == null)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, new
+                        {
+                            Status = "Error",
+                            Message = "Error updating data"
+                        });    
                     }
                 }
                 catch (System.Exception ex)
@@ -149,29 +179,42 @@ namespace OngProject.Controllers
         // DELETE Delete/Member/{id}
         [HttpDelete]       
         [Route("Delete/Member/{id}")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> SoftDelete(int? id)
         {
             // validation
-            if(id == 0)
-                return NotFound("Please, set a valid ID.");
-
+            if(string.IsNullOrEmpty(id.ToString()) || id == 0)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new
+                {
+                    Status = "Error",
+                    Message = "Please, set a valid ID."
+                });  
+            }
             try
             {
-                var member = await _memberBusiness.GetMemberByIdAsync(id.Value);
-
+                var member = await _memberBusiness.GetById(id.Value);
                 if(member == null)
-                    return NotFound("Member not found or doesn't exist.");
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new
+                    {
+                        Status = "Error",
+                        Message = "Member not found or doesn't exist."
+                    });   
+                }
 
+                // request  
                 await _memberBusiness.SoftDelete(member, id);
-                await _memberBusiness.UpdateMemberAsync(member);
-                await _uow.SaveAsync();
-
-                return Ok("Member deleted successfully.");
+                await _memberBusiness.Update(member);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+            return Ok(new 
+            {
+                Status = "Success",
+                Message = "Member deleted successfully!"
+            }); 
         }
     }
 }
