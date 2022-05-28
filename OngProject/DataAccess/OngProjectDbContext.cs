@@ -1,6 +1,4 @@
-using System.IO;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using OngProject.Entities;
 
 namespace OngProject.DataAccess
@@ -9,19 +7,12 @@ namespace OngProject.DataAccess
     {
         public OngProjectDbContext(DbContextOptions<OngProjectDbContext> options) : base(options)
         {  
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            var connectionString = configuration.GetConnectionString("OngProjectConnection");
-            optionsBuilder.UseSqlServer(connectionString);
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {           
             // Fluent Api                

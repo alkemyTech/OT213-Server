@@ -17,12 +17,12 @@ namespace OngProject
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        private string _OngConectionString = null;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -34,9 +34,9 @@ namespace OngProject
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OngProject", Version = "v1" });
             });
 
-            // Create Database SQL SERVER
-            var ONGConn = Configuration.GetConnectionString("OngProjectConnection");
-            services.AddDbContext<OngProjectDbContext>(x => x.UseSqlServer(ONGConn));
+            // Get ConectionString via User Secrets
+            this._OngConectionString = Configuration["ConnectionStrings:OngProjectConnection"];
+            services.AddDbContext<OngProjectDbContext>(x => x.UseSqlServer(_OngConectionString));
 
             //Automapper configure service
             services.AddAutoMapper(typeof(Startup));
