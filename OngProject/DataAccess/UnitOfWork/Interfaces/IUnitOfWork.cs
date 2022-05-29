@@ -10,6 +10,8 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         // Write all the entities that point to the same DbContext
         IMemberRepository Members {get;}
         IRoleRepository Roles { get; }
+
+        ICategoriesRepository Categories { get; }
         //IMemberBusiness Members2 {get;} // Fail at implementation the business layer        
 
         // Methods

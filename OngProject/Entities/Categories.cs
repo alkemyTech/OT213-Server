@@ -19,7 +19,7 @@ namespace OngProject.Entities
 
         public bool softDelete { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime ExpirationDate { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
     }
 }
