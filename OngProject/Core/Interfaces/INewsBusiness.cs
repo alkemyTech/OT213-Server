@@ -5,11 +5,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace OngProject.Repositories.Interfaces
+namespace OngProject.Core.Interfaces
 {
-    public interface INewsRepository : IGenericRepository<News>
+    public interface INewsBusiness : IGenericBusiness<News>
     {
         Task<bool> SoftDelete(News entity, int? id);
+
         Task<News> UpdateNewsAsync(News entity);
         Task<News> GetNewsByIdAsync(int id);
         Task<News> InsertNewsAsync(News entity);

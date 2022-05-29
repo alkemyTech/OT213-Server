@@ -5,11 +5,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace OngProject.Repositories.Interfaces
+namespace OngProject.Core.Interfaces
 {
-    public interface IUsersRepository : IGenericRepository<Users>
+    public interface IUsersBusiness : IGenericBusiness<Users>
     {
         Task<bool> SoftDelete(Users entity, int? id);
+
         Task<Users> UpdateUsersAsync(Users entity);
         Task<Users> GetUsersByIdAsync(int id);
         Task<Users> InsertUsersAsync(Users entity);
