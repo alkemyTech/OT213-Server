@@ -47,6 +47,8 @@ namespace OngProject.DataAccess
         public DbSet<Member> Members {set;get;}
         public DbSet<Organization> Organizations { set; get; }
         public DbSet<Roles> Roles { set; get;}
+        public DbSet<News> News { set; get;}
+        public DbSet<Users> Users { set; get;}
     }
 }
 

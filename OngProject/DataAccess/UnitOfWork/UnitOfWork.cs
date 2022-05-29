@@ -11,11 +11,17 @@ namespace OngProject.DataAccess.UnitOfWork
         public IMemberRepository Members {get; private set;}
         public IRoleRepository Roles { get; private set; }
 
+        public INewsRepository News { get; private set; }
+
+        public IUsersRepository Users { get; private set; }
+
         public UnitOfWork(OngProjectDbContext context)
         {
             this._context = context;
             Members = new MemberRepository(_context);  
             Roles = new RoleRepository(_context);
+            News = new NewsRepository(_context);
+            Users = new UsersRepository(_context);
         }
 
         public async Task SaveAsync()
