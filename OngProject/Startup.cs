@@ -5,12 +5,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using OngProject.Core.Auth.Interfaces;
 using OngProject.Core.Business;
+using OngProject.Core.Business.Auth;
 using OngProject.Core.Interfaces;
 using OngProject.DataAccess;
 using OngProject.DataAccess.UnitOfWork;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Repositories;
+using OngProject.Repositories.Auth;
+using OngProject.Repositories.Auth.Interfaces;
 using OngProject.Repositories.Interfaces;
 
 namespace OngProject
@@ -47,9 +51,12 @@ namespace OngProject
             //Repositories DI
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
 
             //Services DI
             services.AddScoped<IMemberBusiness, MemberBusiness>();
+            services.AddScoped<IAuthBusiness, AuthBusiness>();
+
 
         }
 
