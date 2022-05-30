@@ -14,9 +14,11 @@ namespace OngProject.Entities
         [Required]        
         public string Password { get; set; }
         public string Photo { get; set; }
+        public byte[] PasswordHash {get;set;}
+        public byte[] PasswordSalt {get;set;}
 
         // FK_Role id
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; }
         public Role Role { get; set; }
     }
 }
