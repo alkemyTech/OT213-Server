@@ -1,24 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System;
 
-namespace OngProject.Entities
+namespace OngProject.Core.Models.Users
 {
-    public class User : BaseEntity
+    public class UserModel
     {
-        [Required]
         public string FirstName { get; set; }
-        [Required]
         public string LastName { get; set; }
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
-        [Required]        
         public string Password { get; set; }
         public string Photo { get; set; }
         public byte[] PasswordHash {get;set;}
         public byte[] PasswordSalt {get;set;}
-
-        // FK_Role id
-        public int? RoleId { get; set; }
-        public Role Role { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public bool IsDeleted { set; get; }
     }
 }
+
+
+

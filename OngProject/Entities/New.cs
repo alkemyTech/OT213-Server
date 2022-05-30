@@ -12,7 +12,7 @@ namespace OngProject.Entities
         public string Image { get; set; }      
 
         // FK_Categories id
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public Category Category { get; set; }
     }
 }

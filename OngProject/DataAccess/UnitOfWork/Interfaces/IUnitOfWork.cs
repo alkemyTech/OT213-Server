@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using OngProject.Repositories.Auth.Interfaces;
 using OngProject.Repositories.Interfaces;
 
 namespace OngProject.DataAccess.UnitOfWork.Interfaces
@@ -9,6 +10,7 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         // Write here all the entities Non-Generics
         IMemberRepository Members {get;}
         IRoleRepository Roles { get; }
+        IAuthRepository Authentications {get;}
 
         // Methods
         Task SaveAsync();
