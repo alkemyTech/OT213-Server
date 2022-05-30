@@ -2,7 +2,7 @@
 
 namespace OngProject.Core.Interfaces
 {
-    public interface IRoleBusiness : IGenericBusiness<Roles>
+    public interface IRoleBusiness : IGenericBusiness<Role>
     {
     }
 }
