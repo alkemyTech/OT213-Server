@@ -114,7 +114,7 @@ namespace OngProject.Controllers
             // validation
             if (id != model.Id)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
+                return StatusCode(StatusCodes.Status400BadRequest, new
                 {
                     Status = "Error",
                     Message = "Id number not found!"
@@ -145,7 +145,7 @@ namespace OngProject.Controllers
                     var member = await _memberBusiness.GetById(id);
                     if(member == null)
                     {
-                        return StatusCode(StatusCodes.Status500InternalServerError, new
+                        return StatusCode(StatusCodes.Status400BadRequest, new
                         {
                             Status = "Error",
                             Message = "Member cannot be null."
@@ -157,7 +157,7 @@ namespace OngProject.Controllers
                     var updated = await _memberBusiness.Update(member);
                     if(updated == null)
                     {
-                        return StatusCode(StatusCodes.Status500InternalServerError, new
+                        return StatusCode(StatusCodes.Status400BadRequest, new
                         {
                             Status = "Error",
                             Message = "Error updating data"
@@ -195,7 +195,7 @@ namespace OngProject.Controllers
                 var member = await _memberBusiness.GetById(id.Value);
                 if(member == null)
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new
+                    return StatusCode(StatusCodes.Status400BadRequest, new
                     {
                         Status = "Error",
                         Message = "Member not found or doesn't exist."
