@@ -28,9 +28,9 @@ namespace OngProject.Core.Business
             return _genericRepository.Find(predicate);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _genericRepository.GetAll();
+            return await _genericRepository.GetAllAsync();
         }
 
         public async Task<TEntity> GetById(int id)

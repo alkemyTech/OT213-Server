@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OngProject.Core.Business;
 using OngProject.Core.Interfaces;
+using OngProject.Core.Mapper;
 using OngProject.DataAccess;
 using OngProject.DataAccess.UnitOfWork;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
@@ -27,7 +28,7 @@ namespace OngProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -40,12 +41,15 @@ namespace OngProject
 
             //Repositories DI
             services.AddScoped<IMemberRepository, MemberRepository>();
-
+            services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             //Services DI
             services.AddScoped<IMemberBusiness, MemberBusiness>();
+            services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
 
             //Unit of Work DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<OrganizationMapper, OrganizationMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

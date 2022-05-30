@@ -39,7 +39,7 @@ namespace OngProject.Repositories
             return genericContext.Set<TEntity>().Where(predicate);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await genericContext.Set<TEntity>().ToListAsync();
         }

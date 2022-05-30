@@ -11,6 +11,8 @@ namespace OngProject.DataAccess.UnitOfWork
     {
         private readonly OngProjectDbContext _context;        
         public IMemberRepository Members {get; private set;}
+        public IOrganizationRepository Organization { get; private set; }
+
         //public IMemberBusiness Members2 {get; private set;}
 
 
@@ -18,7 +20,7 @@ namespace OngProject.DataAccess.UnitOfWork
         {
             this._context = context;
             Members = new MemberRepository(_context);
-
+            Organization = new OrganizationRepository(_context);
             /*
                 Error here because MemberBusiness doesn't implement a context class, instead MemberRepository
             */
