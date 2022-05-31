@@ -5,7 +5,7 @@ using OngProject.Core.Models.DTOs.Organizations;
 using OngProject.Core.Models.DTOs.Users.Auth;
 using OngProject.Entities;
 
-namespace OngProject.Core.Helper
+namespace OngProject.Core.Mapper
 {
     public class ApiMapper : Profile
     {
