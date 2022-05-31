@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,9 @@ namespace OngProject
 
             //Automapper configure service
             services.AddAutoMapper(typeof(Startup));
+
+            //Amazon S3 configure service
+            services.AddAWSService<IAmazonS3>();
 
             //Unit of Work DI (Dependency Injection)
             services.AddScoped<IUnitOfWork, UnitOfWork>();
