@@ -52,7 +52,9 @@ namespace OngProject.DataAccess
         public DbSet<New> News { set; get; }
         public DbSet<Member> Members {set;get;}
         public DbSet<User> Users { set; get;}
-        public DbSet<Role> Roles { set; get;}
+        public DbSet<Role> Roles { set; get; }
+        public DbSet<Activities> Activities { set; get; }
+
 
         public DbSet<Testimonial> Testimonials { set; get; }
     }

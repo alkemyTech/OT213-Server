@@ -9,6 +9,7 @@ using OngProject.Core.Auth.Interfaces;
 using OngProject.Core.Business;
 using OngProject.Core.Business.Auth;
 using OngProject.Core.Interfaces;
+using OngProject.Core.Mapper;
 using OngProject.DataAccess;
 using OngProject.DataAccess.UnitOfWork;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
@@ -31,7 +32,7 @@ namespace OngProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -54,11 +55,17 @@ namespace OngProject
             services.AddScoped<ITestimonialRepository, TestimonialRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
 
+            services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
             //Services DI
             services.AddScoped<IMemberBusiness, MemberBusiness>();
             services.AddScoped<IAuthBusiness, AuthBusiness>();
 
 
+            services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
+            services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
+            //Unit of Work DI
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
