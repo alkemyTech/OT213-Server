@@ -12,6 +12,8 @@ namespace OngProject.DataAccess.UnitOfWork
         private readonly OngProjectDbContext _context;        
         public IMemberRepository Members {get; private set;}
         public IRoleRepository Roles { get; private set; }
+
+        public ITestimonialRepository Testimonials { get; private set; }
         public IAuthRepository Authentications { get; private set; }
         public IOrganizationRepository Organizations { get; private set; }
         public IActivitiesRepository Activities { get; private set; }
@@ -19,6 +21,8 @@ namespace OngProject.DataAccess.UnitOfWork
         {
             this._context = context;
             Members = new MemberRepository(_context);
+            Testimonials = new TestimonialRepository(_context);
+            Authentications = new AuthRepository(_context);
             Organizations = new OrganizationRepository(_context);
             Activities = new ActivitiesRepository(_context);
             /*

@@ -51,10 +51,17 @@ namespace OngProject
 
             //Repositories DI
             services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddScoped<ITestimonialRepository, TestimonialRepository>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
+
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
             //Services DI
             services.AddScoped<IMemberBusiness, MemberBusiness>();
+            services.AddScoped<IAuthBusiness, AuthBusiness>();
+
+
             services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
             services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
             //Unit of Work DI

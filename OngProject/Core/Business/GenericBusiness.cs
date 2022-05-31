@@ -33,7 +33,7 @@ namespace OngProject.Core.Business
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _genericRepository.GetAllAsync();
+            return await _genericRepository.GetAll();
         }
 
         public async Task<TEntity> GetById(int id)

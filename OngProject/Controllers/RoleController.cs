@@ -20,7 +20,7 @@ namespace OngProject.Controllers
         }
 
         [HttpGet(nameof(GetRoles))]
-        public async Task<IActionResult> GetRoles() => Ok(await _unitOfWork.Roles.GetAllAsync());
+        public async Task<IActionResult> GetRoles() => Ok(await _unitOfWork.Roles.GetAll());
 
         [HttpGet(nameof(GetRoleById))]
         public async Task<IActionResult> GetRoleById([FromQuery] int roleID) => Ok(await _unitOfWork.Roles.GetById(roleID));

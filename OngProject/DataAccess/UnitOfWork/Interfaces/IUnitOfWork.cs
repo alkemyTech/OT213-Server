@@ -13,7 +13,7 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         IAuthRepository Authentications {get;}
         IOrganizationRepository Organizations { get; }
         IActivitiesRepository Activities { get; }
-
+        ITestimonialRepository Testimonials { get; }
         // Methods
         Task SaveAsync();
     }
