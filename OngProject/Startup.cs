@@ -52,9 +52,11 @@ namespace OngProject
             //Repositories DI
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
             //Services DI
             services.AddScoped<IMemberBusiness, MemberBusiness>();
             services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
+            services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
             //Unit of Work DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }

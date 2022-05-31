@@ -12,6 +12,7 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         IRoleRepository Roles { get; }
         IAuthRepository Authentications {get;}
         IOrganizationRepository Organizations { get; }
+        IActivitiesRepository Activities { get; }
 
         // Methods
         Task SaveAsync();

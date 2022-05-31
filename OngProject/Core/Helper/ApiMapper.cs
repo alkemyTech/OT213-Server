@@ -1,4 +1,5 @@
 using AutoMapper;
+using OngProject.Core.Models.DTOs.Activities;
 using OngProject.Core.Models.DTOs.Members;
 using OngProject.Core.Models.DTOs.Organizations;
 using OngProject.Core.Models.DTOs.Users.Auth;
@@ -28,6 +29,12 @@ namespace OngProject.Core.Helper
             CreateMap<Organization, OrganizationGetDTO>();
             CreateMap<OrganizationCreateDTO, Organization>();
             CreateMap<OrganizationUpdateDTO, Organization>();
+            #endregion
+
+            #region Activities Mapper
+            CreateMap<Activities, ActivitiesGetDTO>();
+            CreateMap<ActivityCreateDTO, Activities>();
+            CreateMap<ActivityUpdateDTO, Activities>();
             #endregion
         }
     }
