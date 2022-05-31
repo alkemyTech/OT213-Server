@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Core.Models
 {
-    public class CategoriesDTO
+    public class CategoriesUpdateDTO
     {
         public int Id { set; get; }
 
