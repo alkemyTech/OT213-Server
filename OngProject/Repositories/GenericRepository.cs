@@ -4,22 +4,23 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using OngProject.Entities;
 using OngProject.Repositories.Interfaces;
 
 namespace OngProject.Repositories
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         /* 
             OngProjectDbContext is implemented in UnitOfWork class
             A generic DbContext implemented here. 
             Is protetected to be implemented in each entity repository. (e.g. MemberReposirory.cs)
         */
-        protected DbContext genericContext;
+        protected DbContext context;
         
         public GenericRepository(DbContext context)
         {
-            this.genericContext = context;
+            this.context = context;
         }
 
         // Hard Delete
@@ -30,23 +31,22 @@ namespace OngProject.Repositories
             if(entity == null)
                 throw new Exception("The entity is null");
 
-            genericContext.Set<TEntity>().Remove(entity);
-            await genericContext.SaveChangesAsync();
+            context.Set<TEntity>().Remove(entity);
         }
 
         IEnumerable<TEntity> IGenericRepository<TEntity>.Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return genericContext.Set<TEntity>().Where(predicate);
+            return context.Set<TEntity>().Where(predicate);
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await genericContext.Set<TEntity>().ToListAsync();
+            return await context.Set<TEntity>().ToListAsync();
         }
 
         public async Task<TEntity> GetById(int id)
         {
-            return await genericContext.Set<TEntity>().FindAsync(id);
+            return await context.Set<TEntity>().FindAsync(id);
         }
 
         public async Task<TEntity> Insert(TEntity entity)
@@ -54,7 +54,11 @@ namespace OngProject.Repositories
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            await genericContext.Set<TEntity>().AddAsync(entity);
+            entity.CreatedAt = DateTime.Now;
+            entity.UpdatedAt = DateTime.Now;
+            entity.IsDeleted = false;
+
+            await context.Set<TEntity>().AddAsync(entity);
             return entity;
         }
 
@@ -63,9 +67,32 @@ namespace OngProject.Repositories
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            genericContext.Set<TEntity>().Update(entity);
+            entity.UpdatedAt = DateTime.Now;
+            context.Set<TEntity>().Update(entity);
             return entity;
         }
-    
+
+        // Soft Delete
+        public async Task<bool> SoftDelete(TEntity entity, int? id)
+        {
+            try
+            {
+                /*
+                    the "?" in int? set that int can be nulleable
+                    ! (null-forgiving) operator to confirm that "id" isn't null here
+                    If "value" isn't null return "isDeleted" as true.
+                */
+                var value = await GetById(id!.Value); 
+                if(value == null)
+                    throw new Exception("The entity is null"); 
+
+                var Ent = entity.IsDeleted = true; 
+                return entity.IsDeleted = true;                    
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

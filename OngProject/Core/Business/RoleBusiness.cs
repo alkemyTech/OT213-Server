@@ -5,11 +5,10 @@ using OngProject.Repositories.Interfaces;
 
 namespace OngProject.Core.Business
 {
-    public class MemberBusiness : GenericBusiness<Member>, IMemberBusiness
+    public class RoleBusiness : GenericBusiness<Role>, IRoleBusiness
     {
-        public MemberBusiness(IUnitOfWork uow, IMemberRepository memberRepository) : base(memberRepository, uow)
+        public RoleBusiness(IUnitOfWork uow, IRoleRepository roleRepository) : base(roleRepository, uow)
         {
         }
-
     }
 }

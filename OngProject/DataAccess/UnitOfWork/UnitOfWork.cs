@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using OngProject.Core.Business;
-using OngProject.Core.Interfaces;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Repositories;
+using OngProject.Repositories.Auth;
+using OngProject.Repositories.Auth.Interfaces;
 using OngProject.Repositories.Interfaces;
 
 namespace OngProject.DataAccess.UnitOfWork
@@ -11,16 +11,14 @@ namespace OngProject.DataAccess.UnitOfWork
     {
         private readonly OngProjectDbContext _context;        
         public IMemberRepository Members {get; private set;}
-        public IOrganizationRepository Organization { get; private set; }
-
-        //public IMemberBusiness Members2 {get; private set;}
-
+        public IRoleRepository Roles { get; private set; }
+        public IAuthRepository Authentications { get; private set; }
 
         public UnitOfWork(OngProjectDbContext context)
         {
             this._context = context;
             Members = new MemberRepository(_context);
-            Organization = new OrganizationRepository(_context);
+
             /*
                 Error here because MemberBusiness doesn't implement a context class, instead MemberRepository
             */

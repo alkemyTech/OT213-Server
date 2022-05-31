@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OngProject.Core.Models.DTOs
+namespace OngProject.Core.Models.DTOs.Members
 {
     public class MemberCreateModelDTO
     {
@@ -13,7 +13,5 @@ namespace OngProject.Core.Models.DTOs
         public string linkedInUrl {set;get;}
         public string imageUrl {set;get;}
         public string description {set;get;}
-        public DateTime createdAt { get; set; } = DateTime.Now;
-        public DateTime updatedAt { get; set; } = DateTime.Now;
     }
 }
