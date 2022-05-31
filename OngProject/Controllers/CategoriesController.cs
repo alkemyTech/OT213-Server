@@ -49,7 +49,7 @@ namespace OngProject.Controllers
             try
             {
                 if(id == 0)
-                    return NotFound("Please, set an ID.");
+                    return BadRequest("Please, set an ID.");
 
                 var member = await _categoriesBusiness.GetCategoryByIdAsync(id);
                 return member != null ? Ok(_mapper.Map<CategoriesDTO>(member)) 
@@ -70,16 +70,6 @@ namespace OngProject.Controllers
             {
                 try
                 {
-                    // validations                    
-                    if(string.IsNullOrEmpty(model.Name))
-                    {
-                        return Ok("Name required");                    
-                    }
-                    if(string.IsNullOrEmpty(model.Image))
-                    {
-                        return Ok("Image required");
-                    }
-
                     // request                    
                     await _categoriesBusiness.InsertCategoryAsync(_mapper.Map<Categories>(model));
                     await _uow.SaveAsync();                        
@@ -114,15 +104,6 @@ namespace OngProject.Controllers
             {
                 try
                 {
-                    // validations                    
-                    if(string.IsNullOrEmpty(model.Name))
-                    {
-                        return Ok("Name required");                    
-                    }
-                    if(string.IsNullOrEmpty(model.Image))
-                    {
-                        return Ok("Image required");
-                    }
 
                     var categories = await _categoriesBusiness.GetCategoryByIdAsync(id);
                     var updated = await _categoriesBusiness.UpdateCategoryAsync(categories);
@@ -153,7 +134,7 @@ namespace OngProject.Controllers
         {
             // validation
             if(id == 0)
-                return NotFound("Please, set a valid ID.");
+                return BadRequest("Please, set a valid ID.");
 
             try
             {
