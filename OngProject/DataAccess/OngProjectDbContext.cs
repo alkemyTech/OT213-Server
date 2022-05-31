@@ -1,4 +1,6 @@
+using System.IO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using OngProject.Entities;
 
 namespace OngProject.DataAccess
@@ -7,29 +9,25 @@ namespace OngProject.DataAccess
     {
         public OngProjectDbContext(DbContextOptions<OngProjectDbContext> options) : base(options)
         {  
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-        }
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
 
+            var connectionString = configuration.GetConnectionString("OngProjectConnection");
+            optionsBuilder.UseSqlServer(connectionString);
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {           
-            // Fluent Api                
-            // configure one-to-many relationship
-             modelBuilder.Entity<New>()
-                .HasOne<Category>(u => u.Category)
-                .WithMany(c => c.News)
-                .HasForeignKey(u => u.CategoryId);
-
-            modelBuilder.Entity<User>()
-                .HasOne<Role>(u => u.Role)
-                .WithMany(c => c.Users)
-                .HasForeignKey(u => u.RoleId);
-
-            // Property Configurations 
+            // Fluent Api
+            // Property Configurations    
             modelBuilder.Entity<Member>()
-                        .Property(c => c.Id)
+                        .Property(c => c.MembersID)
                         .IsRequired();   
 
             modelBuilder.Entity<Member>()
@@ -44,19 +42,12 @@ namespace OngProject.DataAccess
             modelBuilder.Entity<Member>()
                         .Property(c => c.Description)
                         .HasMaxLength(50);
-
         }
 
-        public DbSet<Organization> Organizations { set; get; }
-        public DbSet<Category> Categories { set; get; }
-        public DbSet<New> News { set; get; }
         public DbSet<Member> Members {set;get;}
-        public DbSet<User> Users { set; get;}
-        public DbSet<Role> Roles { set; get; }
-        public DbSet<Activities> Activities { set; get; }
-
-
-        public DbSet<Testimonial> Testimonials { set; get; }
+        public DbSet<Organization> Organizations { set; get; }
+        public DbSet<Roles> Roles { set; get;}
+        public DbSet<Categories> Categories { set; get; }
     }
 }
 
