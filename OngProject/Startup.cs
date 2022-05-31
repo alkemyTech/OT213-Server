@@ -51,6 +51,7 @@ namespace OngProject
             //Repositories DI
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddScoped<ITestimonialRepository, TestimonialRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
 
             //Services DI
