@@ -1,33 +1,12 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OngProject.Entities
 {
-
-    /* OT213-15
-     * Crear migración y modelo base de la Organización
-        Campos:
-        id: INTEGER NOT NULL AUTO_INCREMENT
-        name: VARCHAR NOT NULL
-        image: VARCHAR NOT NULL
-        address: VARCHAR NULLABLE
-        phone: INTEGER NULLABLE
-        email: VARCHAR NOT NULL
-        welcomeText: TEXT NOT NULL
-        aboutUsText: TEXT NULLABLE
-        timestamps y softDeletes
-     */
-
     [Table("Organization")]
-    public class Organization : BaseModel
+    public class Organization : BaseEntity
     {
-        [Key]
-        [Required]
-        [Column("id")]
-        public int Id { get; set; }
-
         [Required(ErrorMessage = "Nombre requerido")]
         [Column("name")]
         [DisplayName("Nombre")]
