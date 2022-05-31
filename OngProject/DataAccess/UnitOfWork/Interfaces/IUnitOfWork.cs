@@ -11,6 +11,7 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         IMemberRepository Members {get;}
         IRoleRepository Roles { get; }
         IAuthRepository Authentications {get;}
+        IOrganizationRepository Organizations { get; }
 
         // Methods
         Task SaveAsync();

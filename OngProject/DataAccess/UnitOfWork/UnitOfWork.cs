@@ -13,12 +13,13 @@ namespace OngProject.DataAccess.UnitOfWork
         public IMemberRepository Members {get; private set;}
         public IRoleRepository Roles { get; private set; }
         public IAuthRepository Authentications { get; private set; }
+        public IOrganizationRepository Organizations { get; private set; }
 
         public UnitOfWork(OngProjectDbContext context)
         {
             this._context = context;
             Members = new MemberRepository(_context);
-
+            Organizations = new OrganizationRepository(_context);
             /*
                 Error here because MemberBusiness doesn't implement a context class, instead MemberRepository
             */
