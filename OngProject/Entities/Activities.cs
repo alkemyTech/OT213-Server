@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Entities
 {
@@ -10,5 +11,6 @@ namespace OngProject.Entities
         public string Content { get; set; }
         [Required]
         public string Image { get; set; }
+        public DateTime DeletedAt { get; set; }
     }
 }
