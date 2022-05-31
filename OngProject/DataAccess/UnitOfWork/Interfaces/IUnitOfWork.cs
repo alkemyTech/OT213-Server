@@ -10,6 +10,7 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         // Write here all the entities Non-Generics
         IMemberRepository Members {get;}
         IRoleRepository Roles { get; }
+        ITestimonialRepository Testimonials { get; }
         IAuthRepository Authentications {get;}
 
         // Methods
