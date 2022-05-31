@@ -38,8 +38,8 @@ namespace OngProject.Repositories.Auth
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
             user.IsDeleted = false;
-            user.CreatedAt = DateTime.UtcNow;
-            user.UpdatedAt = DateTime.UtcNow;
+            user.CreatedAt = DateTime.Now;
+            user.UpdatedAt = DateTime.Now;
 
             await _context.Users.AddAsync(user);
 
