@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Entities
 {
-    public class Slides : BaseEntity
+    public class Slide : BaseEntity
     {
-
         [Required]
         public string Name { get; set; }
 
@@ -18,6 +15,6 @@ namespace OngProject.Entities
 
         public int? OrganizationId { get; set; }
         public Organization Organization { get; set;}
-
     }
 }
+
