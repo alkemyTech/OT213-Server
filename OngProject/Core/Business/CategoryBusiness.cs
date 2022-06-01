@@ -7,7 +7,7 @@ namespace OngProject.Core.Business
 {
     public class CategoryBusiness : GenericBusiness<Category>, ICategoryBusiness
     {
-        public CategoryBusiness(IUnitOfWork uow, ICategoryRepository memberRepository) : base(memberRepository, uow)
+        public CategoryBusiness(IUnitOfWork uow, ICategoryRepository categoryRepository) : base(categoryRepository, uow)
         {            
         }
     }

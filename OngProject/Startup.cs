@@ -57,6 +57,7 @@ namespace OngProject
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             //Unit of Work DI (Dependency Injection)
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -68,6 +69,8 @@ namespace OngProject
             services.AddScoped<IAuthBusiness, AuthBusiness>();
             services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
             services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
+            services.AddScoped<ICategoryBusiness, CategoryBusiness>();
+
         
         }
 
