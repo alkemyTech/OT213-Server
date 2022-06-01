@@ -4,11 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Entities
 {
-    public class Categories
+    public class Categories : BaseEntity
     {
-        [Key]
-        [Required]
-        public int Id { get; set; }
+
         [Required]
         public string Name { get; set; }
  
@@ -16,10 +14,6 @@ namespace OngProject.Entities
   
         public string Image { get; set; }
 
-
-        public bool softDelete { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime UpdatedAt { get; set; }
 
     }
 }
