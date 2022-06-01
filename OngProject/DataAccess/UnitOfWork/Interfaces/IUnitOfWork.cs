@@ -17,8 +17,10 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         //INewRepository News { get; }
         IActivitiesRepository Activities { get; }
         ITestimonialRepository Testimonials { get; }
+        
         // Methods
         Task SaveAsync();
+
     }
 
 }

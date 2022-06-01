@@ -7,12 +7,13 @@ namespace OngProject.DataAccess
     {
         public OngProjectDbContext(DbContextOptions<OngProjectDbContext> options) : base(options)
         {  
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-        }
 
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {           
             // Fluent Api                
@@ -49,7 +50,6 @@ namespace OngProject.DataAccess
             modelBuilder.Entity<Member>()
                         .Property(c => c.Description)
                         .HasMaxLength(50);
-
         }
 
         public DbSet<Organization> Organizations { set; get; }

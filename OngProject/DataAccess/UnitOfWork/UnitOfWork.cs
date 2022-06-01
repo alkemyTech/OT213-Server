@@ -9,8 +9,8 @@ namespace OngProject.DataAccess.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly OngProjectDbContext _context;        
-        public IMemberRepository Members {get; private set;}
+        private readonly OngProjectDbContext _context;
+        public IMemberRepository Members { get; private set; }
         public IRoleRepository Roles { get; private set; }
         public ITestimonialRepository Testimonials { get; private set; }
         public IAuthRepository Authentications { get; private set; }
@@ -38,9 +38,8 @@ namespace OngProject.DataAccess.UnitOfWork
         public void Dispose()
         {
             _context.Dispose();
-        }    
+        }
 
     }
 
 }
-
