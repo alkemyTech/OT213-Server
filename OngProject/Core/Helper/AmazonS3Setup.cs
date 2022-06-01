@@ -23,7 +23,7 @@ namespace OngProject.Core.Helper
             {
                 var putRequest = new PutObjectRequest()
                 {
-                    BucketName = "",
+                    BucketName = "cohorte-mayo-2820e45d",
                     Key = file.FileName,
                     InputStream = file.OpenReadStream(),
                     ContentType = file.ContentType
@@ -46,7 +46,7 @@ namespace OngProject.Core.Helper
             {
                 var request = new GetObjectRequest()
                 {
-                    BucketName = "",
+                    BucketName = "cohorte-mayo-2820e45d",
                     Key = imgName
                 }; 
                 using GetObjectResponse response = await _amazonS3.GetObjectAsync(request);
@@ -76,7 +76,7 @@ namespace OngProject.Core.Helper
             {
                 var request = new DeleteObjectRequest()
                 {
-                    BucketName = "",
+                    BucketName = "cohorte-mayo-2820e45d",
                     Key = imgName
                 }; 
                 var result = await _amazonS3.DeleteObjectAsync(request);
