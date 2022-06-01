@@ -1,38 +1,36 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.DataAccess.UnitOfWork.Interfaces;
+using OngProject.Core.Models.DTOs.Categories;
 using OngProject.Entities;
-using System;
-using System.Threading.Tasks;
-using AutoMapper;
-using OngProject.Core.Models;
 
 namespace OngProject.Controllers
 {
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
-        private readonly ICategoriesBusiness _categoriesBusiness;
+        private readonly ICategoryBusiness _categoryBusiness;
         private readonly IMapper _mapper;
-        public CategoriesController(IUnitOfWork uow, ICategoriesBusiness categoriesBusiness, IMapper mapper)
+
+        public CategoryController(ICategoryBusiness categoryBusiness, IMapper mapper)
         {
-            this._uow = uow;
-            this._categoriesBusiness = categoriesBusiness;
+            this._categoryBusiness = categoryBusiness;
             this._mapper = mapper;
         }
 
-        // GET List/Categories
+         // GET List/Categories
         [HttpGet]    
         [Route("List/Categories")]
         public async Task<IActionResult> GetAllCategories() 
         {
             try
             {
-                var categories =  _categoriesBusiness.FindCategoryAsync(m => m.softDelete != true);
-                return categories != null ? Ok(_mapper.Map<IEnumerable<CategoriesDTO>>(categories)) 
+                var categories =  _categoryBusiness.Find(c => c.IsDeleted == false);
+                return categories != null ? Ok(_mapper.Map<IEnumerable<CategoryGetDTO>>(categories)) 
                                        : NotFound("The list of categories has not been found");                
             }
             catch (System.Exception ex)
@@ -51,8 +49,8 @@ namespace OngProject.Controllers
                 if(id == 0)
                     return BadRequest("Please, set an ID.");
 
-                var member = await _categoriesBusiness.GetCategoryByIdAsync(id);
-                return member != null ? Ok(_mapper.Map<CategoriesDTO>(member)) 
+                var member = await _categoryBusiness.GetById(id);
+                return member != null ? Ok(_mapper.Map<CategoryGetDTO>(member)) 
                                       : NotFound("Member doesn't exists");            
             }
             catch (System.Exception ex)
@@ -64,15 +62,14 @@ namespace OngProject.Controllers
         // POST Create/Category
         [HttpPost]       
         [Route("Create/Category")]
-        public async Task<IActionResult> Create([FromBody] CategoriesDTO model)
+        public async Task<IActionResult> Create([FromBody] CategoryCreateDTO model)
         {          
             if(ModelState.IsValid)
             {
                 try
                 {
                     // request                    
-                    await _categoriesBusiness.InsertCategoryAsync(_mapper.Map<Categories>(model));
-                    await _uow.SaveAsync();                        
+                    await _categoryBusiness.Insert(_mapper.Map<Category>(model));
                 }
                 catch (System.Exception ex)
                 {
@@ -89,7 +86,7 @@ namespace OngProject.Controllers
         // PUT Update/Category/{id}
         [HttpPut]       
         [Route("Update/Category/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] CategoriesDTO model)
+        public async Task<IActionResult> Edit(int id, [FromBody] CategoryUpdateDTO model)
         { 
             if (id != model.Id)
             {
@@ -104,15 +101,26 @@ namespace OngProject.Controllers
             {
                 try
                 {
+                    var categories = await _categoryBusiness.GetById(id);
+                    if(categories == null)
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Category cannot be null."
+                        });    
+                    }
 
-                    var categories = await _categoriesBusiness.GetCategoryByIdAsync(id);
-                    var updated = await _categoriesBusiness.UpdateCategoryAsync(categories);
-
+                    // Mapping and request
+                    _mapper.Map(model,categories);               
+                    var updated = await _categoryBusiness.Update(categories);
                     if(updated != null)
                     {
-                        // request    
-                        _mapper.Map(model,categories);               
-                        await _uow.SaveAsync();           
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Error updating data"
+                        });       
                     }
                 }
                 catch (System.Exception ex)
@@ -138,14 +146,13 @@ namespace OngProject.Controllers
 
             try
             {
-                var member = await _categoriesBusiness.GetCategoryByIdAsync(id.Value);
+                var category = await _categoryBusiness.GetById(id.Value);
 
-                if(member == null)
+                if(category == null)
                     return NotFound("Category not found or doesn't exist.");
 
-                await _categoriesBusiness.SoftDelete(member, id);
-                await _categoriesBusiness.UpdateCategoryAsync(member);
-                await _uow.SaveAsync();
+                await _categoryBusiness.SoftDelete(category, id);
+                await _categoryBusiness.Update(category);
 
                 return Ok("Category deleted successfully.");
             }
@@ -154,5 +161,8 @@ namespace OngProject.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
     }
+
 }
+

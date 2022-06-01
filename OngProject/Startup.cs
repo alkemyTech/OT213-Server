@@ -50,26 +50,28 @@ namespace OngProject
             //Amazon S3 configure service
             services.AddAWSService<IAmazonS3>();
 
+            //Repositories DI
+            services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<ITestimonialRepository, TestimonialRepository>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
             //Unit of Work DI (Dependency Injection)
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            //Repositories DI
-            services.AddScoped<IMemberRepository, MemberRepository>();
-            services.AddTransient<IRoleRepository, RoleRepository>();
-            services.AddScoped<ITestimonialRepository, TestimonialRepository>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
-
-            services.AddScoped<IOrganizationRepository, OrganizationRepository>();
-            services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
             //Services DI
             services.AddScoped<IMemberBusiness, MemberBusiness>();
+            services.AddScoped<IRoleBusiness, RoleBusiness>();
+            services.AddScoped<ITestimonialBusiness, TestimonialBusiness>();
             services.AddScoped<IAuthBusiness, AuthBusiness>();
-
-
             services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
             services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
-            //Unit of Work DI
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICategoryBusiness, CategoryBusiness>();
+
+        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
