@@ -11,6 +11,7 @@ using OngProject.Core.Models;
 
 namespace OngProject.Controllers
 {
+    [Route("/categories")]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
@@ -24,15 +25,14 @@ namespace OngProject.Controllers
             this._mapper = mapper;
         }
 
-        // GET List/Categories
+        // GET 
         [HttpGet]    
-        [Route("List/Categories")]
         public async Task<IActionResult> GetAllCategories() 
         {
             try
             {
                 var categories =  _categoriesBusiness.FindCategoryAsync(m => m.softDelete != true);
-                return categories != null ? Ok(_mapper.Map<IEnumerable<CategoriesDTO>>(categories)) 
+                return categories != null ? Ok(_mapper.Map<IEnumerable<Core.Models.CategoriesGetDTO>>(categories)) 
                                        : NotFound("The list of categories has not been found");                
             }
             catch (System.Exception ex)
@@ -41,9 +41,8 @@ namespace OngProject.Controllers
             }           
         }
 
-        // GET List/CategoriesById
         [HttpGet]        
-        [Route("List/CategoriesById/{id}")]
+        [Route("/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -52,7 +51,7 @@ namespace OngProject.Controllers
                     return BadRequest("Please, set an ID.");
 
                 var member = await _categoriesBusiness.GetCategoryByIdAsync(id);
-                return member != null ? Ok(_mapper.Map<CategoriesDTO>(member)) 
+                return member != null ? Ok(_mapper.Map<CategoriesPostDTO>(member)) 
                                       : NotFound("Member doesn't exists");            
             }
             catch (System.Exception ex)
@@ -61,10 +60,8 @@ namespace OngProject.Controllers
             }
         }
 
-        // POST Create/Category
         [HttpPost]       
-        [Route("Create/Category")]
-        public async Task<IActionResult> Create([FromBody] CategoriesDTO model)
+        public async Task<IActionResult> Create([FromBody] CategoriesPostDTO model)
         {          
             if(ModelState.IsValid)
             {
@@ -86,10 +83,10 @@ namespace OngProject.Controllers
             });                
         }
 
-        // PUT Update/Category/{id}
+
         [HttpPut]       
-        [Route("Update/Category/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] CategoriesDTO model)
+        [Route("/{id}")]
+        public async Task<IActionResult> Edit(int id, [FromBody] CategoriesUpdateDTO model)
         { 
             if (id != model.Id)
             {
@@ -127,9 +124,8 @@ namespace OngProject.Controllers
             }); 
         }
 
-        // DELETE Delete/Category/{id}
         [HttpDelete]       
-        [Route("Delete/Category/{id}")]
+        [Route("/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
             // validation
