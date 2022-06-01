@@ -27,6 +27,11 @@ namespace OngProject.DataAccess
                 .WithMany(c => c.Users)
                 .HasForeignKey(u => u.RoleId);
 
+            modelBuilder.Entity<Slide>()
+                .HasOne<Organization>(u => u.Organization)
+                .WithMany(c => c.Slides)
+                .HasForeignKey(u => u.OrganizationId);
+
             // Property Configurations 
             modelBuilder.Entity<Member>()
                         .Property(c => c.Id)
@@ -48,14 +53,13 @@ namespace OngProject.DataAccess
         }
 
         public DbSet<Organization> Organizations { set; get; }
+        public DbSet<Slide> Slides { set; get; }
         public DbSet<Category> Categories { set; get; }
         public DbSet<New> News { set; get; }
         public DbSet<Member> Members {set;get;}
         public DbSet<User> Users { set; get;}
         public DbSet<Role> Roles { set; get; }
         public DbSet<Activities> Activities { set; get; }
-
-
         public DbSet<Testimonial> Testimonials { set; get; }
     }
 }
