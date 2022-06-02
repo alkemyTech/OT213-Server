@@ -18,29 +18,33 @@ namespace OngProject.Core.Helper
             this._amazonS3 = amazonS3;
         }
 
-        #region DELETE IMAGE 
-        public async Task<DeleteObjectResponse> DeleteImage(string imgName)
-        {
-            if (string.IsNullOrEmpty(imgName))
-                throw new Exception("The 'imgName' parameter is required \n");
+        /*
+            Delete method not implemented in this project
+        */
+        
+        // #region DELETE IMAGE 
+        // public async Task<DeleteObjectResponse> DeleteImage(string imgName)
+        // {
+        //     if (string.IsNullOrEmpty(imgName))
+        //         throw new Exception("The 'imgName' parameter is required \n");
 
-            try
-            {
-                var request = new DeleteObjectRequest()
-                {
-                    BucketName = "cohorte-mayo-2820e45d",
-                    Key = imgName
-                }; 
-                var result = await _amazonS3.DeleteObjectAsync(request);
+        //     try
+        //     {
+        //         var request = new DeleteObjectRequest()
+        //         {
+        //             BucketName = "cohorte-mayo-2820e45d",
+        //             Key = imgName
+        //         }; 
+        //         var result = await _amazonS3.DeleteObjectAsync(request);
 
-                return result;
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);                
-            }
-        }
-        #endregion
+        //         return result;
+        //     }
+        //     catch (System.Exception ex)
+        //     {
+        //         throw new Exception(ex.Message);                
+        //     }
+        // }
+        // #endregion
 
         #region DOWNLOAD IMAGE 
         public async Task<FileStreamResult> DownloadImage(string imgName)
