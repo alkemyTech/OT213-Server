@@ -13,7 +13,5 @@ namespace OngProject.Core.Models.DTOs.Members
         public string linkedInUrl {set;get;}
         public string imageUrl {set;get;}
         public string description {set;get;}
-        public DateTime createdAt { get; set; } = DateTime.Now;
-        public DateTime updatedAt { get; set; } = DateTime.Now;
     }
 }

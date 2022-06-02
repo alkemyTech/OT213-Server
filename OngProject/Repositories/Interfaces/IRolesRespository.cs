@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using OngProject.Entities;
+﻿using OngProject.Entities;
 
 namespace OngProject.Repositories.Interfaces
 {
-    public interface IRoleRepository : IGenericRepository<Roles>
+    public interface IRoleRepository : IGenericRepository<Role>
     {
     }
 }

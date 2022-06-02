@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Mapper;
-using OngProject.Core.Models;
-using OngProject.DataAccess.UnitOfWork;
+using OngProject.Core.Models.DTOs;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
-using OngProject.Entities;
 using System.Threading.Tasks;
 
 namespace OngProject.Controllers

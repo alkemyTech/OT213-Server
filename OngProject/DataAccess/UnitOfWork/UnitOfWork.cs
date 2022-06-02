@@ -1,15 +1,22 @@
 using System.Threading.Tasks;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Repositories;
+using OngProject.Repositories.Auth;
+using OngProject.Repositories.Auth.Interfaces;
 using OngProject.Repositories.Interfaces;
 
 namespace OngProject.DataAccess.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly OngProjectDbContext _context;        
-        public IMemberRepository Members {get; private set;}
+        private readonly OngProjectDbContext _context;
+        public IMemberRepository Members { get; private set; }
         public IRoleRepository Roles { get; private set; }
+        public ITestimonialRepository Testimonials { get; private set; }
+        public IAuthRepository Authentications { get; private set; }
+        public IOrganizationRepository Organizations { get; private set; }
+        public IActivitiesRepository Activities { get; private set; }
+        public ICategoryRepository Categories { get; private set; }
 
         public INewsRepository News { get; private set; }
 
@@ -18,10 +25,18 @@ namespace OngProject.DataAccess.UnitOfWork
         public UnitOfWork(OngProjectDbContext context)
         {
             this._context = context;
-            Members = new MemberRepository(_context);  
+            Members = new MemberRepository(_context);
             Roles = new RoleRepository(_context);
+<<<<<<< HEAD
             News = new NewsRepository(_context);
             Users = new UsersRepository(_context);
+=======
+            Testimonials = new TestimonialRepository(_context);
+            Authentications = new AuthRepository(_context);
+            Organizations = new OrganizationRepository(_context);
+            Activities = new ActivitiesRepository(_context);
+            Categories = new CategoryRepository(_context);
+>>>>>>> e38780518ca654d41d3d3b361602e9fd3f15b52b
         }
 
         public async Task SaveAsync()
@@ -32,9 +47,8 @@ namespace OngProject.DataAccess.UnitOfWork
         public void Dispose()
         {
             _context.Dispose();
-        }    
+        }
 
     }
 
 }
-
