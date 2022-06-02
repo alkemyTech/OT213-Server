@@ -7,7 +7,7 @@ namespace OngProject.Core.Interfaces
 {
     public interface IGenericBusiness<TEntity> where TEntity : class
     {
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<IEnumerable<TEntity>> GetAllAsync();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> GetById(int id);
         Task<TEntity> Insert(TEntity entity);
@@ -15,6 +15,9 @@ namespace OngProject.Core.Interfaces
 
         // Hard Delete
         Task Delete(int id);
+
+        // Soft Delete
+        Task<bool> SoftDelete(TEntity entity, int? id);
     }
 
 }

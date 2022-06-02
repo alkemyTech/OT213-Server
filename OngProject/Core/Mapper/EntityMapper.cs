@@ -1,33 +1,31 @@
 ﻿using OngProject.Core.Models;
+using OngProject.Core.Models.DTOs;
 using OngProject.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OngProject.Core.Mapper
 {
     public class EntityMapper
     {
-        public Roles ToNewEntity(RoleModelDto roleDto)
+        public Role ToNewEntity(RoleModelDto roleDto)
         {
-            return new Roles()
+            return new Role()
             {
                 Name = roleDto.Name,
             };
         }
 
-        public Roles ToUpdateEntity(RoleModelDto roleDto)
+        public Role ToUpdateEntity(RoleModelDto roleDto)
         {
-            return new Roles()
+            return new Role()
             {
                 Id = roleDto.Id,
                 Name = roleDto.Name,
-                TimeStamp = DateTime.Now
+                UpdatedAt = DateTime.Now
             };
         }
 
-        public RoleModelDto ToModelDto(Roles role)
+        public RoleModelDto ToModelDto(Role role)
         {
             return new RoleModelDto()
             {

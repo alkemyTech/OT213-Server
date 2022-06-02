@@ -3,6 +3,8 @@ using OngProject.Repositories.Interfaces;
 using System.Threading.Tasks;
 using OngProject.DataAccess;
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace OngProject.Repositories
 {
@@ -15,11 +17,6 @@ namespace OngProject.Repositories
         {
             try
             {
-                /*
-                    the "?" in int? set that int can be nulleable
-                    ! (null-forgiving) operator to confirm that "id" isn't null here
-                    If "value" isn't null return "isDeleted" as true.
-                */
                 var value = await GetById(id!.Value);
                 if (value == null)
                     throw new Exception("The entity is null");
@@ -31,5 +28,9 @@ namespace OngProject.Repositories
                 throw new Exception(ex.Message);
             }
         }
+        public Task<Users> UpdateUsersAsync(Users entity) { }
+        public Task<Users> GetUsersByIdAsync(int id) { }
+        public Task<Users> InsertUsersAsync(Users entity) { }
+        public IEnumerable<Users> FindUsersAsync(Expression<Func<Users, bool>> predicate) { }
     }
 }

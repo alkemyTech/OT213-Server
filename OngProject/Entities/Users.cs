@@ -22,6 +22,6 @@ namespace OngProject.Entities
         public bool softDelete { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ExpirationDate { get; set; }
-        public List<Roles> Roles { set; get; }
+        public List<Role> Roles { set; get; }
     }
 }

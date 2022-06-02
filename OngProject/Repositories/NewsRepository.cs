@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using OngProject.Entities;
 using OngProject.Repositories.Interfaces;
 using OngProject.DataAccess;
+using System.Linq.Expressions;
 
 namespace OngProject.Repositories
 {
@@ -17,11 +18,6 @@ namespace OngProject.Repositories
         {
             try
             {
-                /*
-                    the "?" in int? set that int can be nulleable
-                    ! (null-forgiving) operator to confirm that "id" isn't null here
-                    If "value" isn't null return "isDeleted" as true.
-                */
                 var value = await GetById(id!.Value);
                 if (value == null)
                     throw new Exception("The entity is null");
@@ -33,6 +29,10 @@ namespace OngProject.Repositories
                 throw new Exception(ex.Message);
             }
 
-        }     
+        }
+        public Task<News> UpdateNewsAsync(News entity) { }
+        public Task<News> GetNewsByIdAsync(int id) { }
+        public Task<News> InsertNewsAsync(News entity) { }
+        public IEnumerable<News> FindNewsAsync(Expression<Func<News, bool>> predicate) { }
     }
 }

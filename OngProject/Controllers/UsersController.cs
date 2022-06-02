@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs;
+using OngProject.Core.Models.DTOs.Members;
 
 namespace OngProject.Controllers
 {
