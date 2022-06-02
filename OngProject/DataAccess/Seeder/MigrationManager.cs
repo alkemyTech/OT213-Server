@@ -8,15 +8,14 @@ namespace OngProject.DataAccess.Seeder.AutoMigrations
         After executing the "Add-Migration" command to create the database snapshot, 
         you can create and populate the database just by running the application.
 
-        Class to perform automatic migrations without commands when running the application.
-        The method MigrateDatabase() in this class will run automatically the command:
-            -database update.
-
         NuGet package required: 
             Microsoft.AspNetCore.Hosting.Abstractions
 
         In Program.cs implement this method in the execution line:        
             CreateHostBuilder(args).Build().MigrateDatabase().Run();
+
+        If you add a new object to the table, create a new migration and update de database
+        To revoke changes in the database and return to the previous migration write: Update-Database namePreviousMigration
     */ 
     public static class MigrationManager
     {

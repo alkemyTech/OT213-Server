@@ -1,3 +1,4 @@
+using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OngProject.Entities;
@@ -63,6 +64,16 @@ namespace OngProject.DataAccess.Seeder
                     InstagramUrl = "https://www.instagram.com/joeStriani1",
                     LinkedInUrl = "https://www.linkedin.com/in/joe-satriani",
                     ImageUrl = "https://th.bing.com/th/id/OIP.3X4EMm2OGqVqR77JQvJzagAAAA?pid=ImgDet&rs=1",
+                    Description = "Miembro activo de la organización"
+                },
+                new Member
+                {
+                    Id = 5,
+                    Name = "Juan Guerra",
+                    FacebookUrl = "https://www.facebook.com/juaniGue",
+                    InstagramUrl = "https://www.instagram.com/juaniGue",
+                    LinkedInUrl = "https://www.linkedin.com/in/juan-guerra",
+                    ImageUrl = "https://th.bing.com/th/id/OIP.P4OqoL2OPCNYbr1uSbYvWAAAAA?w=148&h=152&c=7&r=0&o=5&pid=1.7",
                     Description = "Miembro activo de la organización"
                 }
             );
