@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -12,7 +13,7 @@ namespace OngProject.Core.Helper
     public class AmazonHelperService : IAmazonHelperService
     {
         private readonly IAmazonS3 _amazonS3;
-        public AmazonHelperService(IAmazonS3 amazonS3 )
+        public AmazonHelperService(IAmazonS3 amazonS3)
         {
             this._amazonS3 = amazonS3;
         }
@@ -20,6 +21,9 @@ namespace OngProject.Core.Helper
         #region DELETE IMAGE 
         public async Task<DeleteObjectResponse> DeleteImage(string imgName)
         {
+            if (string.IsNullOrEmpty(imgName))
+                throw new Exception("The 'imgName' parameter is required");
+
             try
             {
                 var request = new DeleteObjectRequest()
@@ -41,6 +45,9 @@ namespace OngProject.Core.Helper
         #region DOWNLOAD IMAGE 
         public async Task<FileStreamResult> DownloadImage(string imgName)
         {
+            if (string.IsNullOrEmpty(imgName))
+                throw new Exception("The 'imgName' parameter is required");
+
             try
             {
                 var request = new GetObjectRequest()
@@ -57,7 +64,7 @@ namespace OngProject.Core.Helper
                 return new FileStreamResult(stream, response.Headers["Content-Type"])
                 {
                     FileDownloadName = imgName
-                };                 
+                };    
             }
             catch (System.Exception ex)
             {
