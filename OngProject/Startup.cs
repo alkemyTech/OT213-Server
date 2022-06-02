@@ -9,6 +9,8 @@ using Microsoft.OpenApi.Models;
 using OngProject.Core.Auth.Interfaces;
 using OngProject.Core.Business;
 using OngProject.Core.Business.Auth;
+using OngProject.Core.Helper;
+using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Mapper;
 using OngProject.DataAccess;
@@ -47,9 +49,6 @@ namespace OngProject
             //Automapper configure service
             services.AddAutoMapper(typeof(Startup));
 
-            //Amazon S3 configure service
-            services.AddAWSService<IAmazonS3>();
-
             //Repositories DI
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
@@ -70,6 +69,10 @@ namespace OngProject
             services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
             services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
             services.AddScoped<ICategoryBusiness, CategoryBusiness>();
+
+            //Amazon S3 configure service & DI
+            services.AddScoped<IAmazonHelperService, AmazonHelperService>();            
+            services.AddAWSService<IAmazonS3>();
 
         
         }
