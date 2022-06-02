@@ -22,7 +22,7 @@ namespace OngProject.Core.Helper
         public async Task<DeleteObjectResponse> DeleteImage(string imgName)
         {
             if (string.IsNullOrEmpty(imgName))
-                throw new Exception("The 'imgName' parameter is required");
+                throw new Exception("The 'imgName' parameter is required \n");
 
             try
             {
@@ -46,7 +46,7 @@ namespace OngProject.Core.Helper
         public async Task<FileStreamResult> DownloadImage(string imgName)
         {
             if (string.IsNullOrEmpty(imgName))
-                throw new Exception("The 'imgName' parameter is required");
+                throw new Exception("The 'imgName' parameter is required \n");
 
             try
             {
@@ -76,6 +76,8 @@ namespace OngProject.Core.Helper
         #region UPLOAD IMAGE
         public async Task<PutObjectResponse> UploadImage(IFormFile file)
         {
+            if (file == null)
+                throw new Exception("The 'file' parameter is required \n");
             try
             {
                 var putRequest = new PutObjectRequest()
