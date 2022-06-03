@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OngProject.DataAccess.Seeder;
 using OngProject.Entities;
 
 namespace OngProject.DataAccess
@@ -33,23 +34,9 @@ namespace OngProject.DataAccess
                 .WithMany(c => c.Slides)
                 .HasForeignKey(u => u.OrganizationId);
 
-            // Property Configurations 
-            modelBuilder.Entity<Member>()
-                        .Property(c => c.Id)
-                        .IsRequired();   
+            // Implement seed data from members
+            modelBuilder.ApplyConfiguration(new MemberConfiguration());
 
-            modelBuilder.Entity<Member>()
-                        .Property(c => c.Name)
-                        .HasMaxLength(50)
-                        .IsRequired();
-            
-            modelBuilder.Entity<Member>()
-                        .Property(c => c.ImageUrl)
-                        .IsRequired();
-
-            modelBuilder.Entity<Member>()
-                        .Property(c => c.Description)
-                        .HasMaxLength(50);
         }
 
         public DbSet<Organization> Organizations { set; get; }

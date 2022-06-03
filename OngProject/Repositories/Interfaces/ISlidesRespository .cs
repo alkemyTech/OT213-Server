@@ -2,7 +2,7 @@
 
 namespace OngProject.Repositories.Interfaces
 {
-    public interface ISlidesRepository : IGenericRepository<Slides>
+    public interface ISlidesRepository : IGenericRepository<Slide>
     {
     }
 }
