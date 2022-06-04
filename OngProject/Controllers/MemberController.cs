@@ -1,22 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.Core.Models.DTOs;
-using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Entities;
 using System;
 using System.Threading.Tasks;
+using AutoMapper;
+using OngProject.Core.Models.DTOs.Members;
 
 namespace OngProject.Controllers
 {
     [ApiController]
     public class MemberController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
         private readonly IMemberBusiness _memberBusiness;
-        public MemberController(IUnitOfWork uow, IMemberBusiness memberBusiness)
+        private readonly IMapper _mapper;
+        public MemberController(IMemberBusiness memberBusiness, IMapper mapper)
         {
-            this._uow = uow;
             this._memberBusiness = memberBusiness;
+            this._mapper = mapper;
         }
 
         // GET List/Members
@@ -26,12 +28,9 @@ namespace OngProject.Controllers
         {
             try
             {
-                var members = _uow.Members.Find(m => m.isDeleted != true);
-                if(members != null)
-                {
-                    return Ok(members);
-                }
-                return NotFound("The list of members has not been found");                
+                var members = _memberBusiness.Find(m => m.IsDeleted == false);
+                return members != null ? Ok(_mapper.Map<IEnumerable<MemberGetModelDTO>>(members)) 
+                                       : NotFound("The list of members has not been found");                
             }
             catch (System.Exception ex)
             {
@@ -41,16 +40,23 @@ namespace OngProject.Controllers
 
         // GET List/MemberById
         [HttpGet]        
-        [Route("List/MemberById")]
+        [Route("List/MemberById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                if(id == 0)
-                    return NotFound("Please, set an ID.");
+                if(string.IsNullOrEmpty(id.ToString()) || id == 0)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new
+                    {
+                        Status = "Error",
+                        Message = "Please, set an ID."
+                    }); 
+                }
 
-                var member = await _uow.Members.GetById(id);
-                return member != null ? Ok(member) : NotFound("Member doesn't exists");            
+                var member = await _memberBusiness.GetById(id);
+                return member != null ? Ok(_mapper.Map<MemberGetModelDTO>(member)) 
+                                      : NotFound("Member doesn't exists");            
             }
             catch (System.Exception ex)
             {
@@ -61,20 +67,8 @@ namespace OngProject.Controllers
         // POST Create/Member
         [HttpPost]       
         [Route("Create/Member")]
-        public async Task<IActionResult> Create(MemberCreateModelDTO model)
-        {            
-            var member = new Member
-            {
-                Name = model.name,
-                FacebookUrl = model.facebookUrl,
-                InstagramUrl = model.instagramUrl,
-                LinkedInUrl = model.linkedInUrl,
-                ImageUrl = model.imageUrl,
-                Description = model.description,
-                CreatedAt = model.createdAt,
-                UpdatedAt = model.updatedAt
-            };
-
+        public async Task<IActionResult> Create([FromBody] MemberCreateModelDTO model)
+        {          
             if(ModelState.IsValid)
             {
                 try
@@ -82,16 +76,23 @@ namespace OngProject.Controllers
                     // validations                    
                     if(string.IsNullOrEmpty(model.name))
                     {
-                        return Ok("Name required");                    
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Name required"
+                        });                    
                     }
                     if(string.IsNullOrEmpty(model.imageUrl))
                     {
-                        return Ok("Image required");
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Image required"
+                        });
                     }
 
-                    // request
-                    await _uow.Members.Insert(member);
-                    await _uow.SaveAsync();                        
+                    // request                    
+                    await _memberBusiness.Insert(_mapper.Map<Member>(model));
                 }
                 catch (System.Exception ex)
                 {
@@ -108,41 +109,66 @@ namespace OngProject.Controllers
         // PUT Update/Member/{id}
         [HttpPut]       
         [Route("Update/Member/{id}")]
-        public async Task<IActionResult> Edit(MemberUpdateModelDTO model)
-        {
-            // var mem = _uow.Members.Find(c => c.MembersID == model.membersID);
+        public async Task<IActionResult> Edit(int id, [FromBody] MemberUpdateModelDTO model)
+        { 
+            // validation
+            if (id != model.Id)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new
+                {
+                    Status = "Error",
+                    Message = "Id number not found!"
+                });
+            }  
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    // validations                    
+                    if(string.IsNullOrEmpty(model.name))
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Name required"
+                        });                   
+                    }
+                    if(string.IsNullOrEmpty(model.imageUrl))
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Image required"
+                        });
+                    }
 
-            // var member = new Member
-            // {
-            //     Name = model.name,
-            //     FacebookUrl = model.facebookUrl,
-            //     InstagramUrl = model.imageUrl,
-            //     LinkedInUrl = model.linkedInUrl,
-            //     ImageUrl = model.imageUrl,
-            //     Description = model.description,
-            //     CreatedAt = model.createdAt,
-            //     UpdatedAt = model.updatedAt,
-            //     isDeleted = model.isDeleted
-            // };
+                    var member = await _memberBusiness.GetById(id);
+                    if(member == null)
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Member cannot be null."
+                        });    
+                    }
 
-            // if(ModelState.IsValid)
-            // {
-            //     try
-            //     {
-            //         // validations
-
-            //         // request
-            //         if(mem != null)
-            //         {
-            //             member = await _uow.Members.Update(member);
-            //             await _uow.SaveAsync();                  
-            //         }
-            //     }
-            //     catch (System.Exception ex)
-            //     {
-            //         throw new Exception(ex.Message);
-            //     }
-            // }
+                    // Mapping and request
+                    _mapper.Map(model,member);               
+                    var updated = await _memberBusiness.Update(member);
+                    if(updated == null)
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Error updating data"
+                        });    
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
             return Ok(new 
             {
                 Status = "Success",
@@ -153,25 +179,42 @@ namespace OngProject.Controllers
         // DELETE Delete/Member/{id}
         [HttpDelete]       
         [Route("Delete/Member/{id}")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> SoftDelete(int? id)
         {
+            // validation
+            if(string.IsNullOrEmpty(id.ToString()) || id == 0)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new
+                {
+                    Status = "Error",
+                    Message = "Please, set a valid ID."
+                });  
+            }
             try
             {
-                var member = await _uow.Members.GetById(id.Value);
+                var member = await _memberBusiness.GetById(id.Value);
+                if(member == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new
+                    {
+                        Status = "Error",
+                        Message = "Member not found or doesn't exist."
+                    });   
+                }
 
-                if(id == null)
-                    return NotFound("Member not found");
-
+                // request  
                 await _memberBusiness.SoftDelete(member, id);
-                await _uow.Members.Update(member);
-                await _uow.SaveAsync();
-
-                return Ok("Member deleted successfully.");
+                await _memberBusiness.Update(member);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+            return Ok(new 
+            {
+                Status = "Success",
+                Message = "Member deleted successfully!"
+            }); 
         }
     }
 }

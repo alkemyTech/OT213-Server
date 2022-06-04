@@ -44,4 +44,3 @@ namespace OngProject.Core.Models.DTOs.Organizations
         public string AboutUs { get; set; }
     }
 }
-© 2022 GitHub, Inc.

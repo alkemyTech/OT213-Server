@@ -2,5 +2,7 @@
 
 namespace OngProject.Repositories.Interfaces
 {
-    public interface IOrganizationRepository : IGenericRepository<Organization> {  }
+    public interface IOrganizationRepository : IGenericRepository<Organization> { }
+    
+    
 }

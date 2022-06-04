@@ -10,6 +10,6 @@ namespace OngProject.Core.Models.DTOs.Activities
         [Required]
         public string Content { get; set; }
         [Required]
-        public string Image { get; set; }
+        public string Image { get; set; }        
     }
 }

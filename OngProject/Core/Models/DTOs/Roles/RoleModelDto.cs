@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OngProject.Core.Models
+namespace OngProject.Core.Models.DTOs
 {
     public class RoleModelDto
     {

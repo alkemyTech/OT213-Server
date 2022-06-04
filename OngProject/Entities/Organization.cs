@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -39,5 +40,8 @@ namespace OngProject.Entities
         [Column("AboutUsText", TypeName = "TEXT")]
         [DisplayName("Acerca de nosotros")]
         public string AboutUs { get; set; }
+
+        // News Navigation property.
+        public List<Slide> Slides { set; get; }
     }
 }

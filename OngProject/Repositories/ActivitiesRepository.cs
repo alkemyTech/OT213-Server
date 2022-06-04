@@ -6,6 +6,6 @@ namespace OngProject.Repositories
 {
     public class ActivitiesRepository : GenericRepository<Activities>, IActivitiesRepository
     {
-        public ActivitiesRepository(OngProjectDbContext context) : base(context) { }
+        public ActivitiesRepository(OngProjectDbContext context) : base(context) {    }
     }
 }
