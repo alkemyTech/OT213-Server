@@ -42,6 +42,6 @@ namespace OngProject.Entities
         public string AboutUs { get; set; }
 
         // News Navigation property.
-        public List<Slides> Slides { set; get; }
+        public List<Slide> Slides { set; get; }
     }
 }

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace OngProject.Core.Interfaces
 {
-    public interface IUsersBusiness : IGenericBusiness<Users>
+    public interface IUsersBusiness : IGenericBusiness<User>
     {
-        Task<bool> SoftDelete(Users entity, int? id);
+        Task<bool> SoftDelete(User entity, int? id);
 
-        Task<Users> UpdateUsersAsync(Users entity);
-        Task<Users> GetUsersByIdAsync(int id);
-        Task<Users> InsertUsersAsync(Users entity);
-        IEnumerable<Users> FindUsersAsync(Expression<Func<Users, bool>> predicate);
+        Task<User> UpdateUsersAsync(User entity);
+        Task<User> GetUsersByIdAsync(int id);
+        Task<User> InsertUsersAsync(User entity);
+        IEnumerable<User> FindUsersAsync(Expression<Func<User, bool>> predicate);
     }
 }

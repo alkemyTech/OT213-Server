@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Entities
 {
-    public class Slides : BaseEntity
+    public class Slide : BaseEntity
     {
         [Required]
         public string Name { get; set; }

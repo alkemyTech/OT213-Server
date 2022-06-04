@@ -7,12 +7,7 @@ using System.Threading.Tasks;
 
 namespace OngProject.Repositories.Interfaces
 {
-    public interface IUsersRepository : IGenericRepository<Users>
+    public interface IUsersRepository : IGenericRepository<User>
     {
-        Task<bool> SoftDelete(Users entity, int? id);
-        Task<Users> UpdateUsersAsync(Users entity);
-        Task<Users> GetUsersByIdAsync(int id);
-        Task<Users> InsertUsersAsync(Users entity);
-        IEnumerable<Users> FindUsersAsync(Expression<Func<Users, bool>> predicate);
     }
 }

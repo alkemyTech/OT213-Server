@@ -31,7 +31,7 @@ namespace OngProject.Controllers
         {
             try
             {
-                var news = _newsBusiness.FindNewsAsync(m => m.softDelete != true);
+                var news = _newsBusiness.Find(m => m.softDelete != true);
                 return news != null ? Ok(_mapper.Map<IEnumerable<NewsDTO>>(news)) 
                                        : NotFound("The list of news has not been found");                
             }
@@ -51,7 +51,7 @@ namespace OngProject.Controllers
                 if(id == 0)
                     return NotFound("Please, set an ID.");
 
-                var news = await _newsBusiness.GetNewsByIdAsync(id);
+                var news = await _newsBusiness.GetById(id);
                 return news != null ? Ok(_mapper.Map<NewsDTO>(news)) 
                                       : NotFound("News doesn't exists");            
             }
@@ -73,15 +73,23 @@ namespace OngProject.Controllers
                     // validations                    
                     if(string.IsNullOrEmpty(model.Name))
                     {
-                        return Ok("Name required");                    
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Name is required"
+                        });
                     }
                     if(string.IsNullOrEmpty(model.Content))
                     {
-                        return Ok("Content required");
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Content is required"
+                        });
                     }
 
                     // request                    
-                    await _newsBusiness.InsertNewsAsync(_mapper.Map<News>(model));
+                    await _newsBusiness.Insert(_mapper.Map<New>(model));
                     await _uow.SaveAsync();                        
                 }
                 catch (System.Exception ex)
@@ -117,15 +125,23 @@ namespace OngProject.Controllers
                     // validations                    
                     if(string.IsNullOrEmpty(model.Name))
                     {
-                        return Ok("Name required");                    
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Name is required"
+                        });
                     }
                     if(string.IsNullOrEmpty(model.Content))
                     {
-                        return Ok("Content required");
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Content is required"
+                        });
                     }
 
-                    var news = await _newsBusiness.GetNewsByIdAsync(id);
-                    var updated = await _newsBusiness.UpdateNewsAsync(news);
+                    var news = await _newsBusiness.GetById(id);
+                    var updated = await _newsBusiness.Update(news);
 
                     if(updated != null)
                     {
@@ -157,13 +173,13 @@ namespace OngProject.Controllers
 
             try
             {
-                var news = await _newsBusiness.GetNewsByIdAsync(id.Value);
+                var news = await _newsBusiness.GetById(id.Value);
 
                 if(news == null)
                     return NotFound("News not found or doesn't exist.");
 
                 await _newsBusiness.SoftDelete(news, id);
-                await _newsBusiness.UpdateNewsAsync(news);
+                await _newsBusiness.Update(news);
                 await _uow.SaveAsync();
 
                 return Ok("News deleted successfully.");

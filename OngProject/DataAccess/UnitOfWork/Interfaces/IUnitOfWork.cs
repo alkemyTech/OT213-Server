@@ -9,7 +9,6 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
     {
         // Write here all the entities Non-Generics
         IMemberRepository Members {get;}
-        IRoleRepository Roles { get; }
         INewsRepository News { get; }
         IUsersRepository Users { get; }
         //IMemberBusiness Members2 {get;} // Fail at implementation the business layer        
@@ -21,6 +20,7 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         //INewRepository News { get; }
         IActivitiesRepository Activities { get; }
         ITestimonialRepository Testimonials { get; }
+        ISlidesRepository Slides { get; }
         Task SaveAsync();
 
     }

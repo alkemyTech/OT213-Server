@@ -74,15 +74,23 @@ namespace OngProject.Controllers
                     // validations                    
                     if(string.IsNullOrEmpty(model.FirstName))
                     {
-                        return Ok("Name required");                    
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Name is required"
+                        });
                     }
                     if(string.IsNullOrEmpty(model.Photo))
                     {
-                        return Ok("Photo required");
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Photo is required"
+                        });
                     }
 
                     // request                    
-                    await _usersBusiness.InsertUsersAsync(_mapper.Map<Users>(model));
+                    await _usersBusiness.InsertUsersAsync(_mapper.Map<User>(model));
                     await _uow.SaveAsync();                        
                 }
                 catch (System.Exception ex)
@@ -118,11 +126,19 @@ namespace OngProject.Controllers
                     // validations                    
                     if(string.IsNullOrEmpty(model.FirstName))
                     {
-                        return Ok("Name required");                    
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Name is required"
+                        });
                     }
                     if(string.IsNullOrEmpty(model.Photo))
                     {
-                        return Ok("Photo required");
+                        return StatusCode(StatusCodes.Status400BadRequest, new
+                        {
+                            Status = "Error",
+                            Message = "Photo is required"
+                        });
                     }
 
                     var user = await _usersBusiness.GetUsersByIdAsync(id);

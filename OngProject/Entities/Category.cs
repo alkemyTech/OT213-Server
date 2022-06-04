@@ -11,6 +11,6 @@ namespace OngProject.Entities
         public string Image { get; set; }
 
         // News Navigation property.
-        public List<News> News { set; get; }
+        public List<New> News { set; get; }
     }
 }

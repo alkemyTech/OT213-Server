@@ -7,12 +7,7 @@ using System.Threading.Tasks;
 
 namespace OngProject.Repositories.Interfaces
 {
-    public interface INewsRepository : IGenericRepository<News>
+    public interface INewsRepository : IGenericRepository<New>
     {
-        Task<bool> SoftDelete(News entity, int? id);
-        Task<News> UpdateNewsAsync(News entity);
-        Task<News> GetNewsByIdAsync(int id);
-        Task<News> InsertNewsAsync(News entity);
-        IEnumerable<News> FindNewsAsync(Expression<Func<News, bool>> predicate);
     }
 }
