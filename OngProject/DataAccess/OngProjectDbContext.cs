@@ -53,20 +53,17 @@ namespace OngProject.DataAccess
         }
 
         public DbSet<Organization> Organizations { set; get; }
-<<<<<<< HEAD
-        public DbSet<Roles> Roles { set; get;}
+        public DbSet<Role> Roles { set; get;}
         public DbSet<News> News { set; get;}
         public DbSet<Users> Users { set; get;}
-=======
-        public DbSet<Slide> Slides { set; get; }
+        public DbSet<Slides> Slides { set; get; }
         public DbSet<Category> Categories { set; get; }
-        public DbSet<New> News { set; get; }
+        public DbSet<News> New { set; get; }
         public DbSet<Member> Members {set;get;}
-        public DbSet<User> Users { set; get;}
-        public DbSet<Role> Roles { set; get; }
+        public DbSet<User> User { set; get;}
+        public DbSet<Role> Role { set; get; }
         public DbSet<Activities> Activities { set; get; }
         public DbSet<Testimonial> Testimonials { set; get; }
->>>>>>> e38780518ca654d41d3d3b361602e9fd3f15b52b
     }
 }
 

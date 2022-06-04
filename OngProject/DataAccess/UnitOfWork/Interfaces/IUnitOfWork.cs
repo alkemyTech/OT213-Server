@@ -9,15 +9,11 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
     {
         // Write here all the entities Non-Generics
         IMemberRepository Members {get;}
-<<<<<<< HEAD
         IRoleRepository Roles { get; }
         INewsRepository News { get; }
         IUsersRepository Users { get; }
         //IMemberBusiness Members2 {get;} // Fail at implementation the business layer        
-
-        // Methods
-=======
-        IRoleRepository Roles { get; }
+        IRoleRepository Role { get; }
         IAuthRepository Authentications {get;}
         IOrganizationRepository Organizations { get; }
         //ISlideRepository Slides { get; }
@@ -25,9 +21,6 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         //INewRepository News { get; }
         IActivitiesRepository Activities { get; }
         ITestimonialRepository Testimonials { get; }
-        
-        // Methods
->>>>>>> e38780518ca654d41d3d3b361602e9fd3f15b52b
         Task SaveAsync();
 
     }
