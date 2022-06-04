@@ -9,7 +9,7 @@ namespace OngProject.Core.Helper.Interface
     {
         Task<PutObjectResponse> UploadImage(IFormFile file);
         Task<FileStreamResult> DownloadImage(string imgName);
-        Task<DeleteObjectResponse> DeleteImage(string imgName);
+        //Task<DeleteObjectResponse> DeleteImage(string imgName);
     }
 
 }

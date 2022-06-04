@@ -33,15 +33,15 @@ namespace OngProject.Core.Mapper
             #endregion
 
             #region Activities Mapper
-            CreateMap<Activities, ActivitiesGetDTO>().ReverseMap();
-            CreateMap<Activities, ActivityCreateDTO>().ReverseMap();
-            CreateMap<Activities, ActivityUpdateDTO>().ReverseMap();
+            CreateMap<Activities, ActivitiesGetDTO>();
+            CreateMap<ActivityCreateDTO, Activities>();
+            CreateMap<ActivityUpdateDTO, Activities>();
             #endregion
 
             #region Testimonial Mapper
             CreateMap<Testimonial, TestimonialGetDTO>().ReverseMap();
-            CreateMap<Activities, TestimonialCreateDTO>().ReverseMap();
-            CreateMap<Activities, TestimonialUpdateDTO>().ReverseMap();
+            CreateMap<Testimonial, TestimonialCreateDTO>().ReverseMap();
+            CreateMap<Testimonial, TestimonialUpdateDTO>().ReverseMap();
             #endregion
         }
     }

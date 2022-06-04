@@ -9,10 +9,11 @@ using Microsoft.OpenApi.Models;
 using OngProject.Core.Auth.Interfaces;
 using OngProject.Core.Business;
 using OngProject.Core.Business.Auth;
+using OngProject.Core.Business.Mail;
+using OngProject.Core.Business.Mail.Interfaces;
 using OngProject.Core.Helper;
 using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
-using OngProject.Core.Mapper;
 using OngProject.DataAccess;
 using OngProject.DataAccess.UnitOfWork;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
@@ -20,6 +21,8 @@ using OngProject.Repositories;
 using OngProject.Repositories.Auth;
 using OngProject.Repositories.Auth.Interfaces;
 using OngProject.Repositories.Interfaces;
+using OngProject.Repositories.Mail;
+using OngProject.Repositories.Mail.Interfaces;
 
 namespace OngProject
 {
@@ -57,6 +60,7 @@ namespace OngProject
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IMailRepository, MailRepository>();
 
             //Unit of Work DI (Dependency Injection)
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -69,6 +73,7 @@ namespace OngProject
             services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
             services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
             services.AddScoped<ICategoryBusiness, CategoryBusiness>();
+            services.AddTransient<IMailBusiness, MailBusiness>();
 
             //Amazon S3 configure service & DI
             services.AddScoped<IAmazonHelperService, AmazonHelperService>();            

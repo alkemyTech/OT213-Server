@@ -41,18 +41,21 @@ namespace OngProject.Controllers
             });  
         }
 
-        // DELETE IMAGE
-        [HttpDelete]       
-        [Route("Delete/Image")]
-        public async Task<IActionResult> DeleteImage([FromQuery] string imgName)
-        {
-            await _aws.DeleteImage(imgName);
-            return Ok(new 
-            {
-                Status = "Success",
-                Message = "Image deleted successfully!"
-            });   
-        }
+        /*
+            Delete method not implemented in this project
+        */
+        // // DELETE IMAGE
+        // [HttpDelete]       
+        // [Route("Delete/Image")]
+        // public async Task<IActionResult> DeleteImage([FromQuery] string imgName)
+        // {
+        //     await _aws.DeleteImage(imgName);
+        //     return Ok(new 
+        //     {
+        //         Status = "Success",
+        //         Message = "Image deleted successfully!"
+        //     });   
+        // }
     }
 
 }
