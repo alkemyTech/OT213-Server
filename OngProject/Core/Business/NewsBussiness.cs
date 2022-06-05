@@ -14,7 +14,7 @@ namespace OngProject.Core.Business
     {
         private IUnitOfWork _uow;
         private INewsRepository _newsRepository;
-        public NewsBusiness(IUnitOfWork uow, INewsRepository newsRepository) : base(newsRepository)
+        public NewsBusiness(IUnitOfWork uow, INewsRepository newsRepository) : base(newsRepository, uow)
         {
             this._uow = uow;
             this._newsRepository = newsRepository;
