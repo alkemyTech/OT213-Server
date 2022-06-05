@@ -29,10 +29,11 @@ namespace OngProject.DataAccess
                 .WithMany(c => c.Users)
                 .HasForeignKey(u => u.RoleId);
 
-            modelBuilder.Entity<Slide>()
+            //ESTO ESTA ARROJANDO UN ERROR
+            /*modelBuilder.Entity<Slide>()
                 .HasOne<Organization>(u => u.Organization)
                 .WithMany(c => c.Slides)
-                .HasForeignKey(u => u.OrganizationId);
+                .HasForeignKey(u => u.OrganizationId);*/
 
             // Implement seed data from members
             modelBuilder.ApplyConfiguration(new MemberConfiguration());
