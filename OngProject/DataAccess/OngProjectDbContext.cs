@@ -43,6 +43,7 @@ namespace OngProject.DataAccess
             modelBuilder.ApplyConfiguration(new TestimonialConfiguration());
             modelBuilder.ApplyConfiguration(new ActivityConfiguration());
             modelBuilder.ApplyConfiguration(new NewsConfiguration());
+
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         }
 

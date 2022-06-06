@@ -29,6 +29,7 @@ namespace OngProject.DataAccess.Seeder.New
                     Id = 1,
                     Name = "No news",
                     Image = "https://www.vidimsoft.com/sites/default/files/styles/blog_lg/public/articles/nonewsyet.jpg?itok=51EKSfgX",
+
                     Content = "No news, good news",
                     CategoryId = 1
                 },
@@ -39,6 +40,7 @@ namespace OngProject.DataAccess.Seeder.New
                     Image = "https://www.vidimsoft.com/sites/default/files/styles/blog_lg/public/articles/nonewsyet.jpg?itok=51EKSfgX",
                     Content = "No news, good news",
                     CategoryId = 2
+
                 },
                 new Entities.New
                 {
