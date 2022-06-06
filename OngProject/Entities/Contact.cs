@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Entities
@@ -12,7 +13,7 @@ namespace OngProject.Entities
         [EmailAddress]
         public string Email { get; set; }
         public string Message {set;get;}
-        public string deletedAt {set;get;}
+        public DateTime DeletedAt {set;get;}
     }
 
 }
