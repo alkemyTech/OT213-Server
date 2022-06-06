@@ -41,6 +41,10 @@ namespace OngProject.Entities
         [DisplayName("Acerca de nosotros")]
         public string AboutUs { get; set; }
 
+        public string FacebookUrl {set;get;}
+        public string InstagramUrl {set;get;}
+        public string LinkedInUrl {set;get;}
+
         // News Navigation property.
         public List<Slide> Slides { set; get; }
     }
