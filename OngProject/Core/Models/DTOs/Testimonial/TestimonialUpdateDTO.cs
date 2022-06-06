@@ -18,5 +18,7 @@ namespace OngProject.Core.Models.DTOs.Testimonial
         [Required(ErrorMessage = "Descripción requerida")]
         [DisplayName("Descripción")]
         public string Description { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

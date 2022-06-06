@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Mapper;
 using OngProject.Core.Models.DTOs.Testimonial;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -22,21 +24,32 @@ namespace OngProject.Controllers
             this._mapper = mapper;
         }
 
-        [HttpGet(nameof(GetTestimonials))] 
-        public async Task<IActionResult> GetTestimonials() => Ok(
-            _mapper.Map<IEnumerable<TestimonialGetDTO>>(
-                _testimonialBusiness.Find(m => m.IsDeleted == false)
-                )
-            );
 
-        [HttpGet(nameof(GetTestimonialById))]
-        public async Task<IActionResult> GetTestimonialById([FromQuery] int testimonialID) => Ok(
-            _mapper.Map<TestimonialGetDTO>(
-                await _testimonialBusiness.GetById(testimonialID)
-                )
-            );
+        [HttpGet]
+        [Route("List/Testimonials")]
+        public async Task<IActionResult> GetTestimonials() { 
+    
+            try
+            {
+                var testimonials = _testimonialBusiness.Find(t => t.IsDeleted == false);
+                return testimonials != null ? Ok(_mapper.Map<IEnumerable<TestimonialGetDTO>>(testimonials))
+                                       : NotFound("The list of testimonials has not been found");
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
-        [HttpPost(nameof(CreateTestimonial))]
+        [HttpGet]
+        [Route("List/TestimonialById/{id}")]
+        public async Task<IActionResult> GetTestimonialById(int id) {
+            return Ok(_mapper.Map<TestimonialGetDTO>(await _testimonialBusiness.GetById(id)));
+        }
+
+
+        [HttpPost]
+        [Route("Create/Testimonial")]
         public async Task<IActionResult> CreateTestimonial(TestimonialCreateDTO testimonial)
         {
             if (ModelState.IsValid)
@@ -48,24 +61,35 @@ namespace OngProject.Controllers
                 return BadRequest("Error in Creating the testimonial");
         }
 
-        [HttpPut(nameof(UpdateTestimonial))]
-        public IActionResult UpdateTestimonial(TestimonialUpdateDTO testimonial)
+        [HttpPut]
+        [Route("Update/Testimonial/{id}")]
+        public async Task<IActionResult> Edit(int id, [FromBody] TestimonialUpdateDTO model)
         {
             if (ModelState.IsValid)
             {
-                _testimonialBusiness.Update(_mapper.Map<Testimonial>(testimonial));
+                var testimonial = await _testimonialBusiness.GetById(id);
+                if (testimonial == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new
+                    {
+                        Status = "Error",
+                        Message = "Testimonial cannot be null."
+                    });
+                }
+                _ = _testimonialBusiness.Update(_mapper.Map<Testimonial>(model));
                 return Ok("Testimonial Updated");
             }
             return BadRequest("Error in Creating the testimonial");
         }
 
-        [HttpDelete(nameof(DeleteTestimonial))]
-        public async Task<IActionResult> DeleteTestimonial([FromQuery] int testimonialID)
+        [HttpDelete]
+        [Route("Delete/Testimonial/{id}")]
+        public async Task<IActionResult> DeleteTestimonial(int id)
         {
-            var testimonial = await _testimonialBusiness.GetById(testimonialID);
+            var testimonial = await _testimonialBusiness.GetById(id);
             if (testimonial == null)
             {
-                await _testimonialBusiness.SoftDelete(testimonial, testimonialID);
+                await _testimonialBusiness.SoftDelete(testimonial, id);
                 await _testimonialBusiness.Update(testimonial);
                 return Ok("Testimonial Deleted");
             }
