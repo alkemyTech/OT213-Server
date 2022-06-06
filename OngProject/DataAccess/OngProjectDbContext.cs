@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OngProject.DataAccess.Seeder;
 using OngProject.DataAccess.Seeder.Activities;
+using OngProject.DataAccess.Seeder.New;
 using OngProject.DataAccess.Seeder.Testimonials;
 using OngProject.Entities;
 
@@ -41,6 +42,8 @@ namespace OngProject.DataAccess
             modelBuilder.ApplyConfiguration(new MemberConfiguration());
             modelBuilder.ApplyConfiguration(new TestimonialConfiguration());
             modelBuilder.ApplyConfiguration(new ActivityConfiguration());
+            modelBuilder.ApplyConfiguration(new NewsConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         }
 
         public DbSet<Organization> Organizations { set; get; }
