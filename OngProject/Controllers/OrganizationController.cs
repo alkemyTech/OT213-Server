@@ -62,7 +62,7 @@ namespace OngProject.Controllers
 
         
         [HttpPut]
-        [Route("Update/Organization/{id}")]
+        [Route("Update/Organization/Public/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] OrganizationUpdateDTO organizationUpdateDTO)
         {
             

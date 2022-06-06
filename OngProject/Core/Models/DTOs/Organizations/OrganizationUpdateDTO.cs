@@ -20,14 +20,6 @@ namespace OngProject.Core.Models.DTOs.Organizations
         [DisplayName("Imagen")]
         public string Image { get; set; }
 
-        [Column("address")]
-        [DisplayName("Dirección")]
-        public string Address { get; set; }
-
-        [Column("phone")]
-        [DisplayName("Número de teléfono")]
-        public int Phone { get; set; }
-
         [Required(ErrorMessage = "Correo electrónico requerido")]
         [DataType(DataType.EmailAddress)]
         [EmailAddress]
@@ -38,9 +30,5 @@ namespace OngProject.Core.Models.DTOs.Organizations
         [Column("WelcomeText", TypeName = "TEXT")]
         [DisplayName("Mensaje de bienvenida")]
         public string Welcome { get; set; }
-
-        [Column("AboutUsText", TypeName = "TEXT")]
-        [DisplayName("Acerca de nosotros")]
-        public string AboutUs { get; set; }
     }
 }
