@@ -61,11 +61,10 @@ namespace OngProject.Controllers
         }
 
         
-        [HttpPut]
+        [HttpPost]
         [Route("Update/Organization/Public/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] OrganizationUpdateDTO organizationUpdateDTO)
-        {
-            
+        {            
             if (ModelState.IsValid)
             {
                 try
