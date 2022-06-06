@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OngProject.DataAccess.Seeder;
+using OngProject.DataAccess.Seeder.Activities;
 using OngProject.DataAccess.Seeder.Testimonials;
 using OngProject.Entities;
 
@@ -39,7 +40,7 @@ namespace OngProject.DataAccess
             // Implement seed data from members
             modelBuilder.ApplyConfiguration(new MemberConfiguration());
             modelBuilder.ApplyConfiguration(new TestimonialConfiguration());
-
+            modelBuilder.ApplyConfiguration(new ActivityConfiguration());
         }
 
         public DbSet<Organization> Organizations { set; get; }
