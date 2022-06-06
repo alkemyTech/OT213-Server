@@ -30,14 +30,13 @@ namespace OngProject.DataAccess
                 .HasOne<Role>(u => u.Role)
                 .WithMany(c => c.Users)
                 .HasForeignKey(u => u.RoleId);
-
-            //ESTO ESTA ARROJANDO UN ERROR
-            /*modelBuilder.Entity<Slide>()
+            
+            modelBuilder.Entity<Slide>()
                 .HasOne<Organization>(u => u.Organization)
                 .WithMany(c => c.Slides)
-                .HasForeignKey(u => u.OrganizationId);*/
+                .HasForeignKey(u => u.OrganizationId);
 
-            // Implement seed data from members
+            // Implement seed data
             modelBuilder.ApplyConfiguration(new MemberConfiguration());
             modelBuilder.ApplyConfiguration(new TestimonialConfiguration());
             modelBuilder.ApplyConfiguration(new ActivityConfiguration());
