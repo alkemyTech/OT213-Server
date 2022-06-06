@@ -14,5 +14,6 @@ namespace OngProject.Entities
         // FK_Categories id
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
+        public bool softDelete { get; set; }
     }
 }

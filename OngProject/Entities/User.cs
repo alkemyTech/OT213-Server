@@ -16,6 +16,7 @@ namespace OngProject.Entities
         public string Photo { get; set; }
         public byte[] PasswordHash {get;set;}
         public byte[] PasswordSalt {get;set;}
+        public bool softDelete { get; set; }
 
         // FK_Role id
         public int? RoleId { get; set; }
