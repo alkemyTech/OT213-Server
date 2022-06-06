@@ -29,35 +29,42 @@ namespace OngProject.DataAccess.Seeder.New
                     Id = 1,
                     Name = "No news",
                     Image = "https://www.vidimsoft.com/sites/default/files/styles/blog_lg/public/articles/nonewsyet.jpg?itok=51EKSfgX",
-                    Content = "No news, good news"
+
+                    Content = "No news, good news",
+                    CategoryId = 1
                 },
                 new Entities.New
                 {
                     Id = 2,
                     Name = "No news",
                     Image = "https://www.vidimsoft.com/sites/default/files/styles/blog_lg/public/articles/nonewsyet.jpg?itok=51EKSfgX",
-                    Content = "No news, good news"
+                    Content = "No news, good news",
+                    CategoryId = 2
+
                 },
                 new Entities.New
                 {
                     Id = 3,
                     Name = "No news",
                     Image = "https://www.vidimsoft.com/sites/default/files/styles/blog_lg/public/articles/nonewsyet.jpg?itok=51EKSfgX",
-                    Content = "No news, good news"
+                    Content = "No news, good news",
+                    CategoryId = 3
                 },
                 new Entities.New
                 {
                     Id = 4,
                     Name = "No news",
                     Image = "https://www.vidimsoft.com/sites/default/files/styles/blog_lg/public/articles/nonewsyet.jpg?itok=51EKSfgX",
-                    Content = "No news, good news"
+                    Content = "No news, good news",
+                    CategoryId = 4
                 },
                 new Entities.New
                 {
                     Id = 5,
                     Name = "No news",
                     Image = "https://www.vidimsoft.com/sites/default/files/styles/blog_lg/public/articles/nonewsyet.jpg?itok=51EKSfgX",
-                    Content = "No news, good news"
+                    Content = "No news, good news",
+                    CategoryId = 4
                 }
             );
         }
