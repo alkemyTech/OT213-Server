@@ -56,6 +56,7 @@ namespace OngProject.DataAccess
         public DbSet<Role> Roles { set; get; }
         public DbSet<Activities> Activities { set; get; }
         public DbSet<Testimonial> Testimonials { set; get; }
+        public DbSet<Comment> Comments { set; get; }
     }
 }
 
