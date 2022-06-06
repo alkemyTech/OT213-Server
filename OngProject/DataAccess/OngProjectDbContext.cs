@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OngProject.DataAccess.Seeder;
+using OngProject.DataAccess.Seeder.Testimonials;
 using OngProject.Entities;
 
 namespace OngProject.DataAccess
@@ -37,6 +38,7 @@ namespace OngProject.DataAccess
 
             // Implement seed data from members
             modelBuilder.ApplyConfiguration(new MemberConfiguration());
+            modelBuilder.ApplyConfiguration(new TestimonialConfiguration());
 
         }
 
