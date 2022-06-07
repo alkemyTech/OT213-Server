@@ -2,8 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Core.Models.DTOs
 {
-    public class CategoryCreateDTO
-    {        
+    public class SlideUpdateDTO
+    {
+        public int Id { set; get; }
+        
         [Required(ErrorMessage = "Name is required")]
         public string Name { set; get; }
         public string Description { set; get; }
@@ -11,5 +13,6 @@ namespace OngProject.Core.Models.DTOs
         [Required(ErrorMessage = "Image is required")]
         public string Image { get; set; }
     }
+
 }
 

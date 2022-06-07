@@ -1,21 +1,20 @@
-using System.ComponentModel.DataAnnotations;
+using System;
 
-namespace OngProject.Entities
+
+namespace OngProject.Core.Models.DTOs
 {
-    public class Slide : BaseEntity
+    public class SlideDetailsDTO
     {
-        [Required]
         public string Name { get; set; }
 
         public string Text { get; set; }
-        
-        [Required]
+
         public string ImageUrl { get; set; }
 
         public int Order { get; set; }
 
         public int? OrganizationId { get; set; }
-        public Organization Organization { get; set;}
+        public DateTime CreatedAt { get; set; }
     }
 }
 
