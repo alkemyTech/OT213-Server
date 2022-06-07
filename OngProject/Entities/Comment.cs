@@ -6,7 +6,7 @@ namespace OngProject.Entities
     {      
         // Fk_users id
         [Required]
-        public int User_Id {set;get;}
+        public int? UserId {set;get;}
         public User User { get; set; }
 
         [Required]
@@ -14,7 +14,7 @@ namespace OngProject.Entities
 
         // Fk_news id
         [Required]
-        public int? New_Id { get; set; }
+        public int? NewId { get; set; }
         public New New { get; set; }
     }
 
