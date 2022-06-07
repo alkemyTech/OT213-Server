@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Auth.Interfaces;
+using OngProject.Core.Business.Mail.Interfaces;
 using OngProject.Core.Models.DTOs.Users.Auth;
 using OngProject.Entities;
 
@@ -12,11 +13,13 @@ namespace OngProject.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthBusiness _authBusiness;
+        private readonly IMailBusiness _mailBusiness;
         private readonly IMapper _mapper;
 
-        public AuthenticationController(IAuthBusiness authBusiness, IMapper mapper)
+        public AuthenticationController(IAuthBusiness authBusiness, IMailBusiness mailBusiness, IMapper mapper)
         {
             this._authBusiness = authBusiness;
+            this._mailBusiness = mailBusiness;
             this._mapper = mapper;
         }
 
@@ -37,6 +40,7 @@ namespace OngProject.Controllers
 
             // request
             await _authBusiness.Registrar(_mapper.Map<User>(dto), dto.Password);
+            await _mailBusiness.SendEmailAsync(dto.Email);
 
             return Ok(new 
             {
