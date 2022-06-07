@@ -22,8 +22,8 @@ namespace OngProject.Controllers
         }
 
         [HttpGet]
-        [Route("List/Organization")]
-        public async Task<IActionResult> GetAllOrganizations()
+        [Route("List/Organization/Public")]
+        public async Task<IActionResult> GetAllOrganizationsPublic()
         {
             try
             {
@@ -37,33 +37,6 @@ namespace OngProject.Controllers
                 throw new Exception(ex.Message);
             }
         }
-
-        [HttpGet]
-        [Route("List/OrganizationById/{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(id.ToString()) || id == 0)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new
-                    {
-                        Status = "Error",
-                        Message = "Please, set an ID."
-                    });
-                }
-
-                var org = await _organizationBusiness.GetById(id);
-                return org != null 
-                           ? Ok(_mapper.Map<OrganizationGetDTO>(org))
-                           : NotFound("Organization doesn't exists");
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         
         [HttpPost]
         [Route("Create/Organization")]
