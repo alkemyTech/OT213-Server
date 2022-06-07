@@ -41,10 +41,10 @@ namespace OngProject
         {
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
-            services.AddSwaggerGen(o =>
+            services.AddSwaggerGen(c =>
             {
-                o.SwaggerDoc("v1", new OpenApiInfo { Title = "Aceleracion Alkemy Team-MJJJG", Version = "v1" });
-                o.AddSecurityDefinition("Bearer", 
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "OngProject", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", 
                 new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -54,7 +54,7 @@ namespace OngProject
                     In = ParameterLocation.Header,
                     Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
                 });
-                o.AddSecurityRequirement(new OpenApiSecurityRequirement
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
