@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Entities
 {
@@ -16,10 +17,12 @@ namespace OngProject.Entities
         public string Photo { get; set; }
         public byte[] PasswordHash {get;set;}
         public byte[] PasswordSalt {get;set;}
-        public bool softDelete { get; set; }
 
         // FK_Role id
         public int? RoleId { get; set; }
         public Role Role { get; set; }
+
+        // News Navigation property.
+        public List<Comment> Comments { set; get; }
     }
 }
