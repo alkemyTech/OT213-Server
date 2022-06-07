@@ -5,11 +5,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
+using OngProject.Core.Models.DTOs;
 using OngProject.Core.Models.DTOs.Categories;
 using OngProject.Entities;
 
 namespace OngProject.Controllers
 {
+    [Route("/categories")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -22,9 +24,9 @@ namespace OngProject.Controllers
             this._mapper = mapper;
         }
 
-         // GET List/Categories
+
         [HttpGet]    
-        [Route("List/Categories")]
+
         public async Task<IActionResult> GetAllCategories() 
         {
             try
@@ -39,9 +41,8 @@ namespace OngProject.Controllers
             }           
         }
 
-        // GET List/CategoriesById
         [HttpGet]        
-        [Route("List/CategoriesById/{id}")]
+        [Route("/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -49,9 +50,9 @@ namespace OngProject.Controllers
                 if(id == 0)
                     return BadRequest("Please, set an ID.");
 
-                var member = await _categoryBusiness.GetById(id);
-                return member != null ? Ok(_mapper.Map<CategoryGetDTO>(member)) 
-                                      : NotFound("Member doesn't exists");            
+                var category = await _categoryBusiness.GetById(id);
+                return category != null ? Ok(_mapper.Map<CategoryDetailsDTO>(category)) 
+                                      : NotFound("Category doesn't exists");            
             }
             catch (System.Exception ex)
             {
@@ -59,9 +60,8 @@ namespace OngProject.Controllers
             }
         }
 
-        // POST Create/Category
         [HttpPost]       
-        [Route("Create/Category")]
+
         public async Task<IActionResult> Create([FromBody] CategoryCreateDTO model)
         {          
             if(ModelState.IsValid)
@@ -83,9 +83,9 @@ namespace OngProject.Controllers
             });                
         }
 
-        // PUT Update/Category/{id}
+
         [HttpPut]       
-        [Route("Update/Category/{id}")]
+        [Route("/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] CategoryUpdateDTO model)
         { 
             if (id != model.Id)
@@ -135,9 +135,9 @@ namespace OngProject.Controllers
             }); 
         }
 
-        // DELETE Delete/Category/{id}
+
         [HttpDelete]       
-        [Route("Delete/Category/{id}")]
+        [Route("/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
             // validation
