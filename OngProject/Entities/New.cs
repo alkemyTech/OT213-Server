@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Entities
 {
@@ -14,6 +15,8 @@ namespace OngProject.Entities
         // FK_Categories id
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
-        public bool softDelete { get; set; }
+
+        // News Navigation property.
+        public List<Comment> Comments { set; get; }
     }
 }

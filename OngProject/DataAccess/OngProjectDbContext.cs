@@ -31,7 +31,7 @@ namespace OngProject.DataAccess
                 .HasOne<Role>(u => u.Role)
                 .WithMany(c => c.Users)
                 .HasForeignKey(u => u.RoleId);
-            
+
             modelBuilder.Entity<Slide>()
                 .HasOne<Organization>(u => u.Organization)
                 .WithMany(c => c.Slides)
@@ -55,8 +55,6 @@ namespace OngProject.DataAccess
         public DbSet<Activities> Activities { set; get; }
         public DbSet<Testimonial> Testimonials { set; get; }
         public DbSet<Contact> Contacts { set; get; }
+        public DbSet<Comment> Comments { set; get; }
     }
 }
-
-
-

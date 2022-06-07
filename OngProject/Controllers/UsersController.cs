@@ -32,7 +32,7 @@ namespace OngProject.Controllers
         {
             try
             {
-                var users = _usersBusiness.FindUsersAsync(m => m.softDelete != true);
+                var users = _usersBusiness.FindUsersAsync(m => m.IsDeleted != true);
                 return users != null ? Ok(_mapper.Map<IEnumerable<UsersDTO>>(users)) 
                                        : NotFound("The list of users has not been found");                
             }

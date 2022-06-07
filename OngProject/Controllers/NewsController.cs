@@ -31,7 +31,7 @@ namespace OngProject.Controllers
         {
             try
             {
-                var news = _newsBusiness.Find(m => m.softDelete != true);
+                var news = _newsBusiness.Find(m => m.IsDeleted != true);
                 return news != null ? Ok(_mapper.Map<IEnumerable<NewsDTO>>(news)) 
                                        : NotFound("The list of news has not been found");                
             }
