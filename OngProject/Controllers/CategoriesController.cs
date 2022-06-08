@@ -11,14 +11,14 @@ using OngProject.Entities;
 
 namespace OngProject.Controllers
 {
-    [Route("/categories")]
+    [Route("/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private readonly ICategoryBusiness _categoryBusiness;
         private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryBusiness categoryBusiness, IMapper mapper)
+        public CategoriesController(ICategoryBusiness categoryBusiness, IMapper mapper)
         {
             this._categoryBusiness = categoryBusiness;
             this._mapper = mapper;
@@ -32,7 +32,7 @@ namespace OngProject.Controllers
             try
             {
                 var categories =  _categoryBusiness.Find(c => c.IsDeleted == false);
-                return categories != null ? Ok(_mapper.Map<IEnumerable<CategoryGetDTO>>(categories)) 
+                return categories != null ? Ok(_mapper.Map<IEnumerable<CommentDTO>>(categories)) 
                                        : NotFound("The list of categories has not been found");                
             }
             catch (System.Exception ex)
