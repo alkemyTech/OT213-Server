@@ -25,9 +25,9 @@ namespace OngProject.Controllers
         }
 
 
-        [HttpGet]    
-
-        public async Task<IActionResult> GetAllComment() 
+        [HttpGet]
+        [Route("/Comments")]
+        public async Task<IActionResult> GetAllComments() 
         {
             try
             {
@@ -42,8 +42,8 @@ namespace OngProject.Controllers
         }
 
 
-        [HttpPost]       
-
+        [HttpPost]
+        [Route("/Comments")]
         public async Task<IActionResult> Create([FromBody] CommentCreateDTO model)
         {          
             if(ModelState.IsValid)
@@ -67,7 +67,7 @@ namespace OngProject.Controllers
 
         //user o admin
         [HttpPut]       
-        [Route("/{id}")]
+        [Route("/Comments/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] CommentUpdateDTO model)
         { 
             if (id != model.Id)
@@ -119,7 +119,7 @@ namespace OngProject.Controllers
 
         //user o admin
         [HttpDelete]       
-        [Route("/{id}")]
+        [Route("/Comments/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
             // validation

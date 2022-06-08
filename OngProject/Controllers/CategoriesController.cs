@@ -11,7 +11,7 @@ using OngProject.Entities;
 
 namespace OngProject.Controllers
 {
-    [Route("/[controller]")]
+    //[Route("/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
@@ -25,8 +25,8 @@ namespace OngProject.Controllers
         }
 
 
-        [HttpGet]    
-
+        [HttpGet]
+        [Route("/Categories")]
         public async Task<IActionResult> GetAllCategories() 
         {
             try
@@ -42,7 +42,7 @@ namespace OngProject.Controllers
         }
 
         [HttpGet]        
-        [Route("/{id}")]
+        [Route("/Categories/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -60,8 +60,8 @@ namespace OngProject.Controllers
             }
         }
 
-        [HttpPost]       
-
+        [HttpPost]
+        [Route("/Categories")]
         public async Task<IActionResult> Create([FromBody] CategoryCreateDTO model)
         {          
             if(ModelState.IsValid)
@@ -85,7 +85,7 @@ namespace OngProject.Controllers
 
 
         [HttpPut]       
-        [Route("/{id}")]
+        [Route("/Categories/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] CategoryUpdateDTO model)
         { 
             if (id != model.Id)
@@ -137,7 +137,7 @@ namespace OngProject.Controllers
 
 
         [HttpDelete]       
-        [Route("/{id}")]
+        [Route("/Categories/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
             // validation
