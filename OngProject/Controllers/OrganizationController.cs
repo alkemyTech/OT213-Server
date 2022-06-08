@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs.Organizations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OngProject.Controllers
 {
@@ -62,6 +63,7 @@ namespace OngProject.Controllers
 
         
         [HttpPost]
+        //[Authorize(Roles = "Admin")]
         [Route("Update/Organization/Public/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] OrganizationUpdateDTO organizationUpdateDTO)
         {            

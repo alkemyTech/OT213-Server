@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs.Members;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OngProject.Controllers
 {
@@ -23,6 +24,7 @@ namespace OngProject.Controllers
 
         // GET List/Members
         [HttpGet]    
+        //[Authorize(Roles = "Admin")]
         [Route("List/Members")]
         public async Task<IActionResult> GetAllMembers() 
         {

@@ -7,8 +7,9 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs.Activities;
-    
-    namespace OngProject.Controllers
+using Microsoft.AspNetCore.Authorization;
+
+namespace OngProject.Controllers
 {
     [ApiController]
     public class ActivitiesController : ControllerBase
@@ -65,6 +66,7 @@ using OngProject.Core.Models.DTOs.Activities;
         }
 
         [HttpPost]
+        //[Authorize(Roles = "Admin")]
         [Route("Create/Activity")]
         public async Task<IActionResult> Create([FromBody] ActivityCreateDTO activityCreateDTO)
         {
@@ -88,6 +90,7 @@ using OngProject.Core.Models.DTOs.Activities;
 
 
         [HttpPut]
+        //[Authorize(Roles = "Admin")]
         [Route("Update/Activity/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] ActivityUpdateDTO activityUpdateDTO)
         {
