@@ -86,7 +86,8 @@ namespace OngProject
             services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IMailRepository, MailRepository>();
-
+            services.AddTransient<ISlidesRepository, SlidesRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
             //Unit of Work DI (Dependency Injection)
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -99,6 +100,8 @@ namespace OngProject
             services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
             services.AddScoped<ICategoryBusiness, CategoryBusiness>();
             services.AddTransient<IMailBusiness, MailBusiness>();
+            services.AddTransient<ISlidesBusiness, SlidesBusiness>();
+            services.AddTransient<ICommentBusiness, CommentBusiness>();
 
             //Amazon S3 configure service & DI
             services.AddScoped<IAmazonHelperService, AmazonHelperService>();            

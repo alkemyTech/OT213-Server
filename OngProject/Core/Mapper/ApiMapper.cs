@@ -1,6 +1,7 @@
 using AutoMapper;
 using OngProject.Core.Models.DTOs;
 using OngProject.Core.Models.DTOs.Activities;
+using OngProject.Core.Models.DTOs.Categories;
 using OngProject.Core.Models.DTOs.Members;
 using OngProject.Core.Models.DTOs.Organizations;
 using OngProject.Core.Models.DTOs.Testimonial;
@@ -44,6 +45,26 @@ namespace OngProject.Core.Mapper
             CreateMap<Testimonial, TestimonialGetDTO>().ReverseMap();
             CreateMap<Testimonial, TestimonialCreateDTO>().ReverseMap();
             CreateMap<Testimonial, TestimonialUpdateDTO>().ReverseMap();
+            #endregion
+
+            #region Categories Mapper
+            CreateMap<Category, CategoryGetDTO>().ReverseMap();
+            CreateMap<Category, CategoryCreateDTO>().ReverseMap();
+            CreateMap<Category, CategoryDetailsDTO>().ReverseMap();
+            CreateMap<Category, CategoryUpdateDTO>().ReverseMap();
+            #endregion
+
+            #region Slides Mapper
+            CreateMap<Slide, SlideCreateDTO>().ReverseMap();
+            CreateMap<Slide, SlideDetailsDTO>().ReverseMap();
+            CreateMap<Slide, SlideUpdateDTO>().ReverseMap();
+            CreateMap<Slide, SlideGetDTO>().ReverseMap();
+            #endregion
+
+            #region Comments Mapper
+            CreateMap<Comment, CommentDTO>().ReverseMap();
+            CreateMap<Comment, CommentCreateDTO>().ReverseMap();
+            CreateMap<Comment, CommentUpdateDTO>().ReverseMap();
             #endregion
         }
     }

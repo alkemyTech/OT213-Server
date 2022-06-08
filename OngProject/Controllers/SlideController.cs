@@ -12,7 +12,7 @@ using OngProject.Core.Models.DTOs;
 
 namespace OngProject.Controllers
 {
-    [Route("/Slides")]
+    
     [ApiController]
     public class SlideController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace OngProject.Controllers
         }
 
         [HttpGet]
-
+        [Route("/Slides")]
         public async Task<IActionResult> GetAllSlides()
         {
             try
@@ -42,7 +42,7 @@ namespace OngProject.Controllers
         }
 
         [HttpGet]
-        [Route("/{id}")]
+        [Route("/Slides/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -61,7 +61,7 @@ namespace OngProject.Controllers
         }
 
         [HttpPost]
-
+        [Route("/Slides")]
         public async Task<IActionResult> Create([FromBody] SlideCreateDTO model)
         {
             if (ModelState.IsValid)
@@ -85,7 +85,7 @@ namespace OngProject.Controllers
 
 
         [HttpPut]
-        [Route("/{id}")]
+        [Route("/Slides/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] SlideUpdateDTO model)
         {
             if (id != model.Id)
@@ -137,7 +137,7 @@ namespace OngProject.Controllers
 
 
         [HttpDelete]
-        [Route("/{id}")]
+        [Route("/Slides/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
             // validation

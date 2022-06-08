@@ -11,29 +11,29 @@ using OngProject.Entities;
 
 namespace OngProject.Controllers
 {
-    [Route("/categories")]
+    [Route("/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CommentsController : ControllerBase
     {
-        private readonly ICategoryBusiness _categoryBusiness;
+        private readonly ICommentBusiness _commentBusiness;
         private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryBusiness categoryBusiness, IMapper mapper)
+        public CommentsController(ICommentBusiness commentBusiness, IMapper mapper)
         {
-            this._categoryBusiness = categoryBusiness;
+            this._commentBusiness = commentBusiness;
             this._mapper = mapper;
         }
 
 
-        [HttpGet]    
-
-        public async Task<IActionResult> GetAllCategories() 
+        [HttpGet]
+        [Route("/Comments")]
+        public async Task<IActionResult> GetAllComments() 
         {
             try
             {
-                var categories =  _categoryBusiness.Find(c => c.IsDeleted == false);
-                return categories != null ? Ok(_mapper.Map<IEnumerable<CategoryGetDTO>>(categories)) 
-                                       : NotFound("The list of categories has not been found");                
+                var comments = _commentBusiness.Find(c => c.IsDeleted == false);
+                return comments != null ? Ok(_mapper.Map<IEnumerable<CommentDTO>>(comments)) 
+                                       : NotFound("The list of comments has not been found");                
             }
             catch (System.Exception ex)
             {
@@ -41,35 +41,17 @@ namespace OngProject.Controllers
             }           
         }
 
-        [HttpGet]        
-        [Route("/{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                if(id == 0)
-                    return BadRequest("Please, set an ID.");
 
-                var category = await _categoryBusiness.GetById(id);
-                return category != null ? Ok(_mapper.Map<CategoryDetailsDTO>(category)) 
-                                      : NotFound("Category doesn't exists");            
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpPost]       
-
-        public async Task<IActionResult> Create([FromBody] CategoryCreateDTO model)
+        [HttpPost]
+        [Route("/Comments")]
+        public async Task<IActionResult> Create([FromBody] CommentCreateDTO model)
         {          
             if(ModelState.IsValid)
             {
                 try
                 {
                     // request                    
-                    await _categoryBusiness.Insert(_mapper.Map<Category>(model));
+                    await _commentBusiness.Insert(_mapper.Map<Comment>(model));
                 }
                 catch (System.Exception ex)
                 {
@@ -79,14 +61,14 @@ namespace OngProject.Controllers
             return Ok(new 
             {
                 Status = "Success",
-                Message = "Category creation successfully!"
+                Message = "Comment creation successfully!"
             });                
         }
 
-
+        //user o admin
         [HttpPut]       
-        [Route("/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] CategoryUpdateDTO model)
+        [Route("/Comments/{id}")]
+        public async Task<IActionResult> Edit(int id, [FromBody] CommentUpdateDTO model)
         { 
             if (id != model.Id)
             {
@@ -101,19 +83,19 @@ namespace OngProject.Controllers
             {
                 try
                 {
-                    var categories = await _categoryBusiness.GetById(id);
-                    if(categories == null)
+                    var comments = await _commentBusiness.GetById(id);
+                    if(comments == null)
                     {
                         return StatusCode(StatusCodes.Status400BadRequest, new
                         {
                             Status = "Error",
-                            Message = "Category cannot be null."
+                            Message = "Comment cannot be null."
                         });    
                     }
 
                     // Mapping and request
-                    _mapper.Map(model,categories);               
-                    var updated = await _categoryBusiness.Update(categories);
+                    _mapper.Map(model, comments);               
+                    var updated = await _commentBusiness.Update(comments);
                     if(updated != null)
                     {
                         return StatusCode(StatusCodes.Status400BadRequest, new
@@ -131,13 +113,13 @@ namespace OngProject.Controllers
             return Ok(new 
             {
                 Status = "Success",
-                Message = "Category updated successfully!"
+                Message = "Comment updated successfully!"
             }); 
         }
 
-
+        //user o admin
         [HttpDelete]       
-        [Route("/{id}")]
+        [Route("/Comments/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
             // validation
@@ -146,15 +128,15 @@ namespace OngProject.Controllers
 
             try
             {
-                var category = await _categoryBusiness.GetById(id.Value);
+                var comment = await _commentBusiness.GetById(id.Value);
 
-                if(category == null)
-                    return NotFound("Category not found or doesn't exist.");
+                if(comment == null)
+                    return NotFound("Comment not found or doesn't exist.");
 
-                await _categoryBusiness.SoftDelete(category, id);
-                await _categoryBusiness.Update(category);
+                await _commentBusiness.SoftDelete(comment, id);
+                await _commentBusiness.Update(comment);
 
-                return Ok("Category deleted successfully.");
+                return Ok("Comment deleted successfully.");
             }
             catch (Exception ex)
             {

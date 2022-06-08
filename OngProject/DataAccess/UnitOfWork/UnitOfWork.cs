@@ -22,6 +22,7 @@ namespace OngProject.DataAccess.UnitOfWork
 
         public IUsersRepository Users { get; private set; }
         public ISlidesRepository Slides { get; private set; }
+        public ICommentRepository Comments { get; private set; }
 
 
         public UnitOfWork(OngProjectDbContext context)
@@ -36,6 +37,8 @@ namespace OngProject.DataAccess.UnitOfWork
             Organizations = new OrganizationRepository(_context);
             Activities = new ActivitiesRepository(_context);
             Categories = new CategoryRepository(_context);
+            Comments = new CommentRepository(_context);
+            Slides = new SlidesRepository(_context);
         }
 
         public async Task SaveAsync()

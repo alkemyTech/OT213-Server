@@ -18,6 +18,7 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
         IActivitiesRepository Activities { get; }
         ITestimonialRepository Testimonials { get; }
         ISlidesRepository Slides { get; }
+        ICommentRepository Comments { get; }
         Task SaveAsync();
 
     }

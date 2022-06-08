@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using OngProject.Entities;
+using OngProject.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using OngProject.Entities;
-using OngProject.Repositories.Interfaces;
 
 namespace OngProject.Repositories
 {
@@ -17,7 +17,7 @@ namespace OngProject.Repositories
             Is protetected to be implemented in each entity repository. (e.g. MemberReposirory.cs)
         */
         protected DbContext context;
-        
+
         public GenericRepository(DbContext context)
         {
             this.context = context;
@@ -28,7 +28,7 @@ namespace OngProject.Repositories
         {
             var entity = await GetById(id);
 
-            if(entity == null)
+            if (entity == null)
                 throw new Exception("The entity is null");
 
             context.Set<TEntity>().Remove(entity);
@@ -82,12 +82,12 @@ namespace OngProject.Repositories
                     ! (null-forgiving) operator to confirm that "id" isn't null here
                     If "value" isn't null return "isDeleted" as true.
                 */
-                var value = await GetById(id!.Value); 
-                if(value == null)
-                    throw new Exception("The entity is null"); 
+                var value = await GetById(id!.Value);
+                if (value == null)
+                    throw new Exception("The entity is null");
 
-                var Ent = entity.IsDeleted = true; 
-                return entity.IsDeleted = true;                    
+                var Ent = entity.IsDeleted = true;
+                return entity.IsDeleted = true;
             }
             catch (System.Exception ex)
             {
