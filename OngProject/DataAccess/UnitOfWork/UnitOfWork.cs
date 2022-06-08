@@ -38,6 +38,7 @@ namespace OngProject.DataAccess.UnitOfWork
             Activities = new ActivitiesRepository(_context);
             Categories = new CategoryRepository(_context);
             Comments = new CommentRepository(_context);
+            Slides = new SlidesRepository(_context);
         }
 
         public async Task SaveAsync()

@@ -32,7 +32,7 @@ namespace OngProject.Controllers
             try
             {
                 var categories =  _categoryBusiness.Find(c => c.IsDeleted == false);
-                return categories != null ? Ok(_mapper.Map<IEnumerable<CommentDTO>>(categories)) 
+                return categories != null ? Ok(_mapper.Map<IEnumerable<CategoryGetDTO>>(categories)) 
                                        : NotFound("The list of categories has not been found");                
             }
             catch (System.Exception ex)
