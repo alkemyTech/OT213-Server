@@ -12,6 +12,7 @@ namespace OngProject.Core.Mapper
             return new Role()
             {
                 Name = roleDto.Name,
+                Description = roleDto.Description
             };
         }
 
