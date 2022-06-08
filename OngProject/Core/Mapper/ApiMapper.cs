@@ -1,4 +1,5 @@
 using AutoMapper;
+using OngProject.Core.Models.DTOs;
 using OngProject.Core.Models.DTOs.Activities;
 using OngProject.Core.Models.DTOs.Members;
 using OngProject.Core.Models.DTOs.Organizations;
@@ -21,9 +22,10 @@ namespace OngProject.Core.Mapper
             CreateMap<Member, MemberUpdateModelDTO>().ReverseMap();
             #endregion
             
-            #region Mapper Users      
+            #region Mapper Users & Rol      
             // Register -> Users
             CreateMap<User, UserRegisterModelDTO>().ReverseMap();
+            CreateMap<Role, RoleModelDto>().ReverseMap();
             #endregion
 
             #region Organization Mapper
