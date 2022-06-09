@@ -7,6 +7,7 @@ namespace OngProject.Repositories.Auth.Interfaces
     {
         Task<User> Registrar(User user, string pass);
         Task<bool> ExistsUser(string email);
+        Task<bool> Login(User user, string pass);
     }
 }
 

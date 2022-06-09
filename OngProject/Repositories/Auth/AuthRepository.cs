@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OngProject.DataAccess;
@@ -18,7 +19,7 @@ namespace OngProject.Repositories.Auth
         #region Validate User 
         public async Task<bool> ExistsUser(string email)
         {
-            if(await _context.Users.AnyAsync(u => u.Email == email))
+            if (await _context.Users.AnyAsync(u => u.Email == email))
                 return true;
 
             return false;
@@ -27,6 +28,23 @@ namespace OngProject.Repositories.Auth
 
         #region Login User 
         // Wrie here the login code...
+        public async Task<bool> Login(User user, string pass)
+        {
+
+            if (!VerifyPasswordHash(user.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        private bool VerifyPasswordHash(string pass, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(pass));
+            return computedHash.SequenceEqual(passwordHash);
+        }
         #endregion 
 
         #region Register User 
@@ -56,6 +74,5 @@ namespace OngProject.Repositories.Auth
         }
         #endregion
     }
-
 }
 

@@ -29,7 +29,7 @@ namespace OngProject.Controllers
         {
             // validations
             dto.Email = dto.Email.ToLower();
-            if(await _authBusiness.ExistsUser(dto.Email))
+            if (await _authBusiness.ExistsUser(dto.Email))
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new
                 {
@@ -42,11 +42,23 @@ namespace OngProject.Controllers
             await _authBusiness.Registrar(_mapper.Map<User>(dto), dto.Password);
             await _mailBusiness.SendEmailAsync(dto.Email);
 
-            return Ok(new 
+            return Ok(new
             {
                 Status = "Success",
                 Message = "User creation successfully!"
-            }); 
+            });
+        }
+
+        [HttpPost]
+        [Route("auth/login")]
+        public async Task<IActionResult> Login(UserLoginDTO user)
+        {
+            if(!await _authBusiness.ExistsUser(user.Email))
+            {
+                return BadRequest("User doesn't exist");
+            }
+            if(_authBusiness.Login(credentials user.Password, ))
+            return Ok(user);
         }
 
     }
