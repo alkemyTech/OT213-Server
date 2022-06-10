@@ -8,10 +8,13 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OngProject.Controllers
 {
+       
     [ApiController]
+    [Authorize(Roles = "Admin")]    
     public class NewsController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -42,7 +45,7 @@ namespace OngProject.Controllers
         }
 
         // GET List/NewsById
-        [HttpGet]        
+        [HttpGet]    
         [Route("List/NewsById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {

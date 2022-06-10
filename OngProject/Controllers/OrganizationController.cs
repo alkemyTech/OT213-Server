@@ -63,7 +63,7 @@ namespace OngProject.Controllers
 
         
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("Update/Organization/Public/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] OrganizationUpdateDTO organizationUpdateDTO)
         {            
