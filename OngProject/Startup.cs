@@ -1,11 +1,15 @@
 using System.Collections.Generic;
+using System.Text;
 using Amazon.S3;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OngProject.Core.Auth.Interfaces;
 using OngProject.Core.Business;
@@ -18,6 +22,7 @@ using OngProject.Core.Interfaces;
 using OngProject.DataAccess;
 using OngProject.DataAccess.UnitOfWork;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
+using OngProject.Entities;
 using OngProject.Repositories;
 using OngProject.Repositories.Auth;
 using OngProject.Repositories.Auth.Interfaces;
@@ -70,6 +75,20 @@ namespace OngProject
                 });
             });
 
+            // DI to Configure token and Authentication
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(option => 
+                {
+                    ///option.SaveToken = true;                    
+                    option.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Token"])),
+                        ValidateIssuer = false,
+                        ValidateAudience = false   
+                    };
+                });
+
             // Get ConectionString via User Secrets
             this._OngConectionString = Configuration["ConnectionStrings:OngProjectConnection"];
             services.AddDbContext<OngProjectDbContext>(x => x.UseSqlServer(_OngConectionString));
@@ -88,6 +107,7 @@ namespace OngProject
             services.AddTransient<IMailRepository, MailRepository>();
             services.AddTransient<ISlidesRepository, SlidesRepository>();
             services.AddTransient<ICommentRepository, CommentRepository>();
+            
             //Unit of Work DI (Dependency Injection)
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -102,10 +122,12 @@ namespace OngProject
             services.AddTransient<IMailBusiness, MailBusiness>();
             services.AddTransient<ISlidesBusiness, SlidesBusiness>();
             services.AddTransient<ICommentBusiness, CommentBusiness>();
+            services.AddScoped<ITokenService, TokenService>();
 
             //Amazon S3 configure service & DI
             services.AddScoped<IAmazonHelperService, AmazonHelperService>();            
             services.AddAWSService<IAmazonS3>();
+
 
         
         }
@@ -125,6 +147,7 @@ namespace OngProject
             app.UseRouting();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
