@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace OngProject.Core.Models.DTOs.Users.Auth
 {
@@ -16,7 +17,7 @@ namespace OngProject.Core.Models.DTOs.Users.Auth
         [Required]
         [MinLength(6)]
         public string Password { get; set; }
-        public string Photo { get; set; } 
+        public IFormFile Photo { get; set; } 
     }
 
 }
