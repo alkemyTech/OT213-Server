@@ -18,9 +18,15 @@ namespace OngProject.Core.Business.Auth
         public async Task<bool> ExistsUser(string email)
         {
             var exists = await _authRepo.ExistsUser(email);
-            await _uow.SaveAsync();
             return exists; 
         }
+
+        public async Task<User> Login(string email, string pass)
+        {
+            var login = await _authRepo.Login(email, pass);
+            return login;
+        }
+
         public async Task<User> Registrar(User user, string pass)
         {
             var register = await _authRepo.Registrar(user, pass);
