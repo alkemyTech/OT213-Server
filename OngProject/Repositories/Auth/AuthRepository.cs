@@ -1,4 +1,6 @@
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OngProject.DataAccess;
@@ -26,8 +28,31 @@ namespace OngProject.Repositories.Auth
         #endregion
 
         #region Login User 
-        // Wrie here the login code...
-        #endregion 
+        public async Task<User> Login(string email, string pass)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if(user == null)
+                return null;
+            
+            var verify = VerifyPasswordHash(pass, user.PasswordHash, user.PasswordSalt);
+            if(!verify)
+                return null;
+            return user;
+        }
+
+        private bool VerifyPasswordHash(string pass, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computeHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(pass));
+                for (int i = 0; i < computeHash.Length; i++)
+                {
+                    if(computeHash[i] != computeHash[i]) return false;
+                }
+            }
+            return true;
+        }
+        #endregion
 
         #region Register User 
         public async Task<User> Registrar(User user, string pass)
@@ -48,10 +73,10 @@ namespace OngProject.Repositories.Auth
 
         private void CreatePasswordHash(string pass, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            using (var hmac = new HMACSHA512())
             {
                 passwordHash = hmac.Key;
-                passwordSalt = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(pass));
+                passwordSalt = hmac.ComputeHash(Encoding.UTF8.GetBytes(pass));
             }
         }
         #endregion

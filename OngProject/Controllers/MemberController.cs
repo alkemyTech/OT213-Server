@@ -24,7 +24,7 @@ namespace OngProject.Controllers
 
         // GET List/Members
         [HttpGet]    
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("List/Members")]
         public async Task<IActionResult> GetAllMembers() 
         {

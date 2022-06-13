@@ -2,18 +2,18 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Entities;
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using OngProject.Core.Models;
 using OngProject.Core.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OngProject.Controllers
 {
-    
+
     [ApiController]
+    [Authorize(Roles = "Admin")]      
     public class SlideController : ControllerBase
     {
         private readonly ISlidesBusiness _slideBusiness;

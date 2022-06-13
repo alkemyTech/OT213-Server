@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
@@ -11,8 +12,9 @@ using OngProject.Entities;
 
 namespace OngProject.Controllers
 {
-    //[Route("/[controller]")]
+    
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryBusiness _categoryBusiness;
@@ -41,7 +43,7 @@ namespace OngProject.Controllers
             }           
         }
 
-        [HttpGet]        
+        [HttpGet]       
         [Route("/Categories/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -84,7 +86,7 @@ namespace OngProject.Controllers
         }
 
 
-        [HttpPut]       
+        [HttpPut]     
         [Route("/Categories/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] CategoryUpdateDTO model)
         { 
@@ -136,7 +138,7 @@ namespace OngProject.Controllers
         }
 
 
-        [HttpDelete]       
+        [HttpDelete]      
         [Route("/Categories/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {

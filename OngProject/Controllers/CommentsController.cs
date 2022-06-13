@@ -1,12 +1,13 @@
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs;
-using OngProject.Core.Models.DTOs.Categories;
 using OngProject.Entities;
 
 namespace OngProject.Controllers
@@ -26,12 +27,13 @@ namespace OngProject.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [Route("/Comments")]
         public async Task<IActionResult> GetAllComments() 
         {
             try
             {
-                var comments = _commentBusiness.Find(c => c.IsDeleted == false);
+                var comments = _commentBusiness.Find(c => c.IsDeleted == false);//.OrderBy(c => c.CreatedAt);
                 return comments != null ? Ok(_mapper.Map<IEnumerable<CommentDTO>>(comments)) 
                                        : NotFound("The list of comments has not been found");                
             }
@@ -66,7 +68,8 @@ namespace OngProject.Controllers
         }
 
         //user o admin
-        [HttpPut]       
+        [HttpPut]  
+        [Authorize(Roles = "Owner, Admin")]     
         [Route("/Comments/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] CommentUpdateDTO model)
         { 
@@ -118,7 +121,8 @@ namespace OngProject.Controllers
         }
 
         //user o admin
-        [HttpDelete]       
+        [HttpDelete]    
+        [Authorize(Roles = "Owner, Admin")]     
         [Route("/Comments/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {

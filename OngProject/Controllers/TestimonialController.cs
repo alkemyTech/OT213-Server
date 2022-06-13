@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.Core.Mapper;
 using OngProject.Core.Models.DTOs.Testimonial;
-using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,6 +13,7 @@ namespace OngProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]      
     public class TestimonialController : ControllerBase
     {
         private readonly ITestimonialBusiness _testimonialBusiness;

@@ -66,7 +66,7 @@ namespace OngProject.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("Create/Activity")]
         public async Task<IActionResult> Create([FromBody] ActivityCreateDTO activityCreateDTO)
         {
@@ -90,7 +90,7 @@ namespace OngProject.Controllers
 
 
         [HttpPut]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("Update/Activity/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] ActivityUpdateDTO activityUpdateDTO)
         {
