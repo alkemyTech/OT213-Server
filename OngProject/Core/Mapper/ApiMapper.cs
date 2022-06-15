@@ -15,17 +15,13 @@ namespace OngProject.Core.Mapper
         public ApiMapper()
         {     
             #region Mapper Members      
-            // GetRequest -> Member
             CreateMap<Member, MemberGetModelDTO>().ReverseMap();
-            // CreateRequest -> Member
             CreateMap<Member, MemberCreateModelDTO>().ReverseMap();
-            // UpdateRequest -> Member
             CreateMap<Member, MemberUpdateModelDTO>().ReverseMap();
             #endregion
             
             #region Mapper Users & Rol      
-            // Register -> Users
-            CreateMap<User, UserRegisterModelDTO>().ReverseMap();
+            CreateMap<User, UserAuthDTO>().ReverseMap();
             CreateMap<User, UserGetModelDTO>();
             CreateMap<User, UsersDTO>().ReverseMap();
             CreateMap<Role, RoleModelDto>().ReverseMap();
