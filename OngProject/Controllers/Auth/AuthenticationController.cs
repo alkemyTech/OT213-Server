@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Auth.Interfaces;
 using OngProject.Core.Business.Mail.Interfaces;
@@ -31,36 +30,34 @@ namespace OngProject.Controllers
 
         [HttpPost]
         [Route("Auth/Register")]
-        public async Task<IActionResult> Register([FromForm] UserRegisterModelDTO dto)
+        public async Task<IActionResult> Register([FromForm] UserAuthDTO dto)
         {
-            // validations
             dto.Email = dto.Email.ToLower();
             if(await _authBusiness.ExistsUser(dto.Email))
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, new
-                {
-                    Status = "Error",
-                    Message = "User already exists!"
-                });
-            }
+                return BadRequest("User already exists!");           
 
-            // request
             var user = await _authBusiness.Registrar(_mapper.Map<User>(dto), dto.Password);
-            //var imgFormat = ver como convertir el IFormFile a url antes de mapear el usuario
             var mappedUser = _mapper.Map<UserGetModelDTO>(user);
             await _mailBusiness.SendEmailAsync(dto.Email);
+
+            var validate = await _authBusiness.Login(dto.Email, dto.Password);
+            if(validate == null)
+                return Unauthorized(); 
+
+            var token = _tokenService.CreateToken(validate); 
 
             return Ok(new 
             {
                 Status = "Success",
                 Message = "User registered successfully!",
-                User = mappedUser
+                User = mappedUser,
+                Token = token
             }); 
         }
 
         [HttpPost]
         [Route("Auth/Login")]
-        public async Task<IActionResult> Login(UserLoginModelDTO dto)
+        public async Task<IActionResult> Login(UserAuthDTO dto)
         {
             var user = await _authBusiness.Login(dto.Email, dto.Password);
             if(user == null)

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace OngProject.Core.Models.DTOs.Users.Auth
 {
-    public class UserRegisterModelDTO
+    public class UserAuthDTO
     {
         [Required]
 	    [MinLength(6)]
