@@ -27,6 +27,7 @@ namespace OngProject.Core.Mapper
             // Register -> Users
             CreateMap<User, UserRegisterModelDTO>().ReverseMap();
             CreateMap<User, UserGetModelDTO>();
+            CreateMap<User, UsersDTO>().ReverseMap();
             CreateMap<Role, RoleModelDto>().ReverseMap();
             #endregion
 
