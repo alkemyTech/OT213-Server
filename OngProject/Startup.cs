@@ -129,8 +129,7 @@ namespace OngProject
             services.AddScoped<IAmazonHelperService, AmazonHelperService>();            
             services.AddAWSService<IAmazonS3>();
 
-            //service http
-            //services.AddScoped<IHttpContextAccessor>();
+            //service HttpContextAccessor to get claims
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
