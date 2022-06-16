@@ -4,7 +4,7 @@ using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +22,6 @@ using OngProject.Core.Interfaces;
 using OngProject.DataAccess;
 using OngProject.DataAccess.UnitOfWork;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
-using OngProject.Entities;
 using OngProject.Repositories;
 using OngProject.Repositories.Auth;
 using OngProject.Repositories.Auth.Interfaces;
@@ -129,6 +128,10 @@ namespace OngProject
             //Amazon S3 configure service & DI
             services.AddScoped<IAmazonHelperService, AmazonHelperService>();            
             services.AddAWSService<IAmazonS3>();
+
+            //service http
+            //services.AddScoped<IHttpContextAccessor>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
         
