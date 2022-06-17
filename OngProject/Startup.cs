@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Text;
 using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +24,7 @@ using OngProject.Core.Interfaces;
 using OngProject.DataAccess;
 using OngProject.DataAccess.UnitOfWork;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
+using OngProject.Middleware;
 using OngProject.Repositories;
 using OngProject.Repositories.Auth;
 using OngProject.Repositories.Auth.Interfaces;
@@ -131,6 +134,9 @@ namespace OngProject
 
             //service HttpContextAccessor to get claims
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //Service middleware error handler
+            services.AddSingleton<IAuthorizationMiddlewareResultHandler, AuthorizationMiddlewareHandlerService>();
 
 
         
