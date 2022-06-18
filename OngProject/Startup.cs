@@ -154,6 +154,8 @@ namespace OngProject
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<AccessDeniedMiddleware>();
+
             app.UseRouting();
 
             app.UseAuthentication();
