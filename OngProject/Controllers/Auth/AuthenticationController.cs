@@ -1,9 +1,13 @@
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Auth.Interfaces;
 using OngProject.Core.Business.Mail.Interfaces;
 using OngProject.Core.Helper.Interface;
+using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.Users.Auth;
 using OngProject.Entities;
 
@@ -16,16 +20,22 @@ namespace OngProject.Controllers
         private readonly IMailBusiness _mailBusiness;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _accessor;
+        private readonly IUsersBusiness _userBusiness;
 
         public AuthenticationController(IAuthBusiness authBusiness, 
                                         IMailBusiness mailBusiness, 
                                         IMapper mapper,
-                                        ITokenService token)
+                                        ITokenService token,
+                                        IHttpContextAccessor accessor,
+                                        IUsersBusiness userBusiness)
         {
             this._authBusiness = authBusiness;
             this._mailBusiness = mailBusiness;
             this._mapper = mapper;
             this._tokenService = token;
+            this._accessor = accessor;
+            this._userBusiness = userBusiness;
         }
 
         [HttpPost]
@@ -38,6 +48,7 @@ namespace OngProject.Controllers
 
             var user = await _authBusiness.Registrar(_mapper.Map<User>(dto), dto.Password);
             var mappedUser = _mapper.Map<UserGetModelDTO>(user);
+            
             await _mailBusiness.SendEmailAsync(dto.Email);
 
             var validate = await _authBusiness.Login(dto.Email, dto.Password);
@@ -57,7 +68,7 @@ namespace OngProject.Controllers
 
         [HttpPost]
         [Route("Auth/Login")]
-        public async Task<IActionResult> Login(UserAuthDTO dto)
+        public async Task<IActionResult> Login(UserAuthLoginDTO dto)
         {
             var user = await _authBusiness.Login(dto.Email, dto.Password);
             if(user == null)
@@ -68,6 +79,23 @@ namespace OngProject.Controllers
             return Ok(new 
             {
                 Token = token
+            });         
+        }
+
+        [HttpGet]
+        [Route("Auth/Me")]
+        public async Task<IActionResult> GetMe()
+        {            
+            var email = _accessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            if(email == null)
+                return BadRequest("The claim is null, you have to login first");
+
+            var entity = _userBusiness.Find(u => u.Email == email); 
+            var mappedUser = _mapper.Map<IEnumerable<UserGetModelDTO>>(entity);            
+
+            return Ok(new 
+            {
+                Entity = mappedUser
             });         
         }
 
