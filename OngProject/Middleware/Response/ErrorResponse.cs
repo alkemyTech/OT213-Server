@@ -1,16 +1,16 @@
+using System.Text.Json;
 using OngProject.Enum;
 
 namespace OngProject.Middleware.Response
 {
     public class ErrorResponse
     {
-        public ResponseCode ResponseCode {set;get;}
+        public int StatusCode {set;get;}
         public string Message {set;get;}
 
-        public ErrorResponse(ResponseCode responseCode, string message)
+        public override string ToString()
         {
-            this.ResponseCode = responseCode;
-            this.Message = message;
+            return JsonSerializer.Serialize(this);
         }
     }
 
