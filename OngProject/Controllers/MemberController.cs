@@ -26,18 +26,11 @@ namespace OngProject.Controllers
         [HttpGet]    
         [Authorize(Roles = "Admin")]
         [Route("List/Members")]
-        public async Task<IActionResult> GetAllMembers() 
+        public IActionResult GetAllMembers() 
         {
-            try
-            {
-                var members = _memberBusiness.Find(m => m.IsDeleted == false);
-                return members != null ? Ok(_mapper.Map<IEnumerable<MemberGetModelDTO>>(members)) 
-                                       : NotFound("The list of members has not been found");                
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }           
+            var members = _memberBusiness.Find(m => m.IsDeleted == false);
+            return members != null ? Ok(_mapper.Map<IEnumerable<MemberGetModelDTO>>(members)) 
+                                   : NotFound("The list of members has not been found");                
         }
 
         // GET List/MemberById
@@ -45,25 +38,9 @@ namespace OngProject.Controllers
         [Route("List/MemberById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            try
-            {
-                if(string.IsNullOrEmpty(id.ToString()) || id == 0)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new
-                    {
-                        Status = "Error",
-                        Message = "Please, set an ID."
-                    }); 
-                }
-
-                var member = await _memberBusiness.GetById(id);
-                return member != null ? Ok(_mapper.Map<MemberGetModelDTO>(member)) 
-                                      : NotFound("Member doesn't exists");            
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var member = await _memberBusiness.GetById(id);
+            return member != null ? Ok(_mapper.Map<MemberGetModelDTO>(member)) 
+                                  : NotFound("Member doesn't exists");            
         }
 
         // POST Create/Member
@@ -71,36 +48,15 @@ namespace OngProject.Controllers
         [Route("Create/Member")]
         public async Task<IActionResult> Create([FromBody] MemberCreateModelDTO model)
         {          
-            if(ModelState.IsValid)
+            try
             {
-                try
-                {
-                    // validations                    
-                    if(string.IsNullOrEmpty(model.name))
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Name required"
-                        });                    
-                    }
-                    if(string.IsNullOrEmpty(model.imageUrl))
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Image required"
-                        });
-                    }
-
-                    // request                    
-                    await _memberBusiness.Insert(_mapper.Map<Member>(model));
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }            
+                await _memberBusiness.Insert(_mapper.Map<Member>(model));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to create a member. {ex.Message}");
+            }
+                        
             return Ok(new 
             {
                 Status = "Success",
@@ -183,35 +139,26 @@ namespace OngProject.Controllers
         [Route("Delete/Member/{id}")]
         public async Task<IActionResult> SoftDelete(int? id)
         {
-            // validation
-            if(string.IsNullOrEmpty(id.ToString()) || id == 0)
+            var member = await _memberBusiness.GetById(id.Value);
+            if(member == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new
                 {
                     Status = "Error",
-                    Message = "Please, set a valid ID."
-                });  
+                    Message = "Member not found or doesn't exist."
+                });   
             }
+
             try
             {
-                var member = await _memberBusiness.GetById(id.Value);
-                if(member == null)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new
-                    {
-                        Status = "Error",
-                        Message = "Member not found or doesn't exist."
-                    });   
-                }
-
-                // request  
                 await _memberBusiness.SoftDelete(member, id);
                 await _memberBusiness.Update(member);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return BadRequest($"Failed to delete a member. {ex.Message}");
             }
+
             return Ok(new 
             {
                 Status = "Success",

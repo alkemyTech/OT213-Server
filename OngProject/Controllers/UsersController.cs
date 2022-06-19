@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace OngProject.Controllers
 {
@@ -24,7 +25,7 @@ namespace OngProject.Controllers
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [Route("All/Users")]
-        public async Task<IActionResult> GetAllUsers()
+        public IActionResult GetAllUsers()
         {            
             var users = _usersBusiness.Find(m => m.IsDeleted != true);
             return users != null ? Ok(_mapper.Map<IEnumerable<UsersDTO>>(users))
@@ -38,18 +39,28 @@ namespace OngProject.Controllers
         {          
             var user = await _usersBusiness.GetById(model.Id);
             if(user == null)
-                return NotFound("User doesn't exists.");         
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new
+                {
+                    Status = "Error",
+                    Message = "User not found or doesn't exist."
+                });   
+            }      
 
-            _mapper.Map(model, user);
-            var updatedUser = await _usersBusiness.Update(user);
-
-            if(updatedUser == null)
-                return BadRequest("Error updating data");                            
+            try
+            {
+                _mapper.Map(model, user);
+                var updatedUser = await _usersBusiness.Update(user);                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error updating data. {ex.Message}");
+            }                                            
             
             return Ok(new
             {
                 Status = "Success",
-                Message = "User updated successfully!"
+                Message = $"{model.FirstName +" "+ model.LastName} updated successfully!"
             });
         }
 
@@ -57,13 +68,26 @@ namespace OngProject.Controllers
         [HttpDelete]
         [Route("Delete/User/{id}")]
         public async Task<IActionResult> Delete(int? id)
-        {         
+        {        
             var user = await _usersBusiness.GetById(id.Value);
             if(user == null)
-                return NotFound("User doesn't exists.");
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new
+                {
+                    Status = "Error",
+                    Message = "User not found or doesn't exist."
+                });   
+            }
 
-            await _usersBusiness.SoftDelete(user, id);
-            await _usersBusiness.Update(user);
+            try
+            {
+                await _usersBusiness.SoftDelete(user, id);
+                await _usersBusiness.Update(user);                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"The user cannot be deleted. Probably failed access to the database. \n {ex.Message}");
+            }
 
             return Ok(new 
             {
