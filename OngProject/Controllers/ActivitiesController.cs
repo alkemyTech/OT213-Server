@@ -26,9 +26,7 @@ namespace OngProject.Controllers
         public  IActionResult GetAllOrganizations()
         {
             var activities = _activitiesBusiness.Find(m => m.IsDeleted == false);
-            return activities != null
-                                ? Ok(_mapper.Map<IEnumerable<ActivitiesGetDTO>>(activities))
-                                : NotFound("The list of activities have not been found");
+            return Ok(_mapper.Map<IEnumerable<ActivitiesGetDTO>>(activities));
         }
 
         [HttpGet]
@@ -36,9 +34,7 @@ namespace OngProject.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var activity = await _activitiesBusiness.GetById(id);
-            return activity != null
-                        ? Ok(_mapper.Map<ActivitiesGetDTO>(activity))
-                        : NotFound($"{activity.Name} activity doesn't exists");
+            return Ok(_mapper.Map<ActivitiesGetDTO>(activity));
         }
 
         [HttpPost]
@@ -61,7 +57,7 @@ namespace OngProject.Controllers
         {
             var activity = await _activitiesBusiness.GetById(id);
             _mapper.Map(activityUpdateDTO, activity);
-            var updated = await _activitiesBusiness.Update(activity);
+            await _activitiesBusiness.Update(activity);
             
             return Ok(new
             {
