@@ -21,15 +21,13 @@ namespace OngProject.Controllers
             this._mapper = mapper;
         }
 
-        // GET List/Members
         [HttpGet]    
         [Authorize(Roles = "Admin")]
         [Route("List/Members")]
         public IActionResult GetAllMembers() 
         {
             var members = _memberBusiness.Find(m => m.IsDeleted == false);
-            return members != null ? Ok(_mapper.Map<IEnumerable<MemberGetModelDTO>>(members)) 
-                                   : NotFound("The list of members has not been found");                
+            return Ok(_mapper.Map<IEnumerable<MemberGetModelDTO>>(members)); 
         }
 
         [HttpGet]        
@@ -37,8 +35,7 @@ namespace OngProject.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var member = await _memberBusiness.GetById(id);
-            return member != null ? Ok(_mapper.Map<MemberGetModelDTO>(member)) 
-                                  : NotFound($"{member.Name} member doesn't exists");            
+            return Ok(_mapper.Map<MemberGetModelDTO>(member));
         }
 
         [HttpPost]       
@@ -59,7 +56,7 @@ namespace OngProject.Controllers
         { 
             if (id != model.Id)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
+                return StatusCode(StatusCodes.Status404NotFound, new
                 {
                     Status = "Error",
                     Message = "Id number doesn't match!"
@@ -68,12 +65,12 @@ namespace OngProject.Controllers
 
             var member = await _memberBusiness.GetById(id);
             _mapper.Map(model,member);               
-            var updated = await _memberBusiness.Update(member);                
+            await _memberBusiness.Update(member);                
             
             return Ok(new 
             {
                 Status = "Success",
-                Message = "Member updated successfully!"
+                Message = $"{model.name} member updated successfully!"
             }); 
         }
 
