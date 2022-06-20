@@ -1,11 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using OngProject.Entities;
 
 namespace OngProject.Core.Models.DTOs.News
 {
-    public class NewsDTO
+    public class NewsUpdateDTO
     {
         public int Id { get; set; }
 
@@ -16,12 +13,8 @@ namespace OngProject.Core.Models.DTOs.News
         public string Content { get; set; }
         public string Image { get; set; }
 
-        //[JsonIgnore]
-        [ForeignKey("CategoryID ")]
-        public int CategoryID { get; set; }
-
-        [JsonIgnore]
-        public Category Category { get; set; }
+        [Required(ErrorMessage = "CategoryID is required")]
+        public int CategoryID { get; set; } 
 
     }
 }
