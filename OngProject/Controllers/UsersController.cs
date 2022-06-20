@@ -44,7 +44,7 @@ namespace OngProject.Controllers
 
             var user = await _usersBusiness.GetById(model.Id);    
             _mapper.Map(model, user);
-            var updatedUser = await _usersBusiness.Update(user);              
+            await _usersBusiness.Update(user);              
             
             return Ok(new
             {

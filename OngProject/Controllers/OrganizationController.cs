@@ -57,7 +57,7 @@ namespace OngProject.Controllers
                    
             var org = await _organizationBusiness.GetById(id);            
             _mapper.Map(model, org);
-            var updated = await _organizationBusiness.Update(org);
+            await _organizationBusiness.Update(org);
             
             return Ok(new
             {

@@ -67,7 +67,7 @@ namespace OngProject.Controllers
                 
             var slide = await _slideBusiness.GetById(id);          
             _mapper.Map(model, slide);
-            var updated = await _slideBusiness.Update(slide);
+            await _slideBusiness.Update(slide);
             
             return Ok(new
             {
