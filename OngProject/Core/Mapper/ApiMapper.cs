@@ -71,7 +71,8 @@ namespace OngProject.Core.Mapper
 
             #region New Mapper
             CreateMap<New, NewsGetDTO>().ReverseMap();
-            CreateMap<New, NewsDTO>().ReverseMap();
+            CreateMap<New, NewsCreateDTO>().ReverseMap();
+            CreateMap<New, NewsUpdateDTO>().ReverseMap();
             #endregion
 
         }
