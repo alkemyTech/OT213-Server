@@ -48,16 +48,16 @@ namespace OngProject.Core.Business
             return insert;
         }
 
-        public async Task<bool> SoftDelete(TEntity entity, int? id)
+        public async Task<bool> SoftDelete(TEntity entity)
         {
-            var softDelete = await _genericRepository.SoftDelete(entity, id);
+            var softDelete = await _genericRepository.SoftDelete(entity);
             await _uow.SaveAsync();
             return softDelete;
         }
 
         public async Task<TEntity> Update(TEntity entity)
         {
-            var update = await _genericRepository.Update(entity);
+            var update = _genericRepository.Update(entity);
             await _uow.SaveAsync();
             return update;
         }
