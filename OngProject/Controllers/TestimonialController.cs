@@ -28,8 +28,7 @@ namespace OngProject.Controllers
         public IActionResult GetTestimonials() 
         { 
             var testimonials = _testimonialBusiness.Find(t => t.IsDeleted == false);
-            return testimonials != null ? Ok(_mapper.Map<IEnumerable<TestimonialGetDTO>>(testimonials))
-                                        : NotFound("The list of testimonials has not been found");
+            return Ok(_mapper.Map<IEnumerable<TestimonialGetDTO>>(testimonials));
         }
 
         [HttpGet]
@@ -55,21 +54,19 @@ namespace OngProject.Controllers
         [Route("Update/Testimonial/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] TestimonialUpdateDTO model)
         {
-            if (ModelState.IsValid)
+            if (id != model.Id)
             {
-                var testimonial = await _testimonialBusiness.GetById(id);
-                if (testimonial == null)
+                return StatusCode(StatusCodes.Status404NotFound, new
                 {
-                    return StatusCode(StatusCodes.Status400BadRequest, new
-                    {
-                        Status = "Error",
-                        Message = "Testimonial cannot be null."
-                    });
-                }
-                _ = _testimonialBusiness.Update(_mapper.Map<Testimonial>(model));
-                return Ok("Testimonial Updated");
-            }
-            return BadRequest("Error in Creating the testimonial");
+                    Status = "Error",
+                    Message = "Id number doesn't match!"
+                });
+            } 
+           
+            var testimonial = await _testimonialBusiness.GetById(id);       
+            _mapper.Map(model, testimonial);
+            await _testimonialBusiness.Update(_mapper.Map<Testimonial>(testimonial));
+            return Ok($"{model.Name} testimonial Updated");
         }
 
         [HttpDelete]
@@ -77,11 +74,11 @@ namespace OngProject.Controllers
         public async Task<IActionResult> DeleteTestimonial(int id)
         {
             var testimonial = await _testimonialBusiness.GetById(id);
-            if (testimonial == null)
+            if (testimonial != null)
             {
                 await _testimonialBusiness.SoftDelete(testimonial);
                 await _testimonialBusiness.Update(testimonial);
-                return Ok("Testimonial Deleted");
+                return Ok($"{testimonial.Name} testimonial Deleted");
             }
             return BadRequest("Error in deleting the testimonial");
         }
