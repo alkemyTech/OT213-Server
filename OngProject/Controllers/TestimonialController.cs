@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.Testimonial;
 using OngProject.Entities;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -24,21 +23,13 @@ namespace OngProject.Controllers
             this._mapper = mapper;
         }
 
-
         [HttpGet]
         [Route("List/Testimonials")]
-        public async Task<IActionResult> GetTestimonials() { 
-    
-            try
-            {
-                var testimonials = _testimonialBusiness.Find(t => t.IsDeleted == false);
-                return testimonials != null ? Ok(_mapper.Map<IEnumerable<TestimonialGetDTO>>(testimonials))
-                                       : NotFound("The list of testimonials has not been found");
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+        public IActionResult GetTestimonials() 
+        { 
+            var testimonials = _testimonialBusiness.Find(t => t.IsDeleted == false);
+            return testimonials != null ? Ok(_mapper.Map<IEnumerable<TestimonialGetDTO>>(testimonials))
+                                        : NotFound("The list of testimonials has not been found");
         }
 
         [HttpGet]
@@ -46,7 +37,6 @@ namespace OngProject.Controllers
         public async Task<IActionResult> GetTestimonialById(int id) {
             return Ok(_mapper.Map<TestimonialGetDTO>(await _testimonialBusiness.GetById(id)));
         }
-
 
         [HttpPost]
         [Route("Create/Testimonial")]

@@ -27,62 +27,33 @@ namespace OngProject.Controllers
 
         [HttpGet]
         [Route("/Slides")]
-        public async Task<IActionResult> GetAllSlides()
+        public  IActionResult GetAllSlides()
         {
-            try
-            {
-                var slides = _slideBusiness.Find(c => c.IsDeleted == false);
-                return slides != null ? Ok(_mapper.Map<IEnumerable<SlideGetDTO>>(slides))
-                                       : NotFound("The list of slides has not been found");
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var slides = _slideBusiness.Find(c => c.IsDeleted == false);
+            return slides != null ? Ok(_mapper.Map<IEnumerable<SlideGetDTO>>(slides))
+                                  : NotFound("The list of slides has not been found");
         }
 
         [HttpGet]
         [Route("/Slides/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            try
-            {
-                if (id == 0)
-                    return BadRequest("Please, set an ID.");
-
-                var slide = await _slideBusiness.GetById(id);
-                return slide != null ? Ok(_mapper.Map<SlideDetailsDTO>(slide))
-                                      : NotFound("Slide doesn't exists");
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var slide = await _slideBusiness.GetById(id);
+            return slide != null ? Ok(_mapper.Map<SlideDetailsDTO>(slide))
+                                 : NotFound($"{slide.Name} slide doesn't exists");
         }
 
         [HttpPost]
         [Route("/Slides")]
         public async Task<IActionResult> Create([FromBody] SlideCreateDTO model)
         {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // request                    
-                    await _slideBusiness.Insert(_mapper.Map<Slide>(model));
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
+            await _slideBusiness.Insert(_mapper.Map<Slide>(model));
             return Ok(new
             {
                 Status = "Success",
-                Message = "Slide creation successfully!"
+                Message = $"{model.Name} slide creation successfully!"
             });
         }
-
 
         [HttpPut]
         [Route("/Slides/{id}")]
@@ -93,73 +64,34 @@ namespace OngProject.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new
                 {
                     Status = "Error",
-                    Message = "Id number not found!"
+                    Message = "Id number doesn't match!"
                 });
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var slide = await _slideBusiness.GetById(id);
-                    if (slide == null)
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Slide cannot be null."
-                        });
-                    }
-
-                    // Mapping and request
-                    _mapper.Map(model, slide);
-                    var updated = await _slideBusiness.Update(slide);
-                    if (updated != null)
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Error updating data"
-                        });
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
+            }           
+                
+            var slide = await _slideBusiness.GetById(id);          
+            _mapper.Map(model, slide);
+            var updated = await _slideBusiness.Update(slide);
+            
             return Ok(new
             {
                 Status = "Success",
-                Message = "Slide updated successfully!"
+                Message = $"{model.Name} slide updated successfully!"
             });
         }
-
 
         [HttpDelete]
         [Route("/Slides/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
-            // validation
-            if (id == 0)
-                return BadRequest("Please, set a valid ID.");
+            var slide = await _slideBusiness.GetById(id.Value);    
+            await _slideBusiness.SoftDelete(slide);
+            await _slideBusiness.Update(slide);
 
-            try
+            return Ok(new
             {
-                var slide = await _slideBusiness.GetById(id.Value);
-
-                if (slide == null)
-                    return NotFound("Slide not found or doesn't exist.");
-
-                await _slideBusiness.SoftDelete(slide);
-                await _slideBusiness.Update(slide);
-
-                return Ok("Slide deleted successfully.");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+                Status = "Success",
+                Message = $"{slide.Name} slide deleted successfully!"
+            });
         }
 
     }

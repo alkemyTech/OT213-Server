@@ -84,7 +84,7 @@ namespace OngProject.Controllers
 
         [HttpGet]
         [Route("Auth/Me")]
-        public async Task<IActionResult> GetMe()
+        public  IActionResult GetMe()
         {            
             var email = _accessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
             if(email == null)

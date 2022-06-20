@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -28,37 +27,18 @@ namespace OngProject.Controllers
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [Route("/Comments")]
-        public async Task<IActionResult> GetAllComments() 
+        public  IActionResult GetAllComments() 
         {
-            try
-            {
-                var comments = _commentBusiness.Find(c => c.IsDeleted == false);//.OrderBy(c => c.CreatedAt);
-                return comments != null ? Ok(_mapper.Map<IEnumerable<CommentDTO>>(comments)) 
-                                       : NotFound("The list of comments has not been found");                
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }           
+            var comments = _commentBusiness.Find(c => c.IsDeleted == false);//.OrderBy(c => c.CreatedAt);
+            return comments != null ? Ok(_mapper.Map<IEnumerable<CommentDTO>>(comments)) 
+                                    : NotFound("The list of comments has not been found");                
         }
-
 
         [HttpPost]
         [Route("/Comments")]
         public async Task<IActionResult> Create([FromBody] CommentCreateDTO model)
         {          
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    // request                    
-                    await _commentBusiness.Insert(_mapper.Map<Comment>(model));
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }            
+            await _commentBusiness.Insert(_mapper.Map<Comment>(model));
             return Ok(new 
             {
                 Status = "Success",
@@ -77,41 +57,14 @@ namespace OngProject.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new
                 {
                     Status = "Error",
-                    Message = "Id number not found!"
+                    Message = "Id number doesn't match!"
                 });
             }  
-
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    var comments = await _commentBusiness.GetById(id);
-                    if(comments == null)
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Comment cannot be null."
-                        });    
-                    }
-
-                    // Mapping and request
-                    _mapper.Map(model, comments);               
-                    var updated = await _commentBusiness.Update(comments);
-                    if(updated != null)
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Error updating data"
-                        });       
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
+           
+            var comments = await _commentBusiness.GetById(id);
+            _mapper.Map(model, comments);               
+            var updated = await _commentBusiness.Update(comments);
+            
             return Ok(new 
             {
                 Status = "Success",
@@ -125,26 +78,11 @@ namespace OngProject.Controllers
         [Route("/Comments/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
-            // validation
-            if(id == 0)
-                return BadRequest("Please, set a valid ID.");
+            var comment = await _commentBusiness.GetById(id.Value);
+            await _commentBusiness.SoftDelete(comment);
+            await _commentBusiness.Update(comment);
 
-            try
-            {
-                var comment = await _commentBusiness.GetById(id.Value);
-
-                if(comment == null)
-                    return NotFound("Comment not found or doesn't exist.");
-
-                await _commentBusiness.SoftDelete(comment);
-                await _commentBusiness.Update(comment);
-
-                return Ok("Comment deleted successfully.");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return Ok("Comment deleted successfully.");
         }
 
     }

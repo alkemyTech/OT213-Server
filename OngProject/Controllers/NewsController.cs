@@ -40,7 +40,7 @@ namespace OngProject.Controllers
         {
             var news = await _newsBusiness.GetById(id);
             return news != null ? Ok(_mapper.Map<NewsGetDTO>(news)) 
-                                : NotFound("News doesn't exists");            
+                                : NotFound($"{news.Name} news doesn't exists");            
         }
 
         // POST Create/News
@@ -52,7 +52,7 @@ namespace OngProject.Controllers
             return Ok(new 
             {
                 Status = "Success",
-                Message = "News creation successfully!"
+                Message = $"{model.Name} news creation successfully!"
             });                
         }
 
@@ -66,35 +66,18 @@ namespace OngProject.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new
                 {
                     Status = "Error",
-                    Message = "Id number not found!"
+                    Message = "Id number doesn't match!"
                 });
             } 
 
-            var news = await _newsBusiness.GetById(id);
-            if(news == null)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, new
-                {
-                    Status = "Error",
-                    Message = "News cannot be null."
-                });    
-            }
-
+            var news = await _newsBusiness.GetById(id);           
             _mapper.Map(model, news);               
-            var updated = await _newsBusiness.Update(news);
-            if(updated == null)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, new
-                {
-                    Status = "Error",
-                    Message = "Error updating data"
-                });    
-            }                
+            var updated = await _newsBusiness.Update(news);                            
                 
             return Ok(new 
             {
                 Status = "Success",
-                Message = "News updated successfully!"
+                Message = $"{news.Name} news updated successfully!"
             }); 
         }
 
@@ -110,7 +93,7 @@ namespace OngProject.Controllers
             return Ok(new 
             {
                 Status = "Success",
-                Message = "News deleted successfully!"
+                Message = $"{news.Name} news deleted successfully!"
             }); 
         }
     }

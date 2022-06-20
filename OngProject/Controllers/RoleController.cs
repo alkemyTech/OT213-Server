@@ -40,86 +40,42 @@ namespace OngProject.Controllers
                 return BadRequest("Error in Creating the role");
         }
 
-        // [HttpPut(nameof(UpdateRole))]
-        // public IActionResult UpdateRole(RoleModelDto role)
-        // {
-        //     _unitOfWork.Role.Update(new EntityMapper().ToUpdateEntity(role));
-        //     _unitOfWork.SaveAsync();
-        //     return Ok("Role Updated");
-        // }
-
         [HttpPut(nameof(UpdateRole))]
         public async Task<IActionResult> UpdateRole(int id, RoleModelDto dto)
         {
-            // validation
             if (id != dto.Id)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new
                 {
                     Status = "Error",
-                    Message = "Id number not found!"
+                    Message = "Id number doesn't match!"
                 });
             }
 
             var rol = await _rolBusiness.GetById(id);
-            if(rol == null)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, new
-                {
-                    Status = "Error",
-                    Message = "Rol id cannot be null."
-                });    
-            }
-
-            // request
             _mapper.Map(dto, rol);
-            var updated = await _rolBusiness.Update(rol);
-            if(updated == null)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, new
-                {
-                    Status = "Error",
-                    Message = "Error updating data"
-                });    
-            }
+            var updated = await _rolBusiness.Update(rol);            
    
             return Ok(new 
             {
                 Status = "Success",
-                Message = "Rol updated successfully!"
+                Message = $"{rol.Name} rol updated successfully!"
             }); 
         }
-
-        // [HttpDelete(nameof(DeleteRole))]
-        // public async Task<IActionResult> DeleteRole([FromQuery] int roleID)
-        // {
-        //     await _unitOfWork.Role.Delete(roleID);
-        //     return Ok("Role Deleted");
-        // }
 
         [HttpDelete]       
         [Route("Delete/Rol/{roleID}")]
         public async Task<IActionResult> DeleteRole(int? roleID)
         {
-            var rol = await _rolBusiness.GetById(roleID.Value);
-            if(rol == null)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, new
-                {
-                    Status = "Error",
-                    Message = "Rol not found or doesn't exist."
-                });   
-            }
-
-            // request  
+            var rol = await _rolBusiness.GetById(roleID.Value);       
             await _rolBusiness.SoftDelete(rol);
             await _rolBusiness.Update(rol);
             return Ok(new 
             {
                 Status = "Success",
-                Message = "Rol deleted successfully!"
+                Message = $"{rol.Name} rol deleted successfully!"
             }); 
         }
 
-      }
+    }
 }
