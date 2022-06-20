@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,8 @@ using OngProject.Core.Interfaces;
 using OngProject.DataAccess;
 using OngProject.DataAccess.UnitOfWork;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
+using OngProject.Middleware;
+using OngProject.Middleware.Extension;
 using OngProject.Repositories;
 using OngProject.Repositories.Auth;
 using OngProject.Repositories.Auth.Interfaces;
@@ -107,6 +110,7 @@ namespace OngProject
             services.AddScoped<ISlidesRepository, SlidesRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<INewsRepository, NewsRepository>();
             
             //Unit of Work DI (Dependency Injection)
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -124,6 +128,8 @@ namespace OngProject
             services.AddScoped<ICommentBusiness, CommentBusiness>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUsersBusiness, UsersBusiness>();
+            services.AddScoped<INewsBusiness, NewsBusiness>();
+
 
             //Amazon S3 configure service & DI
             services.AddScoped<IAmazonHelperService, AmazonHelperService>();            
@@ -131,6 +137,9 @@ namespace OngProject
 
             //service HttpContextAccessor to get claims
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //Service middleware error handler
+            services.AddSingleton<IAuthorizationMiddlewareResultHandler, AuthorizationMiddlewareHandlerService>();
 
 
         
@@ -146,7 +155,11 @@ namespace OngProject
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OngProject v1"));
             }
 
+            app.ConfigureExceptionMiddleware();
+
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<AccessDeniedMiddleware>();
 
             app.UseRouting();
 
