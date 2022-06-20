@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs.Organizations;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace OngProject.Controllers
 {
@@ -25,30 +26,37 @@ namespace OngProject.Controllers
         public  IActionResult GetAllOrganizationsPublic()
         {
             var orgs = _organizationBusiness.Find(m => m.IsDeleted == false);
-            return orgs != null 
-                        ? Ok(_mapper.Map<IEnumerable<OrganizationGetDTO>>(orgs))
-                        : NotFound("The list of organizations have not been found");
+            return Ok(_mapper.Map<IEnumerable<OrganizationGetDTO>>(orgs));
         }
         
         [HttpPost]
         [Route("Create/Organization")]
-        public async Task<IActionResult> Create([FromBody] OrganizationCreateDTO organizationCreateDTO)
+        public async Task<IActionResult> Create([FromBody] OrganizationCreateDTO model)
         {
-            await _organizationBusiness.Insert(_mapper.Map<Organization>(organizationCreateDTO));            
+            await _organizationBusiness.Insert(_mapper.Map<Organization>(model));            
             return Ok(new
             {
                 Status = "Success",
-                Message = $"{organizationCreateDTO.Name} organization created successfully!"
+                Message = $"{model.Name} organization created successfully!"
             });
         }
         
-        [HttpPost]
+        [HttpPut]
         [Authorize(Roles = "Admin")]
         [Route("Update/Organization/Public/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] OrganizationUpdateDTO organizationUpdateDTO)
-        {            
+        public async Task<IActionResult> Edit(int id, [FromBody] OrganizationUpdateDTO model)
+        {   
+            if (id != model.Id)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new
+                {
+                    Status = "Error",
+                    Message = "Id number doesn't match!"
+                });
+            }   
+                   
             var org = await _organizationBusiness.GetById(id);            
-            _mapper.Map(organizationUpdateDTO, org);
+            _mapper.Map(model, org);
             var updated = await _organizationBusiness.Update(org);
             
             return Ok(new
