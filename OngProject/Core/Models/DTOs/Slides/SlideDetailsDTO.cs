@@ -13,7 +13,7 @@ namespace OngProject.Core.Models.DTOs.Slides
 
         public int Order { get; set; }
 
-        public int? OrganizationId { get; set; }
+        public int OrganizationId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

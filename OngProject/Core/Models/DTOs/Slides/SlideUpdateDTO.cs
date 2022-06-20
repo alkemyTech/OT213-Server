@@ -11,7 +11,7 @@ namespace OngProject.Core.Models.DTOs.Slides
         public string Description { set; get; }
 
         [Required(ErrorMessage = "Image is required")]
-        public string Image { get; set; }
+        public string ImageUrl { get; set; }
     }
 
 }
