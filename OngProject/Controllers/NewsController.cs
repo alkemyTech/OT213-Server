@@ -23,31 +23,29 @@ namespace OngProject.Controllers
             this._mapper = mapper;
         }
 
-        // GET List/News
         [HttpGet]    
         [Route("List/News")]
         public  IActionResult GetAllNews() 
         {
             var news = _newsBusiness.Find(m => m.IsDeleted != true);
-            return news != null ? Ok(_mapper.Map<IEnumerable<NewsGetDTO>>(news)) 
-                                : NotFound("The list of news has not been found");                
+            return Ok(_mapper.Map<IEnumerable<NewsGetDTO>>(news)); 
         }
 
-        // GET List/NewsById
         [HttpGet]    
         [Route("List/NewsById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var news = await _newsBusiness.GetById(id);
-            return news != null ? Ok(_mapper.Map<NewsGetDTO>(news)) 
-                                : NotFound($"{news.Name} news doesn't exists");            
+            return Ok(_mapper.Map<NewsGetDTO>(news)); 
         }
 
-        // POST Create/News
         [HttpPost]       
         [Route("Create/News")]
-        public async Task<IActionResult> Create([FromBody] NewsDTO model)
+        public async Task<IActionResult> Create([FromBody] NewsCreateDTO model)
         {       
+            if(model.CategoryID == 0)
+                return BadRequest("CategoryID cannot be null");
+
             await _newsBusiness.Insert(_mapper.Map<New>(model));                       
             return Ok(new 
             {
@@ -56,23 +54,25 @@ namespace OngProject.Controllers
             });                
         }
 
-        // PUT Update/News/{id}
         [HttpPut]       
         [Route("Update/News/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] NewsDTO model)
+        public async Task<IActionResult> Edit(int id, [FromBody] NewsUpdateDTO model)
         { 
             if (id != model.Id)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
+                return StatusCode(StatusCodes.Status404NotFound, new
                 {
                     Status = "Error",
                     Message = "Id number doesn't match!"
                 });
             } 
 
+            if(model.CategoryID == 0)
+                return BadRequest("CategoryID cannot be null");
+
             var news = await _newsBusiness.GetById(id);           
             _mapper.Map(model, news);               
-            var updated = await _newsBusiness.Update(news);                            
+            await _newsBusiness.Update(news);                            
                 
             return Ok(new 
             {
@@ -81,7 +81,6 @@ namespace OngProject.Controllers
             }); 
         }
 
-        // DELETE Delete/News/{id}
         [HttpDelete]       
         [Route("Delete/News/{id}")]
         public async Task<IActionResult> Delete(int? id)

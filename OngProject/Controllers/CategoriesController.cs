@@ -29,8 +29,7 @@ namespace OngProject.Controllers
         public IActionResult GetAllCategories() 
         {
             var categories =  _categoryBusiness.Find(c => c.IsDeleted == false);
-            return categories != null ? Ok(_mapper.Map<IEnumerable<CategoryGetDTO>>(categories)) 
-                                      : NotFound("The list of categories has not been found");                
+            return Ok(_mapper.Map<IEnumerable<CategoryGetDTO>>(categories)); 
         }
 
         [HttpGet]       
@@ -38,8 +37,7 @@ namespace OngProject.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var category = await _categoryBusiness.GetById(id);
-            return category != null ? Ok(_mapper.Map<CategoryDetailsDTO>(category)) 
-                                    : NotFound($"{category.Name} category doesn't exists");            
+            return Ok(_mapper.Map<CategoryDetailsDTO>(category)); 
         }
 
         [HttpPost]
@@ -60,7 +58,7 @@ namespace OngProject.Controllers
         { 
             if (id != model.Id)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
+                return StatusCode(StatusCodes.Status404NotFound, new
                 {
                     Status = "Error",
                     Message = "Id number doesn't match!"
@@ -69,7 +67,7 @@ namespace OngProject.Controllers
             
             var categories = await _categoryBusiness.GetById(id);
             _mapper.Map(model,categories);               
-            var updated = await _categoryBusiness.Update(categories);
+            await _categoryBusiness.Update(categories);
               
             return Ok(new 
             {
