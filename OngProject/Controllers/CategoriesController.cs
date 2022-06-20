@@ -153,7 +153,7 @@ namespace OngProject.Controllers
                 if(category == null)
                     return NotFound("Category not found or doesn't exist.");
 
-                await _categoryBusiness.SoftDelete(category, id);
+                await _categoryBusiness.SoftDelete(category);
                 await _categoryBusiness.Update(category);
 
                 return Ok("Category deleted successfully.");

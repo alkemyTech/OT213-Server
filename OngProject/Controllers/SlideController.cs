@@ -6,7 +6,7 @@ using OngProject.Entities;
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using OngProject.Core.Models.DTOs;
+using OngProject.Core.Models.DTOs.Slides;
 using Microsoft.AspNetCore.Authorization;
 
 namespace OngProject.Controllers
@@ -151,7 +151,7 @@ namespace OngProject.Controllers
                 if (slide == null)
                     return NotFound("Slide not found or doesn't exist.");
 
-                await _slideBusiness.SoftDelete(slide, id);
+                await _slideBusiness.SoftDelete(slide);
                 await _slideBusiness.Update(slide);
 
                 return Ok("Slide deleted successfully.");

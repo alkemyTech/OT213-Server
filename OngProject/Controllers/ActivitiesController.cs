@@ -157,7 +157,7 @@ namespace OngProject.Controllers
                     });
                 }
 
-                await _activitiesBusiness.SoftDelete(activity, id);
+                await _activitiesBusiness.SoftDelete(activity);
                 activity.DeletedAt = DateTime.Now;
                 await _activitiesBusiness.Update(activity);
             }

@@ -129,7 +129,7 @@ namespace OngProject.Controllers
                     });
                 }
                
-                await _organizationBusiness.SoftDelete(org, id);
+                await _organizationBusiness.SoftDelete(org);
                 await _organizationBusiness.Update(org);
             }
             catch (Exception ex)

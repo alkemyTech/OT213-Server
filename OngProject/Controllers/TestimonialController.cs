@@ -89,7 +89,7 @@ namespace OngProject.Controllers
             var testimonial = await _testimonialBusiness.GetById(id);
             if (testimonial == null)
             {
-                await _testimonialBusiness.SoftDelete(testimonial, id);
+                await _testimonialBusiness.SoftDelete(testimonial);
                 await _testimonialBusiness.Update(testimonial);
                 return Ok("Testimonial Deleted");
             }

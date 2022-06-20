@@ -151,7 +151,7 @@ namespace OngProject.Controllers
 
             try
             {
-                await _memberBusiness.SoftDelete(member, id);
+                await _memberBusiness.SoftDelete(member);
                 await _memberBusiness.Update(member);
             }
             catch (Exception ex)

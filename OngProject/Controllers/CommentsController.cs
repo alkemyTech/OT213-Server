@@ -1,4 +1,3 @@
-using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.Core.Models.DTOs;
+using OngProject.Core.Models.DTOs.Comments;
 using OngProject.Entities;
 
 namespace OngProject.Controllers
@@ -137,7 +136,7 @@ namespace OngProject.Controllers
                 if(comment == null)
                     return NotFound("Comment not found or doesn't exist.");
 
-                await _commentBusiness.SoftDelete(comment, id);
+                await _commentBusiness.SoftDelete(comment);
                 await _commentBusiness.Update(comment);
 
                 return Ok("Comment deleted successfully.");

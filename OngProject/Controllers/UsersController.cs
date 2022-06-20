@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
 using System.Threading.Tasks;
 using AutoMapper;
-using OngProject.Core.Models.DTOs;
+using OngProject.Core.Models.DTOs.Users;
 using Microsoft.AspNetCore.Authorization;
 using System;
 
@@ -81,7 +81,7 @@ namespace OngProject.Controllers
 
             try
             {
-                await _usersBusiness.SoftDelete(user, id);
+                await _usersBusiness.SoftDelete(user);
                 await _usersBusiness.Update(user);                
             }
             catch (Exception ex)

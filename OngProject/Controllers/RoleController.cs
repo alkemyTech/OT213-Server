@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Mapper;
-using OngProject.Core.Models.DTOs;
+using OngProject.Core.Models.DTOs.Roles;
 using OngProject.DataAccess.UnitOfWork.Interfaces;
 using System.Threading.Tasks;
 
@@ -112,7 +112,7 @@ namespace OngProject.Controllers
             }
 
             // request  
-            await _rolBusiness.SoftDelete(rol, roleID);
+            await _rolBusiness.SoftDelete(rol);
             await _rolBusiness.Update(rol);
             return Ok(new 
             {
