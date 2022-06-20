@@ -44,6 +44,9 @@ namespace OngProject.Controllers
         [Route("/Slides")]
         public async Task<IActionResult> Create([FromBody] SlideCreateDTO model)
         {
+            if(model.OrganizationId == 0)
+                return BadRequest("OrganizationId cannot be null");
+
             await _slideBusiness.Insert(_mapper.Map<Slide>(model));
             return Ok(new
             {
@@ -63,7 +66,7 @@ namespace OngProject.Controllers
                     Status = "Error",
                     Message = "Id number doesn't match!"
                 });
-            }           
+            }  
                 
             var slide = await _slideBusiness.GetById(id);          
             _mapper.Map(model, slide);
