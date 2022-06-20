@@ -1,8 +1,6 @@
-﻿using OngProject.Entities;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace OngProject.Core.Models.DTOs
+namespace OngProject.Core.Models.DTOs.Users
 {
     public class UsersDTO
     {
