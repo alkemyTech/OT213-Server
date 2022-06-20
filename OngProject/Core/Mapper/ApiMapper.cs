@@ -1,10 +1,14 @@
 using AutoMapper;
-using OngProject.Core.Models.DTOs;
 using OngProject.Core.Models.DTOs.Activities;
 using OngProject.Core.Models.DTOs.Categories;
+using OngProject.Core.Models.DTOs.Comments;
 using OngProject.Core.Models.DTOs.Members;
+using OngProject.Core.Models.DTOs.News;
 using OngProject.Core.Models.DTOs.Organizations;
+using OngProject.Core.Models.DTOs.Roles;
+using OngProject.Core.Models.DTOs.Slides;
 using OngProject.Core.Models.DTOs.Testimonial;
+using OngProject.Core.Models.DTOs.Users;
 using OngProject.Core.Models.DTOs.Users.Auth;
 using OngProject.Entities;
 
@@ -64,6 +68,12 @@ namespace OngProject.Core.Mapper
             CreateMap<Comment, CommentCreateDTO>().ReverseMap();
             CreateMap<Comment, CommentUpdateDTO>().ReverseMap();
             #endregion
+
+            #region New Mapper
+            CreateMap<New, NewsGetDTO>().ReverseMap();
+            CreateMap<New, NewsDTO>().ReverseMap();
+            #endregion
+
         }
     }
 
