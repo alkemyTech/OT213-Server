@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
 using OngProject.Entities;
-using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs.Slides;
@@ -30,8 +29,7 @@ namespace OngProject.Controllers
         public  IActionResult GetAllSlides()
         {
             var slides = _slideBusiness.Find(c => c.IsDeleted == false);
-            return slides != null ? Ok(_mapper.Map<IEnumerable<SlideGetDTO>>(slides))
-                                  : NotFound("The list of slides has not been found");
+            return Ok(_mapper.Map<IEnumerable<SlideGetDTO>>(slides));
         }
 
         [HttpGet]
@@ -39,8 +37,7 @@ namespace OngProject.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var slide = await _slideBusiness.GetById(id);
-            return slide != null ? Ok(_mapper.Map<SlideDetailsDTO>(slide))
-                                 : NotFound($"{slide.Name} slide doesn't exists");
+            return Ok(_mapper.Map<SlideDetailsDTO>(slide));
         }
 
         [HttpPost]
@@ -61,7 +58,7 @@ namespace OngProject.Controllers
         {
             if (id != model.Id)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
+                return StatusCode(StatusCodes.Status404NotFound, new
                 {
                     Status = "Error",
                     Message = "Id number doesn't match!"
