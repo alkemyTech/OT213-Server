@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Core.Models.DTOs.Roles
 {
-    public class RoleModelDto
+    public class RoleCreateDto
     {
-        public int Id { set; get; }
-        
         [Required(ErrorMessage = "Name is required")]
         public string Name { set; get; }
 

@@ -5,16 +5,19 @@ namespace OngProject.Core.Models.DTOs.Users.Auth
 {
     public class UserAuthDTO
     {
-        [Required]
+        [Required(ErrorMessage = "FirstName is required")]
 	    [MinLength(6)]
         public string FirstName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "LastName is required")]
 	    [MinLength(6)]
         public string LastName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Email is required")]
 	    [EmailAddress]
         public string Email { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Password is required")]
         [MinLength(6)]
         public string Password { get; set; }
         public IFormFile Photo { get; set; } 

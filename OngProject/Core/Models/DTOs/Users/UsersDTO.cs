@@ -21,5 +21,6 @@ namespace OngProject.Core.Models.DTOs.Users
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
         public string Photo { get; set; }
+        public int RoleId { get; set; }
     }
 }
