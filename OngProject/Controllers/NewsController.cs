@@ -2,195 +2,98 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.DataAccess.UnitOfWork.Interfaces;
 using OngProject.Entities;
-using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using OngProject.Core.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using OngProject.Core.Models.DTOs.News;
 
 namespace OngProject.Controllers
 {
-       
+
     [ApiController]
     [Authorize(Roles = "Admin")]    
     public class NewsController : ControllerBase
-    {
-        private readonly IUnitOfWork _uow;
+    {        
         private readonly INewsBusiness _newsBusiness;
         private readonly IMapper _mapper;
-        public NewsController(IUnitOfWork uow, INewsBusiness newsBusiness, IMapper mapper)
+        public NewsController(INewsBusiness newsBusiness, IMapper mapper)
         {
-            this._uow = uow;
             this._newsBusiness = newsBusiness;
             this._mapper = mapper;
         }
 
-        // GET List/News
         [HttpGet]    
         [Route("List/News")]
-        public async Task<IActionResult> GetAllNews() 
+        public  IActionResult GetAllNews() 
         {
-            try
-            {
-                var news = _newsBusiness.Find(m => m.IsDeleted != true);
-                return news != null ? Ok(_mapper.Map<IEnumerable<NewsDTO>>(news)) 
-                                       : NotFound("The list of news has not been found");                
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }           
+            var news = _newsBusiness.Find(m => m.IsDeleted != true);
+            return Ok(_mapper.Map<IEnumerable<NewsGetDTO>>(news)); 
         }
 
-        // GET List/NewsById
         [HttpGet]    
         [Route("List/NewsById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            try
-            {
-                if(id == 0)
-                    return NotFound("Please, set an ID.");
-
-                var news = await _newsBusiness.GetById(id);
-                return news != null ? Ok(_mapper.Map<NewsDTO>(news)) 
-                                      : NotFound("News doesn't exists");            
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var news = await _newsBusiness.GetById(id);
+            return Ok(_mapper.Map<NewsGetDTO>(news)); 
         }
 
-        // POST Create/News
         [HttpPost]       
         [Route("Create/News")]
-        public async Task<IActionResult> Create([FromBody] NewsDTO model)
-        {          
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    // validations                    
-                    if(string.IsNullOrEmpty(model.Name))
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Name is required"
-                        });
-                    }
-                    if(string.IsNullOrEmpty(model.Content))
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Content is required"
-                        });
-                    }
+        public async Task<IActionResult> Create([FromBody] NewsCreateDTO model)
+        {       
+            if(model.CategoryID == 0)
+                return BadRequest("CategoryID cannot be null");
 
-                    // request                    
-                    await _newsBusiness.Insert(_mapper.Map<New>(model));
-                    await _uow.SaveAsync();                        
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }            
+            await _newsBusiness.Insert(_mapper.Map<New>(model));                       
             return Ok(new 
             {
                 Status = "Success",
-                Message = "News creation successfully!"
+                Message = $"{model.Name} news creation successfully!"
             });                
         }
 
-        // PUT Update/News/{id}
         [HttpPut]       
         [Route("Update/News/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] NewsDTO model)
+        public async Task<IActionResult> Edit(int id, [FromBody] NewsUpdateDTO model)
         { 
             if (id != model.Id)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
+                return StatusCode(StatusCodes.Status404NotFound, new
                 {
                     Status = "Error",
-                    Message = "Id number not found!"
+                    Message = "Id number doesn't match!"
                 });
-            }  
+            } 
 
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    // validations                    
-                    if(string.IsNullOrEmpty(model.Name))
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Name is required"
-                        });
-                    }
-                    if(string.IsNullOrEmpty(model.Content))
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, new
-                        {
-                            Status = "Error",
-                            Message = "Content is required"
-                        });
-                    }
+            if(model.CategoryID == 0)
+                return BadRequest("CategoryID cannot be null");
 
-                    var news = await _newsBusiness.GetById(id);
-                    var updated = await _newsBusiness.Update(news);
-
-                    if(updated != null)
-                    {
-                        // request    
-                        _mapper.Map(model, news);               
-                        await _uow.SaveAsync();           
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
+            var news = await _newsBusiness.GetById(id);           
+            _mapper.Map(model, news);               
+            await _newsBusiness.Update(news);                            
+                
             return Ok(new 
             {
                 Status = "Success",
-                Message = "News updated successfully!"
+                Message = $"{news.Name} news updated successfully!"
             }); 
         }
 
-        // DELETE Delete/News/{id}
         [HttpDelete]       
         [Route("Delete/News/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
-            // validation
-            if(id == 0)
-                return NotFound("Please, set a valid ID.");
+            var news = await _newsBusiness.GetById(id.Value);
+            await _newsBusiness.SoftDelete(news);
+            await _newsBusiness.Update(news);
 
-            try
+            return Ok(new 
             {
-                var news = await _newsBusiness.GetById(id.Value);
-
-                if(news == null)
-                    return NotFound("News not found or doesn't exist.");
-
-                await _newsBusiness.SoftDelete(news, id);
-                await _newsBusiness.Update(news);
-                await _uow.SaveAsync();
-
-                return Ok("News deleted successfully.");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+                Status = "Success",
+                Message = $"{news.Name} news deleted successfully!"
+            }); 
         }
     }
 }

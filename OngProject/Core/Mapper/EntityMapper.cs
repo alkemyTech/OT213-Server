@@ -1,5 +1,4 @@
-﻿using OngProject.Core.Models;
-using OngProject.Core.Models.DTOs;
+﻿using OngProject.Core.Models.DTOs.Roles;
 using OngProject.Entities;
 using System;
 

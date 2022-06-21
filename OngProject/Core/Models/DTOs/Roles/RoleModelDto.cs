@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace OngProject.Core.Models.DTOs
+namespace OngProject.Core.Models.DTOs.Roles
 {
     public class RoleModelDto
     {

@@ -27,10 +27,6 @@ namespace OngProject.Repositories
         public async Task Delete(int id)
         {
             var entity = await GetById(id);
-
-            if (entity == null)
-                throw new Exception("The entity is null");
-
             context.Set<TEntity>().Remove(entity);
         }
 
@@ -46,14 +42,15 @@ namespace OngProject.Repositories
 
         public async Task<TEntity> GetById(int id)
         {
-            return await context.Set<TEntity>().FindAsync(id);
+            var value = await context.Set<TEntity>().FindAsync(id);
+            if (value == null)
+                throw new Exception("Id entity not found or doesn't exist.");
+
+            return value;
         }
 
         public async Task<TEntity> Insert(TEntity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
             entity.IsDeleted = false;
@@ -62,37 +59,18 @@ namespace OngProject.Repositories
             return entity;
         }
 
-        public async Task<TEntity> Update(TEntity entity)
+        public TEntity Update(TEntity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
             entity.UpdatedAt = DateTime.Now;
             context.Set<TEntity>().Update(entity);
             return entity;
         }
 
         // Soft Delete
-        public async Task<bool> SoftDelete(TEntity entity, int? id)
+        public async Task<bool> SoftDelete(TEntity entity)
         {
-            try
-            {
-                /*
-                    the "?" in int? set that int can be nulleable
-                    ! (null-forgiving) operator to confirm that "id" isn't null here
-                    If "value" isn't null return "isDeleted" as true.
-                */
-                var value = await GetById(id!.Value);
-                if (value == null)
-                    throw new Exception("The entity is null");
-
-                var Ent = entity.IsDeleted = true;
-                return entity.IsDeleted = true;
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var value = await GetById(entity.Id);
+            return entity.IsDeleted = true;
         }
     }
 }

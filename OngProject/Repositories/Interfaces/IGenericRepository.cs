@@ -11,12 +11,12 @@ namespace OngProject.Repositories.Interfaces
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> GetById(int id);
         Task<TEntity> Insert(TEntity entity);
-        Task<TEntity> Update(TEntity entity);               
+        TEntity Update(TEntity entity);               
         
         // Hard Delete
         Task Delete(int id);
 
         // Soft Delete
-        Task<bool> SoftDelete(TEntity entity, int? id);
+        Task<bool> SoftDelete(TEntity entity);
     }
 }

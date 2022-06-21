@@ -1,7 +1,7 @@
 using System;
 
 
-namespace OngProject.Core.Models.DTOs
+namespace OngProject.Core.Models.DTOs.Slides
 {
     public class SlideDetailsDTO
     {
@@ -13,7 +13,7 @@ namespace OngProject.Core.Models.DTOs
 
         public int Order { get; set; }
 
-        public int? OrganizationId { get; set; }
+        public int OrganizationId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

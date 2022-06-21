@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
 using System.Threading.Tasks;
 using AutoMapper;
-using OngProject.Core.Models.DTOs;
+using OngProject.Core.Models.DTOs.Users;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace OngProject.Controllers
 {
@@ -20,55 +20,51 @@ namespace OngProject.Controllers
             this._mapper = mapper;
         }
 
-        // GET List/Users
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [Route("All/Users")]
-        public async Task<IActionResult> GetAllUsers()
+        public IActionResult GetAllUsers()
         {            
             var users = _usersBusiness.Find(m => m.IsDeleted != true);
-            return users != null ? Ok(_mapper.Map<IEnumerable<UsersDTO>>(users))
-                                 : NotFound("The list of users has not been found");           
+            return Ok(_mapper.Map<IEnumerable<UsersDTO>>(users));
         } 
 
-        // PUT Update/User/{id}
         [HttpPut]
-        [Route("Update/User")]
-        public async Task<IActionResult> Edit([FromBody] UsersDTO model)
+        [Route("Update/User/{id}")]
+        public async Task<IActionResult> Edit(int id, [FromBody] UsersDTO model)
         {          
-            var user = await _usersBusiness.GetById(model.Id);
-            if(user == null)
-                return NotFound("User doesn't exists.");         
+            if (id != model.Id)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new
+                {
+                    Status = "Error",
+                    Message = "Id number doesn't match!"
+                });
+            } 
 
+            var user = await _usersBusiness.GetById(model.Id);    
             _mapper.Map(model, user);
-            var updatedUser = await _usersBusiness.Update(user);
-
-            if(updatedUser == null)
-                return BadRequest("Error updating data");                            
+            await _usersBusiness.Update(user);              
             
             return Ok(new
             {
                 Status = "Success",
-                Message = "User updated successfully!"
+                Message = $"{model.FirstName +" "+ model.LastName} updated successfully!"
             });
         }
 
-        // DELETE Delete/User/{id}
         [HttpDelete]
         [Route("Delete/User/{id}")]
         public async Task<IActionResult> Delete(int? id)
-        {         
-            var user = await _usersBusiness.GetById(id.Value);
-            if(user == null)
-                return NotFound("User doesn't exists.");
-
-            await _usersBusiness.SoftDelete(user, id);
-            await _usersBusiness.Update(user);
+        {        
+            var user = await _usersBusiness.GetById(id.Value);           
+            await _usersBusiness.SoftDelete(user);
+            await _usersBusiness.Update(user);              
 
             return Ok(new 
             {
                 Status = "Success",
-                Message = "User deleted successfully!"
+                Message = $"{user.FirstName +" "+ user.LastName} user deleted successfully!"
             }); 
         }
     }

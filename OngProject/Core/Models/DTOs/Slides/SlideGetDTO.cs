@@ -1,6 +1,6 @@
 using System;
 
-namespace OngProject.Core.Models.DTOs
+namespace OngProject.Core.Models.DTOs.Slides
 {
     public class SlideGetDTO
     {

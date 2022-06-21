@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OngProject.Core.Models.DTOs
+namespace OngProject.Core.Models.DTOs.Slides
 {
     public class SlideCreateDTO
     {        
@@ -11,7 +11,9 @@ namespace OngProject.Core.Models.DTOs
         [Required(ErrorMessage = "Image is required")]
         public string ImageUrl { get; set; }
         public int Order { get; set; }
-        public int? OrganizationId { get; set; }
+
+        [Required(ErrorMessage = "OrganizationId is required")]
+        public int OrganizationId { get; set; }
 
     }
 }

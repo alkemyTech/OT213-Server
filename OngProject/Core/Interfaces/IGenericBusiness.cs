@@ -17,7 +17,7 @@ namespace OngProject.Core.Interfaces
         Task Delete(int id);
 
         // Soft Delete
-        Task<bool> SoftDelete(TEntity entity, int? id);
+        Task<bool> SoftDelete(TEntity entity);
     }
 
 }
