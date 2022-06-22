@@ -32,7 +32,7 @@ namespace OngProject.Repositories
 
         IEnumerable<TEntity> IGenericRepository<TEntity>.Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return context.Set<TEntity>().Where(predicate);
+            return context.Set<TEntity>().Where(predicate).OrderBy(x => x.CreatedAt);
         }
 
         public async Task<IEnumerable<TEntity>> GetAll()
