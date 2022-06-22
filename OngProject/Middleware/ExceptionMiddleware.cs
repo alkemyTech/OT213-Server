@@ -32,7 +32,7 @@ namespace OngProject.Middleware
             await context.Response.WriteAsync(new ErrorResponse()
             {
                 StatusCode = context.Response.StatusCode,
-                Message = $"Internal Server Error shown from the ExceptionMiddleware: {exception.Message}"
+                Message = $"Internal Server Error: {exception.Message} | {exception.InnerException}"
             }.ToString());
         }
     }
