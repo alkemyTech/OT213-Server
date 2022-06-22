@@ -16,28 +16,30 @@ namespace OngProject.Controllers
     {
         private readonly ICommentBusiness _commentBusiness;
         private readonly IMapper _mapper;
-
         public CommentsController(ICommentBusiness commentBusiness, IMapper mapper)
         {
             this._commentBusiness = commentBusiness;
             this._mapper = mapper;
         }
 
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [Route("/Comments")]
         public  IActionResult GetAllComments() 
         {
-            var comments = _commentBusiness.Find(c => c.IsDeleted == false);//.OrderBy(c => c.CreatedAt);
-            return comments != null ? Ok(_mapper.Map<IEnumerable<CommentDTO>>(comments)) 
-                                    : NotFound("The list of comments has not been found");                
+            var comments = _commentBusiness.Find(c => c.IsDeleted == false);
+            return Ok(_mapper.Map<IEnumerable<CommentDTO>>(comments)); 
         }
 
         [HttpPost]
         [Route("/Comments")]
         public async Task<IActionResult> Create([FromBody] CommentCreateDTO model)
-        {          
+        {        
+            if(model.newId == 0)
+                return BadRequest("NewId cannot be null");   
+            if(model.userId == 0)
+                return BadRequest("UserId cannot be null");
+
             await _commentBusiness.Insert(_mapper.Map<Comment>(model));
             return Ok(new 
             {
@@ -54,7 +56,7 @@ namespace OngProject.Controllers
         { 
             if (id != model.Id)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
+                return StatusCode(StatusCodes.Status404NotFound, new
                 {
                     Status = "Error",
                     Message = "Id number doesn't match!"
@@ -63,7 +65,7 @@ namespace OngProject.Controllers
            
             var comments = await _commentBusiness.GetById(id);
             _mapper.Map(model, comments);               
-            var updated = await _commentBusiness.Update(comments);
+            await _commentBusiness.Update(comments);
             
             return Ok(new 
             {
