@@ -30,7 +30,7 @@ namespace OngProject.Repositories.Auth
         #region Login User 
         public async Task<User> Login(string email, string pass)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(u => u.Email == email);
             if(user == null)
                 return null;
             
@@ -65,6 +65,14 @@ namespace OngProject.Repositories.Auth
             user.IsDeleted = false;
             user.CreatedAt = DateTime.Now;
             user.UpdatedAt = DateTime.Now;
+
+            if(user.FirstName.Contains("Admin"))
+            {
+                user.RoleId = 1;
+            }
+            else{
+                user.RoleId = 2;
+            }
 
             await _context.Users.AddAsync(user);
 
