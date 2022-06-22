@@ -5,13 +5,13 @@ namespace OngProject.Core.Models.DTOs.Comments
     public class CommentCreateDTO
     {        
         [Required(ErrorMessage = "Name is required")]
-        public string Name { set; get; }
+        public string body { set; get; }
 
         [Required(ErrorMessage = "NewId is required")]
-        public int NewId { set; get; }
+        public int newId { set; get; }
 
         [Required(ErrorMessage = "UserId is required")]
-        public int UserId { get; set; }
+        public int userId { get; set; }
     }
 }
 

@@ -24,11 +24,16 @@ namespace OngProject.Core.Mapper
             CreateMap<Member, MemberUpdateModelDTO>().ReverseMap();
             #endregion
             
-            #region Mapper Users & Rol      
+            #region Mapper Users     
             CreateMap<User, UserAuthDTO>().ReverseMap();
             CreateMap<User, UserGetModelDTO>();
             CreateMap<User, UsersDTO>().ReverseMap();
-            CreateMap<Role, RoleModelDto>().ReverseMap();
+            #endregion
+
+            #region Mapper Rol 
+            CreateMap<Role, RoleGetDTO>().ReverseMap();
+            CreateMap<Role, RoleCreateDto>().ReverseMap();
+            CreateMap<Role, RoleUpdateDTO>().ReverseMap();
             #endregion
 
             #region Organization Mapper

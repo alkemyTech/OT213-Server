@@ -6,7 +6,7 @@ namespace OngProject.Core.Mapper
 {
     public class EntityMapper
     {
-        public Role ToNewEntity(RoleModelDto roleDto)
+        public Role ToNewEntity(RoleCreateDto roleDto)
         {
             return new Role()
             {
@@ -15,7 +15,7 @@ namespace OngProject.Core.Mapper
             };
         }
 
-        public Role ToUpdateEntity(RoleModelDto roleDto)
+        public Role ToUpdateEntity(RoleUpdateDTO roleDto)
         {
             return new Role()
             {
@@ -25,9 +25,9 @@ namespace OngProject.Core.Mapper
             };
         }
 
-        public RoleModelDto ToModelDto(Role role)
+        public Role ToModelDto(Role role)
         {
-            return new RoleModelDto()
+            return new Role()
             {
                 Name = role.Name,
             };
