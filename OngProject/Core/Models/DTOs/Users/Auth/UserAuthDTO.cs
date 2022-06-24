@@ -6,10 +6,12 @@ namespace OngProject.Core.Models.DTOs.Users.Auth
     public class UserAuthDTO
     {
         [Required(ErrorMessage = "FirstName is required")]
+        [RegularExpression("^[a-zA-Z ]*$")]
 	    [MinLength(6)]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "LastName is required")]
+        [RegularExpression("^[a-zA-Z ]*$")]
 	    [MinLength(6)]
         public string LastName { get; set; }
 

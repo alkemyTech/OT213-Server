@@ -22,13 +22,15 @@ namespace OngProject.Controllers
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _accessor;
         private readonly IUsersBusiness _userBusiness;
+        private readonly IAmazonHelperService _aws;
 
         public AuthenticationController(IAuthBusiness authBusiness, 
                                         IMailBusiness mailBusiness, 
                                         IMapper mapper,
                                         ITokenService token,
                                         IHttpContextAccessor accessor,
-                                        IUsersBusiness userBusiness)
+                                        IUsersBusiness userBusiness,
+                                        IAmazonHelperService aws)
         {
             this._authBusiness = authBusiness;
             this._mailBusiness = mailBusiness;
@@ -36,20 +38,23 @@ namespace OngProject.Controllers
             this._tokenService = token;
             this._accessor = accessor;
             this._userBusiness = userBusiness;
+            this._aws = aws;
         }
 
         [HttpPost]
         [Route("Auth/Register")]
         public async Task<IActionResult> Register([FromForm] UserAuthDTO dto)
         {
-            dto.Email = dto.Email.ToLower();
-            if(await _authBusiness.ExistsUser(dto.Email))
-                return BadRequest("User already exists!");           
+            //dto.Email = dto.Email.ToLower();
+            // if(await _authBusiness.ExistsUser(dto.Email))
+            //     return BadRequest("User already exists!"); 
 
+            await _aws.UploadImage(dto.Photo);
+            _aws.DecodeFile(dto.Photo);
             var user = await _authBusiness.Registrar(_mapper.Map<User>(dto), dto.Password);
             var mappedUser = _mapper.Map<UserGetModelDTO>(user);
             
-            await _mailBusiness.SendEmailAsync(dto.Email);
+            //await _mailBusiness.SendEmailAsync(dto.Email);
 
             var validate = await _authBusiness.Login(dto.Email, dto.Password);
             if(validate == null)
@@ -60,7 +65,7 @@ namespace OngProject.Controllers
             return Ok(new 
             {
                 Status = "Success",
-                Message = "User registered successfully!",
+                Message = $"{dto.FirstName +" "+ dto.LastName} user registered successfully!",
                 User = mappedUser,
                 Token = token
             }); 
@@ -98,6 +103,7 @@ namespace OngProject.Controllers
                 Entity = mappedUser
             });         
         }
+
 
     }
 

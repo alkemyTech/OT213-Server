@@ -8,6 +8,8 @@ namespace OngProject.Core.Helper.Interface
     public interface IAmazonHelperService
     {
         Task<PutObjectResponse> UploadImage(IFormFile file);
+        string DecodeFile(IFormFile file);
+        //Task<> GetUrlFiles(string prefix);
         Task<FileStreamResult> DownloadImage(string imgName);
         //Task<DeleteObjectResponse> DeleteImage(string imgName);
     }

@@ -31,7 +31,7 @@ namespace OngProject.Controllers
 
         [HttpPut]
         [Route("Update/User/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] UsersDTO model)
+        public async Task<IActionResult> Edit(int id, [FromBody] UserUpdateDTO model)
         {          
             if (id != model.Id)
             {
