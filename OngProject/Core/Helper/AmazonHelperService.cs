@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,35 +24,7 @@ namespace OngProject.Core.Helper
             this._configuration = configuration;
         }
 
-        /*
-            Delete method not implemented in this project
-        */
-        
-        // #region DELETE IMAGE 
-        // public async Task<DeleteObjectResponse> DeleteImage(string imgName)
-        // {
-        //     if (string.IsNullOrEmpty(imgName))
-        //         throw new Exception("The 'imgName' parameter is required \n");
-
-        //     try
-        //     {
-        //         var request = new DeleteObjectRequest()
-        //         {
-        //             BucketName = _configuration["AWS:BucketName"],
-        //             Key = imgName
-        //         }; 
-        //         var result = await _amazonS3.DeleteObjectAsync(request);
-
-        //         return result;
-        //     }
-        //     catch (System.Exception ex)
-        //     {
-        //         throw new Exception(ex.Message);                
-        //     }
-        // }
-        // #endregion
-
-        #region DOWNLOAD IMAGE 
+        #region DOWNLOAD FILES 
         public async Task<FileStreamResult> DownloadImage(string imgName)
         {
             if (string.IsNullOrEmpty(imgName))
@@ -82,99 +55,45 @@ namespace OngProject.Core.Helper
         }
         #endregion
 
-        #region UPLOAD IMAGE
-        public async Task<PutObjectResponse> UploadImage2(IFormFile file)
+        #region UPLOAD FILES
+        public async Task<string> UploadImage(IFormFile file)
         {
-            if (file == null)
-                throw new Exception("The 'file' parameter is required \n");
-            try
+            var uploadRequest = new TransferUtilityUploadRequest
             {
-                var putRequest = new PutObjectRequest()
+                BucketName = _configuration["AWS:BucketName"],
+                Key = file.FileName,
+                InputStream = file.OpenReadStream(),
+                ContentType = file.ContentType,
+            };
+            var fileTransferUtility = new TransferUtility(_amazonS3);
+            await fileTransferUtility.UploadAsync(uploadRequest);
+            var url = string.Format("https://{0}.s3.amazonaws.com/{1}", _configuration["AWS:BucketName"], file.FileName);
+            return url;            
+        }
+        #endregion
+
+        #region GET FILES
+        async Task<IEnumerable<string>> IAmazonHelperService.GetUrlFiles(string prefix)
+        {
+            var client = new AmazonS3Client();
+            var request = new ListObjectsV2Request()
+            {
+                BucketName = _configuration["AWS:BucketName"],
+                Prefix = prefix
+            };
+            var response = await client.ListObjectsV2Async(request);
+            var presignedURL = response.S3Objects.Select(o =>
+            {
+                var request = new GetPreSignedUrlRequest()
                 {
                     BucketName = _configuration["AWS:BucketName"],
-                    //Key = file.FileName,
-                    Key = $"OT213\\{DateTime.Now:yyyy/MM/dd/hhmmss}-{file.FileName}",
-                    InputStream = file.OpenReadStream(),
-                    ContentType = file.ContentType,
-                }; 
-                var result = await _amazonS3.PutObjectAsync(putRequest);
-
-                return result;                
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-        #endregion
-
-        #region UPLOAD IMAGE
-        public async Task<PutObjectResponse> UploadImage(IFormFile file)//, string url)//, GetObjectResponse get)
-        {
-            if (file == null)
-                throw new Exception("The 'file' parameter is required \n");
-            try
-            {
-
-                //Byte[] bArray = File.ReadAllBytes(url);
-                //String base64String = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(url));
-                var url = string.Format("https://{0}.s3.amazonaws.com/{1}", _configuration["AWS:BucketName"], file.FileName);
-                var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(url));
-                var base64EncodedBytes = Convert.FromBase64String(base64);
-                var URLImage = Encoding.UTF8.GetString(base64EncodedBytes);
-
-                //byte[] bytes = Convert.FromBase64String(base64);
-                //var URLImage = File.WriteAllBytes(bytes);
-
-                // MemoryStream mStream = new MemoryStream(Encoding.UTF8.GetBytes(URLImage));
-                // var fileString = file.CopyToAsync(mStream);
-
-                var putRequest = new PutObjectRequest()
-                {
-                    BucketName =  _configuration["AWS:BucketName"],
-                    Key = $"OT213\\{DateTime.Now:yyyy/MM/dd/hhmmss}-{file.FileName}", //string.Format(),//string.Format("bucketName/{0}", "foo.jpg")
-                    InputStream = file.OpenReadStream(),
-                    ContentType = file.ContentType,
-                };       
-
-                //var a = putRequest.FilePath;        
-                //"https://cohorte-mayo-2820e45d.s3.amazonaws.com/OIP.jpg?AWSAccessKeyId=AKIAS2JWQJCDPYY77JXE&Expires=1656077669&Signature=P3tlX67F4IKAyKedBv240gyt8x8%3D"
-                //var Key = $"OT213\\{DateTime.Now:yyyy/MM/dd/hhmmss}-{file.FileName}";  
-                
-                var result = await _amazonS3.PutObjectAsync(putRequest);
-
-                return result;                
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        // public void Encryption(IFormFile file)
-        // {
-        //     var url = string.Format("https://{0}.s3.amazonaws.com/{1}", _configuration["AWS:BucketName"], file.FileName);
-        //     var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(url));
-        // }
-
-        // public void Decode(IFormFile file)
-        // {
-        //     var base64EncodedBytes = Convert.FromBase64String(base64);
-        //     var URLImage = Encoding.UTF8.GetString(base64EncodedBytes);
-        // }
-
-        #endregion
-
-        #region Encryption & Decode
-        public string DecodeFile(IFormFile file)
-        {
-            var url = string.Format("https://{0}.s3.amazonaws.com/{1}", _configuration["AWS:BucketName"], file.FileName);
-            var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(url));
-            var base64EncodedBytes = Convert.FromBase64String(base64);
-            var URLImage = Encoding.UTF8.GetString(base64EncodedBytes);
-
-            return URLImage;
-        }
+                    Key = o.Key,
+                    Expires = DateTime.Now.AddDays(1)
+                };
+                return client.GetPreSignedURL(request);
+            });
+            return presignedURL;
+        }     
         #endregion
 
     }

@@ -1,3 +1,5 @@
+using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -49,12 +51,23 @@ namespace OngProject.Controllers
             // if(await _authBusiness.ExistsUser(dto.Email))
             //     return BadRequest("User already exists!"); 
 
-            await _aws.UploadImage(dto.Photo);
-            _aws.DecodeFile(dto.Photo);
-            var user = await _authBusiness.Registrar(_mapper.Map<User>(dto), dto.Password);
+            var url = await _aws.UploadImage(dto.ImgFile);
+            if(url == null)
+                return NotFound("File is required, to be uploaded.");
+
+            var getUser = new User
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.Email,
+                Password = dto.Password,
+                Photo = url
+            };
+
+            var user = await _authBusiness.Registrar(_mapper.Map<User>(getUser), dto.Password);
             var mappedUser = _mapper.Map<UserGetModelDTO>(user);
             
-            //await _mailBusiness.SendEmailAsync(dto.Email);
+            await _mailBusiness.SendEmailAsync(dto.Email);
 
             var validate = await _authBusiness.Login(dto.Email, dto.Password);
             if(validate == null)
@@ -93,9 +106,12 @@ namespace OngProject.Controllers
         {            
             var email = _accessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
             if(email == null)
-                return BadRequest("The claim is null, you have to login first");
+                return NotFound(new {
+                    Status = StatusCodes.Status404NotFound,
+                    Message = "The claim is null, you have to login first"
+                });
 
-            var entity = _userBusiness.Find(u => u.Email == email); 
+            var entity = _userBusiness.Find(u => u.Email == email);             
             var mappedUser = _mapper.Map<IEnumerable<UserGetModelDTO>>(entity);            
 
             return Ok(new 
