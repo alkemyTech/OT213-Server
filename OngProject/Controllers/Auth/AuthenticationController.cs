@@ -47,9 +47,9 @@ namespace OngProject.Controllers
         [Route("Auth/Register")]
         public async Task<IActionResult> Register([FromForm] UserAuthDTO dto)
         {
-            //dto.Email = dto.Email.ToLower();
-            // if(await _authBusiness.ExistsUser(dto.Email))
-            //     return BadRequest("User already exists!"); 
+            dto.Email = dto.Email.ToLower();
+            if(await _authBusiness.ExistsUser(dto.Email))
+                return BadRequest("User already exists!"); 
 
             var url = await _aws.UploadImage(dto.ImgFile);
             if(url == null)
