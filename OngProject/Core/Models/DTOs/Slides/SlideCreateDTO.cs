@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace OngProject.Core.Models.DTOs.Slides
 {
@@ -9,7 +10,7 @@ namespace OngProject.Core.Models.DTOs.Slides
         public string Text { set; get; }
 
         [Required(ErrorMessage = "Image is required")]
-        public string ImageUrl { get; set; }
+        public IFormFile ImageUrl { get; set; }
         public int Order { get; set; }
 
         [Required(ErrorMessage = "OrganizationId is required")]
