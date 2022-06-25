@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using OngProject.Core.Models.DTOs.Slides;
 using Microsoft.AspNetCore.Authorization;
+using OngProject.Core.Helper.Interface;
 
 namespace OngProject.Controllers
 {
@@ -17,15 +18,18 @@ namespace OngProject.Controllers
     {
         private readonly ISlidesBusiness _slideBusiness;
         private readonly IMapper _mapper;
+        private readonly IAmazonHelperService _aws;
 
-        public SlideController(ISlidesBusiness slidesBusiness, IMapper mapper)
+
+        public SlideController(ISlidesBusiness slidesBusiness, IMapper mapper, IAmazonHelperService aws)
         {
             this._slideBusiness = slidesBusiness;
             this._mapper = mapper;
+            this._aws = aws;
         }
 
         [HttpGet]
-        [Route("/Slides")]
+        [Route("/Slide/All")]
         public  IActionResult GetAllSlides()
         {
             var slides = _slideBusiness.Find(c => c.IsDeleted == false);
@@ -33,7 +37,7 @@ namespace OngProject.Controllers
         }
 
         [HttpGet]
-        [Route("/Slides/{id}")]
+        [Route("/Slide/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var slide = await _slideBusiness.GetById(id);
@@ -41,13 +45,26 @@ namespace OngProject.Controllers
         }
 
         [HttpPost]
-        [Route("/Slides")]
-        public async Task<IActionResult> Create([FromBody] SlideCreateDTO model)
+        [Route("/Slide/Create")]
+        public async Task<IActionResult> Create([FromForm] SlideCreateDTO model)
         {
             if(model.OrganizationId == 0)
                 return BadRequest("OrganizationId cannot be null");
 
-            await _slideBusiness.Insert(_mapper.Map<Slide>(model));
+            var url = await _aws.UploadImage(model.ImageUrl);
+            if(url == null)
+                return NotFound("File is required, to be uploaded.");
+
+            var getSlide = new Slide
+            {
+                Name = model.Name,
+                Text = model.Text,
+                ImageUrl = url,
+                Order = model.Order,
+                OrganizationId = model.OrganizationId
+            };
+
+            await _slideBusiness.Insert(_mapper.Map<Slide>(getSlide));
             return Ok(new
             {
                 Status = "Success",
@@ -56,7 +73,7 @@ namespace OngProject.Controllers
         }
 
         [HttpPut]
-        [Route("/Slides/{id}")]
+        [Route("/Slides/Update/{id}")]
         public async Task<IActionResult> Edit(int id, [FromBody] SlideUpdateDTO model)
         {
             if (id != model.Id)
@@ -80,7 +97,7 @@ namespace OngProject.Controllers
         }
 
         [HttpDelete]
-        [Route("/Slides/{id}")]
+        [Route("/Slide/Delete/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
             var slide = await _slideBusiness.GetById(id.Value);    

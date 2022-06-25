@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
@@ -9,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace OngProject.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleBusiness _rolBusiness;
@@ -21,7 +22,7 @@ namespace OngProject.Controllers
             this._mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet]    
         [Route("/Role/all")]
         public  IActionResult GetAllRoles()
         {
@@ -37,7 +38,8 @@ namespace OngProject.Controllers
             return Ok(_mapper.Map<RoleGetDTO>(role));
         }
 
-        [HttpPost(nameof(CreateRole))]
+        [HttpPost]
+        [Route("/Role/Create")]
         public async Task<IActionResult> CreateRole(RoleCreateDto role)
         {
             var result = await _rolBusiness.Insert(new EntityMapper().ToNewEntity(role));
@@ -47,7 +49,8 @@ namespace OngProject.Controllers
                 return BadRequest("Error in Creating the role");
         }
 
-        [HttpPut(nameof(UpdateRole))]
+        [HttpPut]
+        [Route("/Role/Update")]
         public async Task<IActionResult> UpdateRole(int id, RoleUpdateDTO dto)
         {
             if (id != dto.Id)
@@ -71,10 +74,10 @@ namespace OngProject.Controllers
         }
 
         [HttpDelete]       
-        [Route("Delete/Rol/{roleID}")]
-        public async Task<IActionResult> DeleteRole(int? roleID)
+        [Route("Role/Delete/{id}")]
+        public async Task<IActionResult> DeleteRole(int? id)
         {
-            var rol = await _rolBusiness.GetById(roleID.Value);       
+            var rol = await _rolBusiness.GetById(id.Value);       
             await _rolBusiness.SoftDelete(rol);
             await _rolBusiness.Update(rol);
             return Ok(new 
