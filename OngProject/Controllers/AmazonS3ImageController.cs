@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Helper.Interface;
@@ -27,6 +28,14 @@ namespace OngProject.Controllers
                 Message = "Image uploaded successfully!"
             }); 
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]   
+        [Route("get/URLfiles")]
+        public async Task<IActionResult> GetURLFiles(string prefix)
+        {       
+            return Ok(await _aws.GetUrlFiles(prefix)); 
+        }
         
         // DOWNLOAD IMAGE
         [HttpGet]       
@@ -41,21 +50,6 @@ namespace OngProject.Controllers
             });  
         }
 
-        /*
-            Delete method not implemented in this project
-        */
-        // // DELETE IMAGE
-        // [HttpDelete]       
-        // [Route("Delete/Image")]
-        // public async Task<IActionResult> DeleteImage([FromQuery] string imgName)
-        // {
-        //     await _aws.DeleteImage(imgName);
-        //     return Ok(new 
-        //     {
-        //         Status = "Success",
-        //         Message = "Image deleted successfully!"
-        //     });   
-        // }
     }
 
 }
