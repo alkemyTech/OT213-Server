@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Core.Models.DTOs.Categories
@@ -9,7 +10,7 @@ namespace OngProject.Core.Models.DTOs.Categories
         [Required]
         public string Description { set; get; }
         [Required]
-        public string Image { get; set; }
+        public IFormFile Image { get; set; }
     }
 }
 

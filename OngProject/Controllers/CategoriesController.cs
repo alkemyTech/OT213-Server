@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.Categories;
 using OngProject.Entities;
@@ -17,11 +18,13 @@ namespace OngProject.Controllers
     {
         private readonly ICategoriesBusiness _business;
         private readonly IMapper _mapper;
+        private readonly IAmazonHelperService _aws;
 
-        public CategoriesController(ICategoriesBusiness categoryBusiness, IMapper mapper)
+        public CategoriesController(ICategoriesBusiness categoryBusiness, IMapper mapper, IAmazonHelperService aws)
         {
             this._business = categoryBusiness;
             this._mapper = mapper;
+            this._aws = aws;
         }
 
         // GET: /Categories
@@ -88,20 +91,36 @@ namespace OngProject.Controllers
         /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
         /// <response code="201">Created. Objeto correctamente creado en la BD.</response>        
         /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        /// <response code = "404" > NotFound.No se ha encontrado el objeto solicitado.</response>    
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPost]
         [Route("/Categories")]
-        public async Task<IActionResult> Create([FromBody] CategoryRequest model)
+        public async Task<IActionResult> Create([FromForm] CategoryRequest model)
         {
             if (model is null)
             {
                 return BadRequest();
             }
 
-            var category = await _business.Insert(_mapper.Map<Category>(model));
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null) {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            var newModel = new Category
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Image = url,
+            };
+
+            var category = await _business.Insert(_mapper.Map<Category>(newModel));
             return Ok(_mapper.Map<CategoryResponse>(category));
         }
 
@@ -114,22 +133,32 @@ namespace OngProject.Controllers
         /// </remarks>
         /// <param name="id">Id (int) del objeto.</param>
         /// <response code="200">OK. Devuelve el objeto solicitado.</response>        
-        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
+        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPut]     
         [Route("/Categories/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] CategoryRequest model)
+        public async Task<IActionResult> Edit(int id, [FromForm] CategoryRequest model)
         {
             var category = await _business.GetById(id);
 
             if (category == null)
             {
-                return NotFound();
+                return NotFound("Not found");
             }
-            _mapper.Map(model, category);
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null)
+            {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            category.Name = model.Name;
+            category.Description = model.Description;
+            category.Image = url;
             var categoryResponse = await _business.Update(category);
 
             return Ok(_mapper.Map<CategoryResponse>(categoryResponse));

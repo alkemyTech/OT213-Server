@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
-using Amazon.S3.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OngProject.Core.Helper.Interface
 {
@@ -9,7 +9,7 @@ namespace OngProject.Core.Helper.Interface
     {
         Task<PutObjectResponse> UploadImage(IFormFile file);
         Task<FileStreamResult> DownloadImage(string imgName);
-        //Task<DeleteObjectResponse> DeleteImage(string imgName);
+        Task<IEnumerable<string>> GetUrlFiles(string prefix);
     }
 
 }

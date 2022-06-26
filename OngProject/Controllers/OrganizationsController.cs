@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.Organizations;
 using OngProject.Entities;
@@ -15,10 +16,12 @@ namespace OngProject.Controllers
     {
         private readonly IOrganizationsBusiness _business;
         private readonly IMapper _mapper;
-        public OrganizationsController(IOrganizationsBusiness organizationBusiness, IMapper mapper)
+        private readonly IAmazonHelperService _aws;
+        public OrganizationsController(IOrganizationsBusiness organizationBusiness, IMapper mapper, IAmazonHelperService aws)
         {
             this._business = organizationBusiness;
             this._mapper = mapper;
+            this._aws = aws;
         }
 
         // GET: /Organizations
@@ -85,20 +88,44 @@ namespace OngProject.Controllers
         /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
         /// <response code="201">Created. Objeto correctamente creado en la BD.</response>        
         /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        /// <response code = "404" > NotFound.No se ha encontrado el objeto solicitado.</response>     
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPost]
         [Route("/Organizations")]
-        public async Task<IActionResult> Create([FromBody] OrganizationRequest model)
+        public async Task<IActionResult> Create([FromForm] OrganizationRequest model)
         {
             if (model is null)
             {
                 return BadRequest();
             }
 
-            var organization = await _business.Insert(_mapper.Map<Organization>(model));
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null)
+            {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            var newModel = new Organization
+            {
+                Name = model.Name,
+                AboutUs = model.AboutUs,
+                Address = model.Address,
+                Email = model.Email,
+                Welcome = model.Welcome,
+                Phone = model.Phone,
+                FacebookUrl = model.FacebookUrl,
+                InstagramUrl = model.InstagramUrl,
+                LinkedInUrl = model.LinkedInUrl,
+                Image = url,
+            };
+
+            var organization = await _business.Insert(_mapper.Map<Organization>(newModel));
             return Ok(_mapper.Map<OrganizationResponse>(organization)); ;
         }
 
@@ -114,20 +141,39 @@ namespace OngProject.Controllers
         /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
         [Route("/Organizations/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] OrganizationRequest model)
+        public async Task<IActionResult> Edit(int id, [FromForm] OrganizationRequest model)
         {
             var organization = await _business.GetById(id);
 
             if (organization == null)
             {
-                return NotFound();
+                return NotFound("Not found");
             }
-            _mapper.Map(model, organization);
+
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null)
+            {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            organization.Name = model.Name;
+            organization.AboutUs = model.AboutUs;
+            organization.Address = model.Address;
+            organization.Email = model.Email;
+            organization.Welcome = model.Welcome;
+            organization.Phone = model.Phone;
+            organization.FacebookUrl = model.FacebookUrl;
+            organization.InstagramUrl = model.InstagramUrl;
+            organization.LinkedInUrl = model.LinkedInUrl;
+            organization.Image = url;
+
             var organizationResponse = await _business.Update(organization);
 
             return Ok(_mapper.Map<OrganizationResponse>(organizationResponse));

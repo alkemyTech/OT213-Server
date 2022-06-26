@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace OngProject.Core.Models.DTOs.Activities
 {
@@ -9,6 +11,6 @@ namespace OngProject.Core.Models.DTOs.Activities
         [Required]
         public string Content { get; set; }
         [Required]
-        public string Image { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

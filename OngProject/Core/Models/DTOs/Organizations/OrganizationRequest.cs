@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Core.Models.DTOs.Organizations
 {
@@ -7,7 +8,7 @@ namespace OngProject.Core.Models.DTOs.Organizations
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Image { get; set; }
+        public IFormFile Image { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]

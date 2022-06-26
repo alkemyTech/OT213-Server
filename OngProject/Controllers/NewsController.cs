@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.News;
 using OngProject.Entities;
@@ -17,10 +18,13 @@ namespace OngProject.Controllers
     {        
         private readonly INewsBusiness _business;
         private readonly IMapper _mapper;
-        public NewsController(INewsBusiness newsBusiness, IMapper mapper)
+        private readonly IAmazonHelperService _aws;
+
+        public NewsController(INewsBusiness newsBusiness, IMapper mapper, IAmazonHelperService aws)
         {
             this._business = newsBusiness;
             this._mapper = mapper;
+            this._aws = aws;
         }
 
         // GET: /News
@@ -87,19 +91,35 @@ namespace OngProject.Controllers
         /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
         /// <response code="201">Created. Objeto correctamente creado en la BD.</response>        
         /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        /// <response code = "404" > NotFound.No se ha encontrado el objeto solicitado.</response>     
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(NewsResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPost]       
         [Route("/News")]
-        public async Task<IActionResult> Create([FromBody] NewsRequest model)
+        public async Task<IActionResult> Create([FromForm] NewsRequest model)
         {       
             if (model is null)
             {
                 return BadRequest();
             }
 
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null)
+            {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            var newModel = new News
+            {
+                Name = model.Name,
+                Image = url,
+                Content = model.Content
+            };
             var news = await _business.Insert(_mapper.Map<News>(model));
             return Ok(_mapper.Map<NewsResponse>(news));
         }
@@ -116,19 +136,31 @@ namespace OngProject.Controllers
         /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(NewsResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPut]       
         [Route("/News/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] NewsRequest model)
+        public async Task<IActionResult> Edit(int id, [FromForm] NewsRequest model)
         {
             var news = await _business.GetById(id);
 
             if (news == null)
             {
-                return NotFound();
+                return NotFound("Not found");
             }
-            _mapper.Map(model, news);
+
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null)
+            {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            news.Name = model.Name;
+            news.Image = url;
+            news.Content = model.Content;
+
             var newsResponse = await _business.Update(news);
 
             return Ok(_mapper.Map<NewsResponse>(newsResponse));

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Amazon.Runtime;
 using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -129,7 +130,6 @@ namespace OngProject
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUsersBusiness, UsersBusiness>();
             services.AddScoped<INewsBusiness, NewsBusiness>();
-
 
             //Amazon S3 configure service & DI
             services.AddScoped<IAmazonHelperService, AmazonHelperService>();            

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.Slides;
 using OngProject.Entities;
@@ -17,11 +18,13 @@ namespace OngProject.Controllers
     {
         private readonly ISlidesBusiness _business;
         private readonly IMapper _mapper;
+        private readonly IAmazonHelperService _aws;
 
-        public SlidesController(ISlidesBusiness slidesBusiness, IMapper mapper)
+        public SlidesController(ISlidesBusiness slidesBusiness, IMapper mapper, IAmazonHelperService aws)
         {
             this._business = slidesBusiness;
             this._mapper = mapper;
+            this._aws = aws;
         }
 
         // GET: /Slides
@@ -87,21 +90,39 @@ namespace OngProject.Controllers
         /// <param name="model">Objeto a crear a la BD.</param>
         /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
         /// <response code="201">Created. Objeto correctamente creado en la BD.</response>        
-        /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        /// <response code = "404" > NotFound.No se ha encontrado el objeto solicitado.</response>    
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(SlideResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPost]
         [Route("/Slides")]
-        public async Task<IActionResult> Create([FromBody] SlideRequest model)
+        public async Task<IActionResult> Create([FromForm] SlideRequest model)
         {
             if (model is null)
             {
-                return BadRequest();
+                return BadRequest("Bad request");
             }
+            if (model.OrganizationId == 0) {
+                return BadRequest("OrganizationId cannot be null");
+            }
+            var url = AWSMockWithOutCredentials.UploadImage(model.ImageUrl);
+            //var url = await _aws.UploadImage(model.ImageUrl);
 
-            var slide= await _business.Insert(_mapper.Map<Slide>(model));
+            if (url == null)
+                return NotFound("File is required, to be uploaded.");
+
+            var newModel = new Slide
+            {
+                Name = model.Name,
+                Text = model.Text,
+                ImageUrl = url,
+                Order = model.Order,
+                OrganizationId = model.OrganizationId
+            };
+
+            var slide= await _business.Insert(_mapper.Map<Slide>(newModel));
             return Ok(_mapper.Map<SlideResponse>(slide));
         }
 
@@ -114,22 +135,34 @@ namespace OngProject.Controllers
         /// </remarks>
         /// <param name="id">Id (int) del objeto.</param>
         /// <response code="200">OK. Devuelve el objeto solicitado.</response>        
-        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
+        /// <response code = "404" > NotFound.No se ha encontrado el objeto solicitado.</response>    
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(SlideResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SlideResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPut]
         [Route("/Slides/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] SlideRequest model)
+        public async Task<IActionResult> Edit(int id, [FromForm] SlideRequest model)
         {
             var slide = await _business.GetById(id);
 
             if (slide == null)
             {
-                return NotFound();
+                return NotFound("Not found");
             }
-            _mapper.Map(model, slide);
+
+            var url = AWSMockWithOutCredentials.UploadImage(model.ImageUrl);
+            //var url = await _aws.UploadImage(model.ImageUrl);
+
+            if (url == null)
+                return NotFound("File is required, to be uploaded.");
+
+            slide.Name = model.Name;
+            slide.Text = model.Text;
+            slide.ImageUrl = url;
+            slide.Order = model.Order;
+            slide.OrganizationId = model.OrganizationId;
+
             var slideResponse = await _business.Update(slide);
 
             return Ok(_mapper.Map<SlideResponse>(slideResponse));

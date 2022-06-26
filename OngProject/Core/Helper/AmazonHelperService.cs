@@ -1,12 +1,13 @@
-using System;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Helper.Interface;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OngProject.Core.Helper
 {
@@ -58,7 +59,7 @@ namespace OngProject.Core.Helper
                 {
                     BucketName = "cohorte-mayo-2820e45d",
                     Key = imgName
-                }; 
+                };
                 using GetObjectResponse response = await _amazonS3.GetObjectAsync(request);
                 using Stream responseStream = response.ResponseStream;
                 var stream = new MemoryStream();
@@ -68,12 +69,12 @@ namespace OngProject.Core.Helper
                 return new FileStreamResult(stream, response.Headers["Content-Type"])
                 {
                     FileDownloadName = imgName
-                };    
+                };
             }
             catch (System.Exception ex)
             {
                 throw new Exception(ex.Message);
-            }  
+            }
         }
         #endregion
 
@@ -84,25 +85,33 @@ namespace OngProject.Core.Helper
                 throw new Exception("The 'file' parameter is required \n");
             try
             {
-                var putRequest = new PutObjectRequest()
-                {
-                    BucketName = "cohorte-mayo-2820e45d",
-                    Key = file.FileName,
-                    InputStream = file.OpenReadStream(),
-                    ContentType = file.ContentType,
-                }; 
-                var result = await _amazonS3.PutObjectAsync(putRequest);
-
+                BucketName = _configuration["AWS:BucketName"],
+                Key = file.FileName,
+                InputStream = file.OpenReadStream(),
+                ContentType = file.ContentType,
+            };
+            var fileTransferUtility = new TransferUtility(_amazonS3);
+            await fileTransferUtility.UploadAsync(uploadRequest);
+            var url = string.Format("https://{0}.s3.amazonaws.com/{1}", _configuration["AWS:BucketName"], file.FileName);
+            return url;
+        }
+        #endregion
                 return result;                
             }
             catch (System.Exception ex)
             {
-                throw new Exception(ex.Message);
-            }
+                var request = new GetPreSignedUrlRequest()
+                {
+                    BucketName = _configuration["AWS:BucketName"],
+                    Key = o.Key,
+                    Expires = DateTime.Now.AddDays(1)
+                };
+                return client.GetPreSignedURL(request);
+            });
+            return presignedURL;
         }
         #endregion
      
     }
 
 }
-

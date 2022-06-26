@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.Testimonials;
 using OngProject.Entities;
@@ -17,10 +18,12 @@ namespace OngProject.Controllers
     {
         private readonly ITestimonialsBusiness _business;
         private readonly IMapper _mapper;
-        public TestimonialsController(ITestimonialsBusiness testimonialBusiness, IMapper mapper)
+        private readonly IAmazonHelperService _aws;
+        public TestimonialsController(ITestimonialsBusiness testimonialBusiness, IMapper mapper, IAmazonHelperService aws)
         {
             this._business = testimonialBusiness;
             this._mapper = mapper;
+            this._aws = aws;
         }
 
         // GET: /Testimonials
@@ -89,18 +92,31 @@ namespace OngProject.Controllers
         /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(TestimonialResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
 
         [HttpPost]
         [Route("/Testimonials")]
-        public async Task<IActionResult> Create(TestimonialRequest model)
+        public async Task<IActionResult> Create([FromForm] TestimonialRequest model)
         {
             if (model is null)
             {
                 return BadRequest();
             }
 
-            var testimonial = await _business.Insert(_mapper.Map<Testimonial>(model));
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.ImageUrl);
+
+            if (url == null)
+                return NotFound("File is required, to be uploaded.");
+
+            var newModel = new Testimonial
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Image = url
+            };
+
+            var testimonial = await _business.Insert(_mapper.Map<Testimonial>(newModel));
             return Ok(_mapper.Map<TestimonialResponse>(testimonial));
         }
 
@@ -116,19 +132,28 @@ namespace OngProject.Controllers
         /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPut]
         [Route("/Testimonials/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] TestimonialRequest model)
+        public async Task<IActionResult> Edit(int id, [FromForm] TestimonialRequest model)
         {
             var testimonial = await _business.GetById(id);
 
             if (testimonial == null)
             {
-                return NotFound();
+                return NotFound("Not found");
             }
-            _mapper.Map(model, testimonial);
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.ImageUrl);
+
+            if (url == null)
+                return NotFound("File is required, to be uploaded.");
+
+            testimonial.Name = model.Name;
+            testimonial.Description = model.Description;
+            testimonial.Image = url;
+
             var testimonialResponse = await _business.Update(testimonial);
 
             return Ok(_mapper.Map<TestimonialResponse>(testimonialResponse));

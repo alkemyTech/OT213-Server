@@ -20,7 +20,7 @@ namespace OngProject.Repositories.Auth
         #region Validate User 
         public async Task<bool> ExistsUser(string email)
         {
-            if(await _context.Users.AnyAsync(u => u.Email == email))
+            if (await _context.Users.AnyAsync(u => u.Email == email))
                 return true;
 
             return false;
@@ -31,11 +31,11 @@ namespace OngProject.Repositories.Auth
         public async Task<User> Login(string email, string pass)
         {
             var user = await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(u => u.Email == email);
-            if(user == null)
+            if (user == null)
                 return null;
-            
+
             var verify = VerifyPasswordHash(pass, user.PasswordHash, user.PasswordSalt);
-            if(!verify)
+            if (!verify)
                 return null;
             return user;
         }
@@ -47,7 +47,7 @@ namespace OngProject.Repositories.Auth
                 var computeHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(pass));
                 for (int i = 0; i < computeHash.Length; i++)
                 {
-                    if(computeHash[i] != computeHash[i]) return false;
+                    if (computeHash[i] != computeHash[i]) return false;
                 }
             }
             return true;
@@ -66,11 +66,12 @@ namespace OngProject.Repositories.Auth
             user.CreatedAt = DateTime.Now;
             user.UpdatedAt = DateTime.Now;
 
-            if(user.FirstName.Contains("Admin"))
+            if (user.Email.Contains("admin"))
             {
                 user.RoleId = 1;
             }
-            else{
+            else
+            {
                 user.RoleId = 2;
             }
 
@@ -91,4 +92,3 @@ namespace OngProject.Repositories.Auth
     }
 
 }
-

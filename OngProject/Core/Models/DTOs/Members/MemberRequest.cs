@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace OngProject.Core.Models.DTOs.Members
@@ -11,7 +12,7 @@ namespace OngProject.Core.Models.DTOs.Members
         public string LinkedInUrl { get; set; }
 
         [Required]
-        public string ImageUrl { get; set; }
+        public IFormFile ImageUrl { get; set; }
         public string Description { get; set; }
     }
 }

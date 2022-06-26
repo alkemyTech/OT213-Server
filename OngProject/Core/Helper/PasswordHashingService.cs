@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace OngProject.Core.Helper
@@ -15,8 +15,7 @@ namespace OngProject.Core.Helper
             for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
             return sb.ToString();
         }
-        
+
     }
 
 }
-

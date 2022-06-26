@@ -1,11 +1,8 @@
-using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using OngProject.Entities;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OngProject.Core.Helper;
-using OngProject.Core.Helper.Interface;
-using OngProject.Entities;
 
 namespace OngProject.DataAccess.Seeder.Users
 {
@@ -16,27 +13,15 @@ namespace OngProject.DataAccess.Seeder.Users
         // {
         //     //this._passHash = passHash;
         // }
-        
+
         public void Configure(EntityTypeBuilder<User> builder)
         {
             // Property Configurations 
             builder.ToTable("Users");
-           
+
             // Populate the table Users
             var hmac = new HMACSHA512();
             builder.HasData(
-                new User
-                {
-                    Id = 1,
-                    FirstName = "Javier",
-                    LastName = "Vazquez",
-                    Email = "jv@admin.com",
-                    Password = "PxeMXgybOIe",
-                    Photo = "https://cohorte-mayo-2820e45d.s3.amazonaws.com/jv.jpg",
-                    PasswordHash = hmac.Key,
-                    PasswordSalt = hmac.ComputeHash(Encoding.UTF8.GetBytes("PxeMX(gybOIe")),
-                    RoleId = 1
-                },
                 new User
                 {
                     Id = 2,
@@ -83,6 +68,18 @@ namespace OngProject.DataAccess.Seeder.Users
                     Photo = "https://cohorte-mayo-2820e45d.s3.amazonaws.com/gd.jpg",
                     PasswordHash = hmac.Key,
                     PasswordSalt = hmac.ComputeHash(Encoding.UTF8.GetBytes("ZJYBt1MlY6Dp")),
+                    RoleId = 1
+                },
+                new User
+                {
+                    Id = 1,
+                    FirstName = "Javier",
+                    LastName = "Vazquez",
+                    Email = "jv@admin.com",
+                    Password = "PxeMXgybOIe",
+                    Photo = "https://cohorte-mayo-2820e45d.s3.amazonaws.com/jv.jpg",
+                    PasswordHash = hmac.Key,
+                    PasswordSalt = hmac.ComputeHash(Encoding.UTF8.GetBytes("PxeMX(gybOIe")),
                     RoleId = 1
                 },
                 new User

@@ -1,7 +1,11 @@
-{
+﻿{
     "ConnectionStrings": {
         "OngProjectConnection": "",
         "Credentials:": ""
+    },
+    "AWSCreds": {
+        "AWS_ACCESS_KEY_ID": "xxxxxxxxxxx",
+        "AWS_SECRET_ACCESS_KEY": "xxxxxxxxxx"
     },
     "AWS": {
         "Profile": "default",

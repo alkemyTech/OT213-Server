@@ -58,6 +58,7 @@ namespace OngProject.Repositories
         public TEntity Update(TEntity entity)
         {
             entity.UpdatedAt = DateTime.Now;
+            context.Set<TEntity>().AsNoTracking();
             context.Set<TEntity>().Update(entity);
             return entity;
         }

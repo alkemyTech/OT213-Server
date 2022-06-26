@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.Members;
 using OngProject.Entities;
@@ -15,10 +16,13 @@ namespace OngProject.Controllers
     {
         private readonly IMembersBusiness _business;
         private readonly IMapper _mapper;
-        public MembersController(IMembersBusiness memberBusiness, IMapper mapper)
+        private readonly IAmazonHelperService _aws;
+
+        public MembersController(IMembersBusiness memberBusiness, IMapper mapper, IAmazonHelperService aws)
         {
             this._business = memberBusiness;
             this._mapper = mapper;
+            this._aws = aws;
         }
 
         // GET: /Members
@@ -86,21 +90,41 @@ namespace OngProject.Controllers
         /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
         /// <response code="201">Created. Objeto correctamente creado en la BD.</response>        
         /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        /// <response code = "404" > NotFound.No se ha encontrado el objeto solicitado.</response>    
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(MemberResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPost]       
         [Route("/Members")]
-        public async Task<IActionResult> Create([FromBody] MemberRequest model)
+        public async Task<IActionResult> Create([FromForm] MemberRequest model)
         {          
             if (model is null)
             {
                 return BadRequest();
             }
 
-            var category = await _business.Insert(_mapper.Map<Member>(model));
-            return Ok(_mapper.Map<MemberResponse>(category));
+            var url = AWSMockWithOutCredentials.UploadImage(model.ImageUrl);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null)
+            {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            var newModel = new Member
+            {
+                Name = model.Name,
+                Description = model.Description,
+                ImageUrl = url,
+                InstagramUrl = model.InstagramUrl,
+                LinkedInUrl = model.LinkedInUrl,
+                FacebookUrl = model.FacebookUrl
+            };
+
+            var member = await _business.Insert(_mapper.Map<Member>(newModel));
+            return Ok(_mapper.Map<MemberResponse>(member));
         }
 
         // GET: /Members/5
@@ -115,19 +139,33 @@ namespace OngProject.Controllers
         /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(MemberResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPut]       
         [Route("/Members/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] MemberRequest model)
+        public async Task<IActionResult> Edit(int id, [FromForm] MemberRequest model)
         {
             var member = await _business.GetById(id);
 
             if (member == null)
             {
-                return NotFound();
+                return NotFound("Not found");
             }
-            _mapper.Map(model, member);
+            var url = AWSMockWithOutCredentials.UploadImage(model.ImageUrl);
+            //var url = await _aws.UploadImage(model.ImageUrl);
+
+            if (url == null)
+            {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            member.Name = model.Name;
+            member.Description = model.Description;
+            member.ImageUrl = url;
+            member.InstagramUrl = model.InstagramUrl;
+            member.LinkedInUrl = model.LinkedInUrl;
+            member.FacebookUrl = model.FacebookUrl;
+
             var memberResponse = await _business.Update(member);
 
             return Ok(_mapper.Map<MemberResponse>(memberResponse));

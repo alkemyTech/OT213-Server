@@ -89,7 +89,7 @@ namespace OngProject.Controllers
         /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(CommentResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
 
         [HttpPost]
         [Route("/Comments")]
@@ -97,7 +97,13 @@ namespace OngProject.Controllers
         {
             if (model is null)
             {
-                return BadRequest();
+                return BadRequest("Bad request");
+            }
+            if (model.NewsId == 0) {
+                return BadRequest("NewId cannot be null");
+            }
+            if (model.UserId == 0) {
+                return BadRequest("UserId cannot be null");
             }
 
             var comment = await _business.Insert(_mapper.Map<Comment>(model));

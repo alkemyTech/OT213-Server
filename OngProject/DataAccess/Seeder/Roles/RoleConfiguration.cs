@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using OngProject.Entities;
+
 
 namespace OngProject.DataAccess.Seeder.Roles
 {
@@ -12,25 +14,19 @@ namespace OngProject.DataAccess.Seeder.Roles
             builder.Property(n => n.Id)
                     .IsRequired();
 
-            builder.Property(n => n.Name)
-                    .HasMaxLength(50)
-                    .IsRequired();
-
-            builder.Property(n => n.Description)
-                    .HasMaxLength(254);
-
+            // Populate the table Roles
             builder.HasData(
-                new Entities.Role
+                new Role
                 {
                     Id = 1,
                     Name = "Admin",
-                    Description = "Administrator"
+                    Description = "User with access to all resources."
                 },
-                new Entities.Role
+                new Role
                 {
                     Id = 2,
                     Name = "Owner",
-                    Description = "Owner"
+                    Description = "User with limited access."
                 }
             );
         }
