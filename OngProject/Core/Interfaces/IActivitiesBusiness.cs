@@ -2,7 +2,7 @@
 
 namespace OngProject.Core.Interfaces
 {
-    public interface IActivitiesBusiness : IGenericBusiness<Activities>
+    public interface IActivitiesBusiness : IGenericBusiness<Activity>
     {
     }
 }

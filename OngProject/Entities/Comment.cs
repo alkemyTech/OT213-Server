@@ -15,7 +15,7 @@ namespace OngProject.Entities
         // Fk_news id
         [Required]
         public int? NewId { get; set; }
-        public New New { get; set; }
+        public News New { get; set; }
     }
 
 }

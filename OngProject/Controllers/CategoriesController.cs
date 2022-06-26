@@ -1,12 +1,13 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OngProject.Core.Helper.Interface;
 using OngProject.Core.Interfaces;
 using OngProject.Core.Models.DTOs.Categories;
 using OngProject.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OngProject.Controllers
 {
@@ -15,79 +16,183 @@ namespace OngProject.Controllers
     [Authorize(Roles = "Admin")]
     public class CategoriesController : ControllerBase
     {
-        private readonly ICategoryBusiness _categoryBusiness;
+        private readonly ICategoriesBusiness _business;
         private readonly IMapper _mapper;
+        private readonly IAmazonHelperService _aws;
 
-        public CategoriesController(ICategoryBusiness categoryBusiness, IMapper mapper)
+        public CategoriesController(ICategoriesBusiness categoryBusiness, IMapper mapper, IAmazonHelperService aws)
         {
-            this._categoryBusiness = categoryBusiness;
+            this._business = categoryBusiness;
             this._mapper = mapper;
+            this._aws = aws;
         }
+
+        // GET: /Categories
+        /// <summary>
+        /// Obtiene todos los objetos.
+        /// </summary>
+        /// <remarks>
+        /// Obtiene todos los objetos
+        /// </remarks>
+        /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
+        /// <response code="200">OK.Devuelve los objetos solicitados.</response>        
+        /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(IEnumerable<CategoryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
 
         [HttpGet]
         [Route("/Categories")]
-        public IActionResult GetAllCategories() 
+        public IActionResult GetAll() 
         {
-            var categories =  _categoryBusiness.Find(c => c.IsDeleted == false);
-            return Ok(_mapper.Map<IEnumerable<CategoryGetDTO>>(categories)); 
+            var categories =  _business.Find(c => c.IsDeleted == false);
+            if (categories == null)
+            {
+                return BadRequest();
+            }
+            return Ok(_mapper.Map<IEnumerable<CategoryResponse>>(categories)); 
         }
 
-        [HttpGet]       
+        // GET: /Categories/5
+        /// <summary>
+        /// Obtiene un objeto por su Id.
+        /// </summary>
+        /// <remarks>
+        /// Devuelve el objeto por su id si existe.
+        /// </remarks>
+        /// <param name="id">Id (int) del objeto.</param>
+        /// <response code="200">OK. Devuelve el objeto solicitado.</response>        
+        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
+
+        [HttpGet]
         [Route("/Categories/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var category = await _categoryBusiness.GetById(id);
-            return Ok(_mapper.Map<CategoryDetailsDTO>(category)); 
+            var model = await _business.GetById(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<CategoryResponse>(model));
         }
+
+        // POST: /Categories
+        /// <summary>
+        /// Crea un nuevo objeto en la BD.
+        /// </summary>
+        /// <remarks>
+        /// Crea el objecto en la BD
+        /// </remarks>
+        /// <param name="model">Objeto a crear a la BD.</param>
+        /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
+        /// <response code="201">Created. Objeto correctamente creado en la BD.</response>        
+        /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        /// <response code = "404" > NotFound.No se ha encontrado el objeto solicitado.</response>    
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPost]
         [Route("/Categories")]
-        public async Task<IActionResult> Create([FromBody] CategoryCreateDTO model)
-        {          
-            await _categoryBusiness.Insert(_mapper.Map<Category>(model));
-            return Ok(new 
+        public async Task<IActionResult> Create([FromForm] CategoryRequest model)
+        {
+            if (model is null)
             {
-                Status = "Success",
-                Message = $"{model.Name} category creation successfully!"
-            });                
+                return BadRequest();
+            }
+
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null) {
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            var newModel = new Category
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Image = url,
+            };
+
+            var category = await _business.Insert(_mapper.Map<Category>(newModel));
+            return Ok(_mapper.Map<CategoryResponse>(category));
         }
+
+        // GET: /Categories/5
+        /// <summary>
+        /// Obtiene un objeto por su Id.
+        /// </summary>
+        /// <remarks>
+        /// Devuelve el objeto por su id si existe.
+        /// </remarks>
+        /// <param name="id">Id (int) del objeto.</param>
+        /// <response code="200">OK. Devuelve el objeto solicitado.</response>        
+        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
 
         [HttpPut]     
         [Route("/Categories/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] CategoryUpdateDTO model)
-        { 
-            if (id != model.Id)
+        public async Task<IActionResult> Edit(int id, [FromForm] CategoryRequest model)
+        {
+            var category = await _business.GetById(id);
+
+            if (category == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound, new
-                {
-                    Status = "Error",
-                    Message = "Id number doesn't match!"
-                });
-            }  
-            
-            var categories = await _categoryBusiness.GetById(id);
-            _mapper.Map(model,categories);               
-            await _categoryBusiness.Update(categories);
-              
-            return Ok(new 
+                return NotFound("Not found");
+            }
+            var url = AWSMockWithOutCredentials.UploadImage(model.Image);
+            //var url = await _aws.UploadImage(model.Image);
+
+            if (url == null)
             {
-                Status = "Success",
-                Message = $"{model.Name} category updated successfully!"
-            }); 
+                return NotFound("File is required, to be uploaded.");
+            }
+
+            category.Name = model.Name;
+            category.Description = model.Description;
+            category.Image = url;
+
+            var categoryResponse = await _business.Update(category);
+
+            return Ok(_mapper.Map<CategoryResponse>(categoryResponse));
         }
+
+        // Delete: /Categories/5
+        /// <summary>
+        /// Elimina un objeto por su Id.
+        /// </summary>
+        /// <remarks>
+        /// Elimina el objeto por su id si existe.
+        /// </remarks>
+        /// <param name="id">Id (int) del objeto.</param>
+        /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>      
+        /// <response code="200">OK. Devuelve el objeto solicitado.</response>        
+        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
 
         [HttpDelete]      
         [Route("/Categories/{id}")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> SoftDelete(int? id)
         {
-            var category = await _categoryBusiness.GetById(id.Value);
-            await _categoryBusiness.SoftDelete(category);
-            await _categoryBusiness.Update(category);
+            var category = await _business.GetById(id.Value);
 
-            return Ok($"{category.Name} category deleted successfully.");
+            if (category == null)
+            {
+                return NotFound();
+            }
+            await _business.SoftDelete(category);
+            await _business.Update(category);
+            return Ok("Deleted successfully.");
         }
-
     }
-
 }
-

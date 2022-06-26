@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
@@ -10,6 +5,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using OngProject.Core.Helper.Interface;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OngProject.Core.Helper
 {
@@ -36,7 +36,7 @@ namespace OngProject.Core.Helper
                 {
                     BucketName = _configuration["AWS:BucketName"],
                     Key = imgName
-                }; 
+                };
                 using GetObjectResponse response = await _amazonS3.GetObjectAsync(request);
                 using Stream responseStream = response.ResponseStream;
                 var stream = new MemoryStream();
@@ -46,12 +46,12 @@ namespace OngProject.Core.Helper
                 return new FileStreamResult(stream, response.Headers["Content-Type"])
                 {
                     FileDownloadName = imgName
-                };    
+                };
             }
             catch (System.Exception ex)
             {
                 throw new Exception(ex.Message);
-            }  
+            }
         }
         #endregion
 
@@ -68,7 +68,7 @@ namespace OngProject.Core.Helper
             var fileTransferUtility = new TransferUtility(_amazonS3);
             await fileTransferUtility.UploadAsync(uploadRequest);
             var url = string.Format("https://{0}.s3.amazonaws.com/{1}", _configuration["AWS:BucketName"], file.FileName);
-            return url;            
+            return url;
         }
         #endregion
 
@@ -93,10 +93,9 @@ namespace OngProject.Core.Helper
                 return client.GetPreSignedURL(request);
             });
             return presignedURL;
-        }     
+        }
         #endregion
 
     }
 
 }
-

@@ -1,7 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using AutoMapper.Configuration.Annotations;
 using Microsoft.AspNetCore.Http;
 
 namespace OngProject.Core.Models.DTOs.Users.Auth
@@ -10,16 +7,16 @@ namespace OngProject.Core.Models.DTOs.Users.Auth
     {
         [Required(ErrorMessage = "FirstName is required")]
         [RegularExpression("^[a-zA-Z ]*$")]
-	    [MinLength(5)]
+        [MinLength(5)]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "LastName is required")]
         [RegularExpression("^[a-zA-Z ]*$")]
-	    [MinLength(6)]
+        [MinLength(6)]
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
-	    [EmailAddress]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
@@ -27,7 +24,7 @@ namespace OngProject.Core.Models.DTOs.Users.Auth
         public string Password { get; set; }
 
         [Required(ErrorMessage = "ImgFile is required")]
-        public IFormFile ImgFile { get; set; } 
+        public IFormFile ImgFile { get; set; }
 
     }
 

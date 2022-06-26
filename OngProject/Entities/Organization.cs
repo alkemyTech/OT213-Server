@@ -5,40 +5,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OngProject.Entities
 {
-    [Table("Organization")]
     public class Organization : BaseEntity
     {
-        [Required(ErrorMessage = "Nombre requerido")]
-        [Column("name")]
-        [DisplayName("Nombre")]
+        [Required]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Imagen requerida")]
-        [Column("image")]
-        [DisplayName("Imagen")]
+        [Required]
         public string Image { get; set; }
 
-        [Column("address")]
-        [DisplayName("Dirección")]
         public string Address { get; set; }
-
-        [Column("phone")]
-        [DisplayName("Número de teléfono")]
         public int Phone { get; set; }
 
-        [Required(ErrorMessage = "Correo electrónico requerido")]
-        [DataType(DataType.EmailAddress)]
-        [EmailAddress]
-        [DisplayName("Correo electrónico")]
+        [Required]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Mensaje de bienvenida requerido")]
-        [Column("WelcomeText", TypeName = "TEXT")]
-        [DisplayName("Mensaje de bienvenida")]
+        [Required]
         public string Welcome { get; set; }
 
-        [Column("AboutUsText", TypeName = "TEXT")]
-        [DisplayName("Acerca de nosotros")]
         public string AboutUs { get; set; }
 
         public string FacebookUrl {set;get;}

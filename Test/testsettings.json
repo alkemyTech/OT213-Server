@@ -1,0 +1,28 @@
+﻿{
+    "ConnectionStrings": {
+        "OngProjectConnection": "",
+        "Credentials:": ""
+    },
+    "AWSCreds": {
+        "AWS_ACCESS_KEY_ID": "xxxxxxxxxxx",
+        "AWS_SECRET_ACCESS_KEY": "xxxxxxxxxx"
+    },
+    "AWS": {
+        "Profile": "default",
+        "Region": "us-east-1"
+    },
+    "SendGrid": {
+        "ApiKey": ""
+    },
+    "JWT": {
+        "Token": "my top secret key"
+    },
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
+        }
+    },
+    "AllowedHosts": "*"
+}

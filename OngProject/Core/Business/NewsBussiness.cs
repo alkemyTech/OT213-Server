@@ -5,7 +5,7 @@ using OngProject.Repositories.Interfaces;
 
 namespace OngProject.Core.Business
 {
-    public class NewsBusiness : GenericBusiness<New>, INewsBusiness
+    public class NewsBusiness : GenericBusiness<News>, INewsBusiness
     {
         public NewsBusiness(IUnitOfWork uow, INewsRepository newsRepository) : base(newsRepository, uow)
         {

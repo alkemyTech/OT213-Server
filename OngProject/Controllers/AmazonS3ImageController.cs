@@ -30,26 +30,25 @@ namespace OngProject.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]   
+        [Authorize(Roles = "Admin")]
         [Route("get/URLfiles")]
         public async Task<IActionResult> GetURLFiles(string prefix)
-        {       
-            return Ok(await _aws.GetUrlFiles(prefix)); 
+        {
+            return Ok(await _aws.GetUrlFiles(prefix));
         }
-        
+
         // DOWNLOAD IMAGE
-        [HttpGet]       
+        [HttpGet]
         [Route("Download/Image")]
         public async Task<IActionResult> DownloadImage([FromQuery] string imgName)
-        {        
+        {
             await _aws.DownloadImage(imgName);
-            return Ok(new 
+            return Ok(new
             {
                 Status = "Success",
                 Message = "Image downloading..."
-            });  
+            });
         }
-
     }
 
 }

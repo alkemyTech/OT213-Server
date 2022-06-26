@@ -4,7 +4,7 @@ using OngProject.Repositories.Interfaces;
 
 namespace OngProject.Repositories
 {
-    public class ActivitiesRepository : GenericRepository<Activities>, IActivitiesRepository
+    public class ActivitiesRepository : GenericRepository<Activity>, IActivitiesRepository
     {
         public ActivitiesRepository(OngProjectDbContext context) : base(context) {    }
     }

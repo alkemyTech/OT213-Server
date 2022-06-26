@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using OngProject.DataAccess.Seeder;
 using OngProject.DataAccess.Seeder.Activities;
-using OngProject.DataAccess.Seeder.New;
+using OngProject.DataAccess.Seeder.News;
+using OngProject.DataAccess.Seeder.Organizations;
 using OngProject.DataAccess.Seeder.Roles;
 using OngProject.DataAccess.Seeder.Testimonials;
 using OngProject.DataAccess.Seeder.Users;
@@ -24,7 +25,7 @@ namespace OngProject.DataAccess
         {           
             // Fluent Api                
             // configure one-to-many relationship
-             modelBuilder.Entity<New>()
+             modelBuilder.Entity<News>()
                 .HasOne<Category>(u => u.Category)
                 .WithMany(c => c.News)
                 .HasForeignKey(u => u.CategoryId);
@@ -45,18 +46,19 @@ namespace OngProject.DataAccess
             modelBuilder.ApplyConfiguration(new ActivityConfiguration());
             modelBuilder.ApplyConfiguration(new NewsConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-            modelBuilder.ApplyConfiguration(new RolesConfiguration());
+            modelBuilder.ApplyConfiguration(new OrganizationConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UsersConfiguration());
         }
 
         public DbSet<Organization> Organizations { set; get; }
         public DbSet<Slide> Slides { set; get; }
         public DbSet<Category> Categories { set; get; }
-        public DbSet<New> News { set; get; }
+        public DbSet<News> News { set; get; }
         public DbSet<Member> Members {set;get;}
         public DbSet<User> Users { set; get;}
         public DbSet<Role> Roles { set; get; }
-        public DbSet<Activities> Activities { set; get; }
+        public DbSet<Activity> Activities { set; get; }
         public DbSet<Testimonial> Testimonials { set; get; }
         public DbSet<Contact> Contacts { set; get; }
         public DbSet<Comment> Comments { set; get; }
