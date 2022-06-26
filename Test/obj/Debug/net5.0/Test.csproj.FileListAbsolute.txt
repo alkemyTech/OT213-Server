@@ -155,11 +155,6 @@ C:\Users\xv13r\Documents\Alkemy\C#\OT213-Server-main_2022-06-23\Test\obj\Debug\n
 C:\Users\xv13r\Documents\Alkemy\C#\OT213-Server-main_2022-06-23\Test\obj\Debug\net5.0\ref\Test.dll
 C:\Users\xv13r\Documents\Alkemy\C#\OT213-Server-main_2022-06-23\Test\bin\Debug\net5.0\NSwag.Annotations.dll
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\bin\Debug\net5.0\CoverletSourceRootsMapping
-C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.csproj.AssemblyReference.cache
-C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.AssemblyInfoInputs.cache
-C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.AssemblyInfo.cs
-C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.csproj.CoreCompileInputs.cache
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\bin\Debug\net5.0\appsettings.json
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\bin\Debug\net5.0\testhost.exe
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\bin\Debug\net5.0\testhost.dll
@@ -304,6 +299,11 @@ C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\bin\Debug\net5.0\runt
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\bin\Debug\net5.0\OngProject.dll
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\bin\Debug\net5.0\OngProject.pdb
+C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.csproj.AssemblyReference.cache
+C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.AssemblyInfoInputs.cache
+C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.AssemblyInfo.cs
+C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.csproj.CoreCompileInputs.cache
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.csproj.CopyComplete
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\Test.dll
 C:\Users\xv13r\Documents\Alkemy\C#\final\OT213-Server\Test\obj\Debug\net5.0\refint\Test.dll
