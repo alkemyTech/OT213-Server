@@ -153,7 +153,7 @@ namespace OngProject.Controllers
             testimonial.Name = model.Name;
             testimonial.Description = model.Description;
             testimonial.Image = url;
-
+            
             var testimonialResponse = await _business.Update(testimonial);
 
             return Ok(_mapper.Map<TestimonialResponse>(testimonialResponse));

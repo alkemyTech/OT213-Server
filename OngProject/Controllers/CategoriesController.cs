@@ -159,6 +159,7 @@ namespace OngProject.Controllers
             category.Name = model.Name;
             category.Description = model.Description;
             category.Image = url;
+
             var categoryResponse = await _business.Update(category);
 
             return Ok(_mapper.Map<CategoryResponse>(categoryResponse));

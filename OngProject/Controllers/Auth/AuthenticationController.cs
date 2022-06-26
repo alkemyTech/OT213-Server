@@ -23,13 +23,15 @@ namespace OngProject.Controllers
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _accessor;
         private readonly IUsersBusiness _userBusiness;
+        private readonly IAmazonHelperService _aws;
 
         public AuthenticationController(IAuthBusiness authBusiness, 
                                         IMailBusiness mailBusiness, 
                                         IMapper mapper,
                                         ITokenService token,
                                         IHttpContextAccessor accessor,
-                                        IUsersBusiness userBusiness)
+                                        IUsersBusiness userBusiness,
+                                        IAmazonHelperService aws)
         {
             this._authBusiness = authBusiness;
             this._mailBusiness = mailBusiness;
@@ -37,6 +39,7 @@ namespace OngProject.Controllers
             this._tokenService = token;
             this._accessor = accessor;
             this._userBusiness = userBusiness;
+            this._aws = aws;
         }
 
         // POST: /Auth/Register
@@ -89,6 +92,7 @@ namespace OngProject.Controllers
                 Photo = user.Photo
             };
 
+
             await _mailBusiness.SendEmailAsync(dto.Email);
 
             var validate = await _authBusiness.Login(dto.Email, dto.Password);
@@ -108,10 +112,10 @@ namespace OngProject.Controllers
 
         // POST: Auth/Login
         /// <summary>
-        /// Inicia sesiÃ³n el usuario.
+        /// Inicia sesión el usuario.
         /// </summary>
         /// <remarks>
-        /// Inicia sesiÃ³n el usuario.
+        /// Inicia sesión el usuario.
         /// </remarks>
         /// <param name="dto">Objeto a consultar a la BD.</param>
         /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
@@ -123,12 +127,12 @@ namespace OngProject.Controllers
         [Route("Auth/Login")]
         public async Task<IActionResult> Login(UserAuthLoginDTO dto)
         {
-            //var user = await _authBusiness.Login(dto.Email, dto.Password);
-           // if(user == null)
-                //return Unauthorized();
+            var user = await _authBusiness.Login(dto.Email, dto.Password);
+            if(user == null)
+                return Unauthorized();
 
-            //var token = _tokenService.CreateToken(user);  
-            var token = "123";
+            var token = _tokenService.CreateToken(user);  
+            
             return Ok(new 
             {
                 Token = token

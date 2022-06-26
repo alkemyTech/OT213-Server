@@ -100,7 +100,6 @@ namespace OngProject.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [Route("/Activities")]
-
         public async Task<IActionResult> Create([FromForm] ActivityRequest model)
         {
             if (model is null)
@@ -163,6 +162,7 @@ namespace OngProject.Controllers
             activity.Name = model.Name;
             activity.Image = url;
             activity.Content = model.Content;
+
             var activityResponse = await _business.Update(activity);
 
             return Ok(_mapper.Map<ActivityResponse>(activityResponse));

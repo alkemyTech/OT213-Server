@@ -125,6 +125,8 @@ namespace OngProject.Controllers
 
             var member = await _business.Insert(_mapper.Map<Member>(newModel));
             return Ok(_mapper.Map<MemberResponse>(member));
+
+
         }
 
         // GET: /Members/5

@@ -5,6 +5,7 @@ using OngProject.DataAccess.Seeder.News;
 using OngProject.DataAccess.Seeder.Organizations;
 using OngProject.DataAccess.Seeder.Roles;
 using OngProject.DataAccess.Seeder.Testimonials;
+using OngProject.DataAccess.Seeder.Users;
 using OngProject.Entities;
 
 namespace OngProject.DataAccess
