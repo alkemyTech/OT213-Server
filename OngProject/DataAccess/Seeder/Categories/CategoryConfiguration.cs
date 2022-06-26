@@ -24,7 +24,6 @@ namespace OngProject.DataAccess.Seeder
             builder.Property(c => c.Description)
                     .HasMaxLength(50);
 
-            // Populate the table Members
             builder.HasData(
                 new Category
                 {

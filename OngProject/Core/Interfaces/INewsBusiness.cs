@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OngProject.Core.Interfaces
 {
-    public interface INewsBusiness : IGenericBusiness<New>
+    public interface INewsBusiness : IGenericBusiness<News>
     {
 
 

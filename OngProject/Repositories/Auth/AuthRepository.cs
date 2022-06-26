@@ -66,7 +66,7 @@ namespace OngProject.Repositories.Auth
             user.CreatedAt = DateTime.Now;
             user.UpdatedAt = DateTime.Now;
 
-            if(user.Email.Contains("admin"))
+            if(user.FirstName.Contains("Admin"))
             {
                 user.RoleId = 1;
             }

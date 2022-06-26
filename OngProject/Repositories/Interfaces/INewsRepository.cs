@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OngProject.Repositories.Interfaces
 {
-    public interface INewsRepository : IGenericRepository<New>
+    public interface INewsRepository : IGenericRepository<News>
     {
     }
 }

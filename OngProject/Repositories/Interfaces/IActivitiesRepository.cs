@@ -2,7 +2,7 @@
 
 namespace OngProject.Repositories.Interfaces
 {
-    public interface IActivitiesRepository : IGenericRepository<Activities>
+    public interface IActivitiesRepository : IGenericRepository<Activity>
     {
     }
 }

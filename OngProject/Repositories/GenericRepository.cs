@@ -42,11 +42,7 @@ namespace OngProject.Repositories
 
         public async Task<TEntity> GetById(int id)
         {
-            var value = await context.Set<TEntity>().FindAsync(id);
-            if (value == null)
-                throw new Exception("Id entity not found or doesn't exist.");
-
-            return value;
+            return await context.Set<TEntity>().FindAsync(id);
         }
 
         public async Task<TEntity> Insert(TEntity entity)

@@ -8,17 +8,17 @@ namespace OngProject.DataAccess.UnitOfWork.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         // Write here all the entities (Interfaces Non-Generics)
-        IMemberRepository Members {get;}
+        IMembersRepository Members {get;}
         INewsRepository News { get; }
         IUsersRepository Users { get; }
         IRoleRepository Role { get; }
         IAuthRepository Authentications {get;}
-        IOrganizationRepository Organizations { get; }
-        ICategoryRepository Categories { get; }
+        IOrganizationsRepository Organizations { get; }
+        ICategoriesRepository Categories { get; }
         IActivitiesRepository Activities { get; }
-        ITestimonialRepository Testimonials { get; }
+        ITestimonialsRepository Testimonials { get; }
         ISlidesRepository Slides { get; }
-        ICommentRepository Comments { get; }
+        ICommentsRepository Comments { get; }
         Task SaveAsync();
 
     }

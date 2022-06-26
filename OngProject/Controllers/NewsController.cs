@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Interfaces;
-using OngProject.Entities;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using OngProject.Core.Models.DTOs.News;
+using OngProject.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OngProject.Controllers
 {
@@ -15,85 +15,153 @@ namespace OngProject.Controllers
     [Authorize(Roles = "Admin")]    
     public class NewsController : ControllerBase
     {        
-        private readonly INewsBusiness _newsBusiness;
+        private readonly INewsBusiness _business;
         private readonly IMapper _mapper;
         public NewsController(INewsBusiness newsBusiness, IMapper mapper)
         {
-            this._newsBusiness = newsBusiness;
+            this._business = newsBusiness;
             this._mapper = mapper;
         }
 
-        [HttpGet]    
-        [Route("List/News")]
-        public  IActionResult GetAllNews() 
+        // GET: /News
+        /// <summary>
+        /// Obtiene todos los objetos.
+        /// </summary>
+        /// <remarks>
+        /// Obtiene todos los objetos
+        /// </remarks>
+        /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
+        /// <response code="200">OK.Devuelve los objetos solicitados.</response>        
+        /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(IEnumerable<NewsResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
+
+        [HttpGet]
+        [Route("/News")]
+        public  IActionResult GetAll() 
         {
-            var news = _newsBusiness.Find(m => m.IsDeleted != true);
-            return Ok(_mapper.Map<IEnumerable<NewsGetDTO>>(news)); 
+            var news = _business.Find(c => c.IsDeleted == false);
+            if (news == null)
+            {
+                return BadRequest();
+            }
+            return Ok(_mapper.Map<IEnumerable<NewsResponse>>(news));
         }
 
-        [HttpGet]    
-        [Route("List/NewsById/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        // GET: /News/5
+        /// <summary>
+        /// Obtiene un objeto por su Id.
+        /// </summary>
+        /// <remarks>
+        /// Devuelve el objeto por su id si existe.
+        /// </remarks>
+        /// <param name="id">Id (int) del objeto.</param>
+        /// <response code="200">OK. Devuelve el objeto solicitado.</response>        
+        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(NewsResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
+
+        [HttpGet]
+        [Route("/News/{id}")]
+        public async Task<IActionResult> Get(int id)
         {
-            var news = await _newsBusiness.GetById(id);
-            return Ok(_mapper.Map<NewsGetDTO>(news)); 
+            var model = await _business.GetById(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<NewsResponse>(model));
         }
+
+        // POST: /News
+        /// <summary>
+        /// Crea un nuevo objeto en la BD.
+        /// </summary>
+        /// <remarks>
+        /// Crea el objecto en la BD
+        /// </remarks>
+        /// <param name="model">Objeto a crear a la BD.</param>
+        /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              
+        /// <response code="201">Created. Objeto correctamente creado en la BD.</response>        
+        /// <response code="400">BadRequest. No se ha creado el objeto en la BD. Formato del objeto incorrecto.</response>
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(NewsResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status400BadRequest)]
 
         [HttpPost]       
-        [Route("Create/News")]
-        public async Task<IActionResult> Create([FromBody] NewsCreateDTO model)
+        [Route("/News")]
+        public async Task<IActionResult> Create([FromBody] NewsRequest model)
         {       
-            if(model.CategoryID == 0)
-                return BadRequest("CategoryID cannot be null");
-
-            await _newsBusiness.Insert(_mapper.Map<New>(model));                       
-            return Ok(new 
+            if (model is null)
             {
-                Status = "Success",
-                Message = $"{model.Name} news creation successfully!"
-            });                
+                return BadRequest();
+            }
+
+            var news = await _business.Insert(_mapper.Map<News>(model));
+            return Ok(_mapper.Map<NewsResponse>(news));
         }
+
+        // GET: /News/5
+        /// <summary>
+        /// Obtiene un objeto por su Id.
+        /// </summary>
+        /// <remarks>
+        /// Devuelve el objeto por su id si existe.
+        /// </remarks>
+        /// <param name="id">Id (int) del objeto.</param>
+        /// <response code="200">OK. Devuelve el objeto solicitado.</response>        
+        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(NewsResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
 
         [HttpPut]       
-        [Route("Update/News/{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] NewsUpdateDTO model)
-        { 
-            if (id != model.Id)
-            {
-                return StatusCode(StatusCodes.Status404NotFound, new
-                {
-                    Status = "Error",
-                    Message = "Id number doesn't match!"
-                });
-            } 
+        [Route("/News/{id}")]
+        public async Task<IActionResult> Edit(int id, [FromBody] NewsRequest model)
+        {
+            var news = await _business.GetById(id);
 
-            if(model.CategoryID == 0)
-                return BadRequest("CategoryID cannot be null");
-
-            var news = await _newsBusiness.GetById(id);           
-            _mapper.Map(model, news);               
-            await _newsBusiness.Update(news);                            
-                
-            return Ok(new 
+            if (news == null)
             {
-                Status = "Success",
-                Message = $"{news.Name} news updated successfully!"
-            }); 
+                return NotFound();
+            }
+            _mapper.Map(model, news);
+            var newsResponse = await _business.Update(news);
+
+            return Ok(_mapper.Map<NewsResponse>(newsResponse));
         }
 
-        [HttpDelete]       
-        [Route("Delete/News/{id}")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            var news = await _newsBusiness.GetById(id.Value);
-            await _newsBusiness.SoftDelete(news);
-            await _newsBusiness.Update(news);
+        // Delete: /News/5
+        /// <summary>
+        /// Elimina un objeto por su Id.
+        /// </summary>
+        /// <remarks>
+        /// Elimina el objeto por su id si existe.
+        /// </remarks>
+        /// <param name="id">Id (int) del objeto.</param>
+        /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>      
+        /// <response code="200">OK. Devuelve el objeto solicitado.</response>        
+        /// <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>        
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
 
-            return Ok(new 
+        [HttpDelete]       
+        [Route("/News/{id}")]
+        public async Task<IActionResult> SoftDelete(int? id)
+        {
+            var news = await _business.GetById(id.Value);
+
+            if (news == null)
             {
-                Status = "Success",
-                Message = $"{news.Name} news deleted successfully!"
-            }); 
+                return NotFound();
+            }
+            await _business.SoftDelete(news);
+            await _business.Update(news);
+            return Ok("Deleted successfully.");
         }
     }
 }

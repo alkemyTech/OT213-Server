@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 
 namespace OngProject.Repositories
 {
-    public class NewsRepository : GenericRepository<New>, INewsRepository
+    public class NewsRepository : GenericRepository<News>, INewsRepository
     {
         public NewsRepository(OngProjectDbContext context) : base(context)
         {

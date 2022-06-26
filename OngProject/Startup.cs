@@ -99,16 +99,16 @@ namespace OngProject
             services.AddAutoMapper(typeof(Startup));
 
             //Repositories DI
-            services.AddScoped<IMemberRepository, MemberRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<ITestimonialRepository, TestimonialRepository>();
+            services.AddScoped<IMembersRepository, MembersRepository>();
+            services.AddScoped<IRoleRepository, RolesRepository>();
+            services.AddScoped<ITestimonialsRepository, TestimonialsRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
-            services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
             services.AddScoped<IActivitiesRepository, ActivitiesRepository>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoriesRepository, CategoriesRepository>();
             services.AddTransient<IMailRepository, MailRepository>();
             services.AddScoped<ISlidesRepository, SlidesRepository>();
-            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ICommentsRepository, CommentRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<INewsRepository, NewsRepository>();
             
@@ -116,16 +116,16 @@ namespace OngProject
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //Services DI
-            services.AddScoped<IMemberBusiness, MemberBusiness>();
-            services.AddScoped<IRoleBusiness, RoleBusiness>();
-            services.AddScoped<ITestimonialBusiness, TestimonialBusiness>();
+            services.AddScoped<IMembersBusiness, MembersBusiness>();
+            services.AddScoped<IRolesBusiness, RolesBusiness>();
+            services.AddScoped<ITestimonialsBusiness, TestimonialsBusiness>();
             services.AddScoped<IAuthBusiness, AuthBusiness>();
-            services.AddScoped<IOrganizationBusiness, OrganizationBusiness>();
+            services.AddScoped<IOrganizationsBusiness, OrganizationsBusiness>();
             services.AddScoped<IActivitiesBusiness, ActivitiesBusiness>();
-            services.AddScoped<ICategoryBusiness, CategoryBusiness>();
+            services.AddScoped<ICategoriesBusiness, CategoriesBusiness>();
             services.AddTransient<IMailBusiness, MailBusiness>();
             services.AddScoped<ISlidesBusiness, SlidesBusiness>();
-            services.AddScoped<ICommentBusiness, CommentBusiness>();
+            services.AddScoped<ICommentsBusiness, CommentsBusiness>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUsersBusiness, UsersBusiness>();
             services.AddScoped<INewsBusiness, NewsBusiness>();
