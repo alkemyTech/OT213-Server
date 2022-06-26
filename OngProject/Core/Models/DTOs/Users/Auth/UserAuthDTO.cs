@@ -25,7 +25,6 @@ namespace OngProject.Core.Models.DTOs.Users.Auth
 
         [Required(ErrorMessage = "ImgFile is required")]
         public IFormFile ImgFile { get; set; }
-
     }
 
 }

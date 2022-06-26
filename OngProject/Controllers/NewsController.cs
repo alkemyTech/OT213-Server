@@ -120,7 +120,6 @@ namespace OngProject.Controllers
                 Image = url,
                 Content = model.Content
             };
-
             var news = await _business.Insert(_mapper.Map<News>(model));
             return Ok(_mapper.Map<NewsResponse>(news));
         }

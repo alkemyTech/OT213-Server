@@ -1,9 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using OngProject.Core.Helper.Interface;
 using System;
 using System.Collections.Generic;
@@ -16,15 +14,40 @@ namespace OngProject.Core.Helper
     public class AmazonHelperService : IAmazonHelperService
     {
         private readonly IAmazonS3 _amazonS3;
-        private readonly IConfiguration _configuration;
-
-        public AmazonHelperService(IAmazonS3 amazonS3, IConfiguration configuration)
+        public AmazonHelperService(IAmazonS3 amazonS3)
         {
             this._amazonS3 = amazonS3;
-            this._configuration = configuration;
         }
 
-        #region DOWNLOAD FILES 
+        /*
+            Delete method not implemented in this project
+        */
+        
+        // #region DELETE IMAGE 
+        // public async Task<DeleteObjectResponse> DeleteImage(string imgName)
+        // {
+        //     if (string.IsNullOrEmpty(imgName))
+        //         throw new Exception("The 'imgName' parameter is required \n");
+
+        //     try
+        //     {
+        //         var request = new DeleteObjectRequest()
+        //         {
+        //             BucketName = "cohorte-mayo-2820e45d",
+        //             Key = imgName
+        //         }; 
+        //         var result = await _amazonS3.DeleteObjectAsync(request);
+
+        //         return result;
+        //     }
+        //     catch (System.Exception ex)
+        //     {
+        //         throw new Exception(ex.Message);                
+        //     }
+        // }
+        // #endregion
+
+        #region DOWNLOAD IMAGE 
         public async Task<FileStreamResult> DownloadImage(string imgName)
         {
             if (string.IsNullOrEmpty(imgName))
@@ -34,7 +57,7 @@ namespace OngProject.Core.Helper
             {
                 var request = new GetObjectRequest()
                 {
-                    BucketName = _configuration["AWS:BucketName"],
+                    BucketName = "cohorte-mayo-2820e45d",
                     Key = imgName
                 };
                 using GetObjectResponse response = await _amazonS3.GetObjectAsync(request);
@@ -55,10 +78,12 @@ namespace OngProject.Core.Helper
         }
         #endregion
 
-        #region UPLOAD FILES
-        public async Task<string> UploadImage(IFormFile file)
+        #region UPLOAD IMAGE
+        public async Task<PutObjectResponse> UploadImage(IFormFile file)
         {
-            var uploadRequest = new TransferUtilityUploadRequest
+            if (file == null)
+                throw new Exception("The 'file' parameter is required \n");
+            try
             {
                 BucketName = _configuration["AWS:BucketName"],
                 Key = file.FileName,
@@ -71,18 +96,9 @@ namespace OngProject.Core.Helper
             return url;
         }
         #endregion
-
-        #region GET FILES
-        async Task<IEnumerable<string>> IAmazonHelperService.GetUrlFiles(string prefix)
-        {
-            var client = new AmazonS3Client();
-            var request = new ListObjectsV2Request()
-            {
-                BucketName = _configuration["AWS:BucketName"],
-                Prefix = prefix
-            };
-            var response = await client.ListObjectsV2Async(request);
-            var presignedURL = response.S3Objects.Select(o =>
+                return result;                
+            }
+            catch (System.Exception ex)
             {
                 var request = new GetPreSignedUrlRequest()
                 {
@@ -95,7 +111,7 @@ namespace OngProject.Core.Helper
             return presignedURL;
         }
         #endregion
-
+     
     }
 
 }

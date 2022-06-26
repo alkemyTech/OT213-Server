@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OngProject.Core.Helper.Interface;
@@ -49,6 +48,7 @@ namespace OngProject.Controllers
                 Message = "Image downloading..."
             });
         }
+
     }
 
 }

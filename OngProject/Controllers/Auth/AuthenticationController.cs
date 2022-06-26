@@ -23,15 +23,13 @@ namespace OngProject.Controllers
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _accessor;
         private readonly IUsersBusiness _userBusiness;
-        private readonly IAmazonHelperService _aws;
 
         public AuthenticationController(IAuthBusiness authBusiness, 
                                         IMailBusiness mailBusiness, 
                                         IMapper mapper,
                                         ITokenService token,
                                         IHttpContextAccessor accessor,
-                                        IUsersBusiness userBusiness,
-                                        IAmazonHelperService aws)
+                                        IUsersBusiness userBusiness)
         {
             this._authBusiness = authBusiness;
             this._mailBusiness = mailBusiness;
@@ -39,7 +37,6 @@ namespace OngProject.Controllers
             this._tokenService = token;
             this._accessor = accessor;
             this._userBusiness = userBusiness;
-            this._aws = aws;
         }
 
         // POST: /Auth/Register
@@ -92,7 +89,6 @@ namespace OngProject.Controllers
                 Photo = user.Photo
             };
 
-
             await _mailBusiness.SendEmailAsync(dto.Email);
 
             var validate = await _authBusiness.Login(dto.Email, dto.Password);
@@ -112,10 +108,10 @@ namespace OngProject.Controllers
 
         // POST: Auth/Login
         /// <summary>
-        /// Inicia sesión el usuario.
+        /// Inicia sesiÃ³n el usuario.
         /// </summary>
         /// <remarks>
-        /// Inicia sesión el usuario.
+        /// Inicia sesiÃ³n el usuario.
         /// </remarks>
         /// <param name="dto">Objeto a consultar a la BD.</param>
         /// <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>              

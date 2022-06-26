@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OngProject.Entities;
+
 
 namespace OngProject.DataAccess.Seeder.Roles
 {

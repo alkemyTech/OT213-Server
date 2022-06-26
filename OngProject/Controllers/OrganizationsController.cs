@@ -173,7 +173,7 @@ namespace OngProject.Controllers
             organization.InstagramUrl = model.InstagramUrl;
             organization.LinkedInUrl = model.LinkedInUrl;
             organization.Image = url;
-            
+
             var organizationResponse = await _business.Update(organization);
 
             return Ok(_mapper.Map<OrganizationResponse>(organizationResponse));
